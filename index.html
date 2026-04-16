@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="/analytics/tracker.js" defer></script>
 <style>
 :root {
   --bg: #050508;
@@ -903,7 +904,7 @@ footer {
 </nav>
 
 <!-- Hero -->
-<section class="hero">
+<section class="hero" data-track="hero">
   <div class="hero-label">
     <span class="dot"></span>
     Interactive Research
@@ -942,7 +943,7 @@ footer {
 </div>
 
 <!-- Featured Essay -->
-<section class="featured">
+<section class="featured" data-track="featured-essay">
   <a href="/essays/beyond-pull-requests/" class="featured-card">
     <div class="fc-body">
       <div class="fc-tag featured-tag">
@@ -977,7 +978,7 @@ footer {
 </section>
 
 <!-- Series Grid -->
-<section class="series" id="essays">
+<section class="series" id="essays" data-track="essay-series">
   <div class="series-header">
     <div>
       <div class="series-title">The SDLC Evolution Series</div>
@@ -988,7 +989,7 @@ footer {
   <div class="essay-grid">
 
     <!-- Essay 1: Published -->
-    <a href="/essays/beyond-pull-requests/" class="essay-card">
+    <a href="/essays/beyond-pull-requests/" class="essay-card" data-track-click="essay-beyond-pull-requests">
       <div class="ec-visual" style="background: linear-gradient(135deg, var(--surface2), rgba(167,139,250,0.06));">
         <div class="ec-glow" style="background: var(--purple);"></div>
         <div class="ec-icon">&#128256;</div>
@@ -1118,7 +1119,7 @@ footer {
 </section>
 
 <!-- Thesis -->
-<section class="thesis" id="thesis">
+<section class="thesis" id="thesis" data-track="thesis">
   <div class="thesis-inner">
     <div class="thesis-label">The Thesis</div>
     <p class="thesis-text">
@@ -1128,7 +1129,7 @@ footer {
 </section>
 
 <!-- Subscribe -->
-<section class="subscribe" id="subscribe">
+<section class="subscribe" id="subscribe" data-track="subscribe">
   <div class="sub-card">
     <div class="sub-title">Get the next essay first</div>
     <p class="sub-desc">New interactive essays on the future of software engineering, delivered when they're ready. No spam, just deep research.</p>

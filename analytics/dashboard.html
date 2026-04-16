@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics — thundeeran.dev</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050508;
+  --surface: #0c0c14;
+  --surface2: #111119;
+  --border: #1c1c2a;
+  --text: #eaeaf2;
+  --text-dim: #a0a0b8;
+  --text-mute: #6e6e88;
+  --green: #34d399;
+  --yellow: #fbbf24;
+  --red: #f87171;
+  --purple: #a78bfa;
+  --blue: #60a5fa;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 40px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--green), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle { color: var(--text-mute); font-size: 0.85rem; margin-bottom: 32px; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.stat-label { font-size: 0.75rem; color: var(--text-mute); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.stat-value { font-size: 2rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+.stat-sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
+
+.section { margin-bottom: 32px; }
+.section-title { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: var(--text-dim); }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 0.7rem;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(28,28,42,0.5);
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+}
+
+tr:hover td { color: var(--text); background: rgba(52,211,153,0.03); }
+
+.bar-cell { position: relative; }
+.bar-fill {
+  position: absolute; top: 0; left: 0; bottom: 0;
+  background: linear-gradient(90deg, rgba(52,211,153,0.08), rgba(52,211,153,0.02));
+  border-radius: 0 4px 4px 0;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.badge-green { background: rgba(52,211,153,0.15); color: var(--green); }
+.badge-yellow { background: rgba(251,191,36,0.15); color: var(--yellow); }
+.badge-red { background: rgba(248,113,113,0.15); color: var(--red); }
+.badge-purple { background: rgba(167,139,250,0.15); color: var(--purple); }
+
+.empty-state {
+  text-align: center;
+  padding: 80px 40px;
+  color: var(--text-mute);
+}
+
+.empty-state h2 { font-size: 1.2rem; color: var(--text-dim); margin-bottom: 12px; }
+
+.upload-area {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  margin-bottom: 32px;
+}
+
+.upload-area:hover { border-color: var(--green); }
+.upload-area input { display: none; }
+
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+}
+
+.btn:hover { border-color: var(--green); color: var(--text); }
+.btn-primary { background: var(--green); color: var(--bg); border-color: var(--green); font-weight: 600; }
+.btn-primary:hover { opacity: 0.9; }
+
+.timeline {
+  position: relative;
+  padding-left: 24px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+
+.timeline-event {
+  position: relative;
+  padding: 8px 0 16px 16px;
+  font-size: 0.8rem;
+}
+
+.timeline-event::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+.timeline-time { color: var(--text-mute); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; }
+.timeline-name { color: var(--text); font-weight: 500; }
+.timeline-meta { color: var(--text-dim); font-size: 0.75rem; }
+
+.engagement-meter {
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.engagement-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s;
+}
+
+.funnel {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 16px 0;
+}
+
+.funnel-step {
+  flex: 1;
+  text-align: center;
+  padding: 16px 8px;
+  position: relative;
+}
+
+.funnel-step::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-left-color: var(--text-mute);
+}
+
+.funnel-step:last-child::after { display: none; }
+
+.funnel-count { font-size: 1.5rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+.funnel-label { font-size: 0.7rem; color: var(--text-mute); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+.funnel-pct { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<h1>thundeeran.dev analytics</h1>
+<p class="subtitle">Deep engagement tracking for interactive essays</p>
+
+<div class="controls">
+  <label class="btn btn-primary" id="uploadLabel">
+    Import Events JSON
+    <input type="file" id="fileInput" accept=".json">
+  </label>
+  <button class="btn" id="loadSession">Load Current Session</button>
+  <button class="btn" id="clearData">Clear Data</button>
+</div>
+
+<div id="dashboard" style="display:none;"></div>
+
+<div id="emptyState" class="empty-state">
+  <h2>No analytics data yet</h2>
+  <p>Visit your essays with <code>#analytics-debug</code> in the URL, then click "Export Events" in the debug panel to get a JSON file. Import it here.</p>
+  <p style="margin-top: 12px;">Or click "Load Current Session" if you have events from this browser session.</p>
+</div>
+
+<script>
+let allEvents = [];
+
+function processEvents(events) {
+  allEvents = events;
+  if (events.length === 0) {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('emptyState').style.display = 'none';
+
+  // Group by session
+  const sessions = {};
+  events.forEach(e => {
+    if (!sessions[e.sessionId]) sessions[e.sessionId] = [];
+    sessions[e.sessionId].push(e);
+  });
+
+  const sessionList = Object.values(sessions);
+  const totalSessions = sessionList.length;
+
+  // Compute metrics
+  const sessionEnds = events.filter(e => e.event === 'session_end');
+  const avgActiveTime = sessionEnds.length > 0
+    ? Math.round(sessionEnds.reduce((s, e) => s + (e.activeTimeSec || 0), 0) / sessionEnds.length)
+    : 0;
+  const avgTotalTime = sessionEnds.length > 0
+    ? Math.round(sessionEnds.reduce((s, e) => s + (e.totalTimeSec || 0), 0) / sessionEnds.length)
+    : 0;
+  const avgScroll = sessionEnds.length > 0
+    ? Math.round(sessionEnds.reduce((s, e) => s + parseInt(e.maxScrollDepth || '0'), 0) / sessionEnds.length)
+    : 0;
+  const avgInteractions = sessionEnds.length > 0
+    ? (sessionEnds.reduce((s, e) => s + (e.totalInteractions || 0), 0) / sessionEnds.length).toFixed(1)
+    : 0;
+  const completedReads = sessionEnds.filter(e => e.completedRead).length;
+  const completionRate = sessionEnds.length > 0 ? Math.round((completedReads / sessionEnds.length) * 100) : 0;
+
+  // Page breakdown
+  const pageViews = {};
+  events.filter(e => e.event === 'session_start').forEach(e => {
+    const page = e.page || e.url || '/';
+    pageViews[page] = (pageViews[page] || 0) + 1;
+  });
+
+  // Section engagement
+  const sectionEnters = {};
+  const sectionExits = {};
+  events.filter(e => e.event === 'section_enter').forEach(e => {
+    sectionEnters[e.section] = (sectionEnters[e.section] || 0) + 1;
+  });
+  events.filter(e => e.event === 'section_exit').forEach(e => {
+    if (!sectionExits[e.section]) sectionExits[e.section] = [];
+    sectionExits[e.section].push(e.dwellSec || 0);
+  });
+
+  // Interaction breakdown
+  const interactions = {};
+  events.filter(e => ['click', 'era_switch', 'change_type_select', 'simulation_run', 'keyboard_nav', 'hover'].includes(e.event))
+    .forEach(e => {
+      interactions[e.event] = (interactions[e.event] || 0) + 1;
+    });
+
+  // Scroll funnel
+  const scrollMilestones = {};
+  events.filter(e => e.event === 'scroll_milestone').forEach(e => {
+    scrollMilestones[e.milestone] = (scrollMilestones[e.milestone] || 0) + 1;
+  });
+
+  // Device breakdown
+  const devices = {};
+  events.filter(e => e.event === 'session_start').forEach(e => {
+    devices[e.device] = (devices[e.device] || 0) + 1;
+  });
+
+  // Referrers
+  const referrers = {};
+  events.filter(e => e.event === 'session_start').forEach(e => {
+    const ref = e.referrer || '(direct)';
+    referrers[ref] = (referrers[ref] || 0) + 1;
+  });
+
+  // Build dashboard
+  let html = '';
+
+  // KPI cards
+  html += `<div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Sessions</div>
+      <div class="stat-value" style="color: var(--green);">${totalSessions}</div>
+      <div class="stat-sub">${Object.keys(pageViews).length} unique pages</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Active Read Time</div>
+      <div class="stat-value" style="color: var(--blue);">${formatTime(avgActiveTime)}</div>
+      <div class="stat-sub">${formatTime(avgTotalTime)} total avg</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Scroll Depth</div>
+      <div class="stat-value" style="color: var(--purple);">${avgScroll}%</div>
+      <div class="stat-sub">${completionRate}% read to end</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Interactions</div>
+      <div class="stat-value" style="color: var(--yellow);">${avgInteractions}</div>
+      <div class="stat-sub">clicks, toggles, sims</div>
+    </div>
+  </div>`;
+
+  // Scroll Funnel
+  const funnelSteps = ['25%', '50%', '75%', '90%', '100%'];
+  html += `<div class="section">
+    <div class="section-title">Scroll Funnel</div>
+    <div class="funnel">
+      ${funnelSteps.map(step => {
+        const count = scrollMilestones[step] || 0;
+        const pct = totalSessions > 0 ? Math.round((count / totalSessions) * 100) : 0;
+        return `<div class="funnel-step">
+          <div class="funnel-count">${count}</div>
+          <div class="funnel-label">${step}</div>
+          <div class="funnel-pct">${pct}% of sessions</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+
+  // Section Engagement
+  const sectionNames = [...new Set([...Object.keys(sectionEnters), ...Object.keys(sectionExits)])];
+  if (sectionNames.length > 0) {
+    html += `<div class="section">
+      <div class="section-title">Section Engagement</div>
+      <table>
+        <tr><th>Section</th><th>Views</th><th>Avg Dwell</th><th>Engagement</th></tr>
+        ${sectionNames.map(name => {
+          const views = sectionEnters[name] || 0;
+          const exits = sectionExits[name] || [];
+          const avgDwell = exits.length > 0 ? Math.round(exits.reduce((a, b) => a + b, 0) / exits.length) : 0;
+          const engPct = totalSessions > 0 ? Math.round((views / totalSessions) * 100) : 0;
+          const color = engPct > 70 ? 'var(--green)' : engPct > 40 ? 'var(--yellow)' : 'var(--red)';
+          return `<tr>
+            <td style="color: var(--text); font-weight: 500;">${name}</td>
+            <td>${views}</td>
+            <td>${avgDwell}s</td>
+            <td class="bar-cell">
+              <div class="bar-fill" style="width: ${engPct}%;"></div>
+              <span style="position:relative;color:${color};">${engPct}%</span>
+            </td>
+          </tr>`;
+        }).join('')}
+      </table>
+    </div>`;
+  }
+
+  // Interaction Breakdown
+  if (Object.keys(interactions).length > 0) {
+    html += `<div class="section">
+      <div class="section-title">Interaction Breakdown</div>
+      <table>
+        <tr><th>Event</th><th>Count</th><th>Badge</th></tr>
+        ${Object.entries(interactions).sort((a, b) => b[1] - a[1]).map(([event, count]) => {
+          const labels = {
+            era_switch: 'Era Scrubber',
+            simulation_run: 'Engine Simulation',
+            change_type_select: 'Change Type Pick',
+            keyboard_nav: 'Keyboard Nav',
+            click: 'Element Click',
+            hover: 'Deep Hover'
+          };
+          const badges = {
+            era_switch: 'badge-purple',
+            simulation_run: 'badge-green',
+            change_type_select: 'badge-yellow',
+            keyboard_nav: 'badge-green',
+            click: 'badge-green',
+            hover: 'badge-purple'
+          };
+          return `<tr>
+            <td style="color: var(--text);">${labels[event] || event}</td>
+            <td>${count}</td>
+            <td><span class="badge ${badges[event] || 'badge-green'}">${event}</span></td>
+          </tr>`;
+        }).join('')}
+      </table>
+    </div>`;
+  }
+
+  // Device & Referrer side by side
+  html += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">`;
+
+  // Devices
+  html += `<div class="section">
+    <div class="section-title">Devices</div>
+    <table>
+      <tr><th>Type</th><th>Sessions</th></tr>
+      ${Object.entries(devices).sort((a, b) => b[1] - a[1]).map(([dev, count]) => `
+        <tr><td style="color: var(--text); text-transform: capitalize;">${dev}</td><td>${count}</td></tr>
+      `).join('')}
+    </table>
+  </div>`;
+
+  // Referrers
+  html += `<div class="section">
+    <div class="section-title">Referrers</div>
+    <table>
+      <tr><th>Source</th><th>Sessions</th></tr>
+      ${Object.entries(referrers).sort((a, b) => b[1] - a[1]).map(([ref, count]) => `
+        <tr><td style="color: var(--text); word-break: break-all;">${ref}</td><td>${count}</td></tr>
+      `).join('')}
+    </table>
+  </div>`;
+
+  html += `</div>`;
+
+  // Event Timeline (last 30)
+  const recentEvents = events.slice(-30).reverse();
+  html += `<div class="section">
+    <div class="section-title">Recent Events (last 30)</div>
+    <div class="timeline">
+      ${recentEvents.map(e => `
+        <div class="timeline-event">
+          <div class="timeline-time">${new Date(e.timestamp).toLocaleTimeString()}</div>
+          <div class="timeline-name">${e.event}</div>
+          <div class="timeline-meta">${e.url || ''} ${e.section ? '· ' + e.section : ''} ${e.milestone || ''}</div>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+
+  document.getElementById('dashboard').innerHTML = html;
+}
+
+function formatTime(seconds) {
+  if (seconds < 60) return seconds + 's';
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return m + 'm ' + s + 's';
+}
+
+// File upload
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    try {
+      const data = JSON.parse(evt.target.result);
+      processEvents(Array.isArray(data) ? data : [data]);
+    } catch (err) {
+      alert('Invalid JSON file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+});
+
+// Load from session
+document.getElementById('loadSession').addEventListener('click', () => {
+  try {
+    const data = JSON.parse(sessionStorage.getItem('td_events') || '[]');
+    if (data.length === 0) {
+      alert('No events in current session. Visit an essay with #analytics-debug first.');
+      return;
+    }
+    processEvents(data);
+  } catch (err) {
+    alert('Error loading session data: ' + err.message);
+  }
+});
+
+// Clear
+document.getElementById('clearData').addEventListener('click', () => {
+  if (confirm('Clear all loaded analytics data?')) {
+    allEvents = [];
+    sessionStorage.removeItem('td_events');
+    processEvents([]);
+  }
+});
+
+// Auto-load session data if available
+window.addEventListener('load', () => {
+  try {
+    const data = JSON.parse(sessionStorage.getItem('td_events') || '[]');
+    if (data.length > 0) processEvents(data);
+  } catch (e) {}
+});
+</script>
+</body>
+</html>

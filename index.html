@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thundeeran — The Future of Building Software</title>
+<meta property="og:title" content="Thundeeran — The Future of Building Software">
+<meta property="og:description" content="Interactive research on how software engineering evolves in the age of agentic AI. Exploring SDLC, pull requests, CI/CD, governance, and the systems that ship software.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://thundeeran.dev">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="author" content="Thundeeran">
+<meta name="description" content="Interactive research on how software engineering evolves in the age of agentic AI. By Thundeeran.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050508;
+  --bg2: #08080e;
+  --surface: #0c0c14;
+  --surface2: #111119;
+  --surface3: #16161f;
+  --border: #1c1c2a;
+  --border-bright: #2a2a3c;
+  --text: #eaeaf2;
+  --text-dim: #a0a0b8;
+  --text-mute: #6e6e88;
+  --green: #34d399;
+  --yellow: #fbbf24;
+  --red: #f87171;
+  --purple: #a78bfa;
+  --blue: #60a5fa;
+  --pink: #f472b6;
+  --cyan: #22d3ee;
+  --green-glow: rgba(52,211,153,0.12);
+  --purple-glow: rgba(167,139,250,0.12);
+  --blue-glow: rgba(96,165,250,0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 25% 0%, rgba(167,139,250,0.06), transparent 50%),
+    radial-gradient(ellipse at 75% 100%, rgba(52,211,153,0.04), transparent 50%);
+  pointer-events: none;
+}
+
+/* ═══ NAVIGATION ═══ */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  background: rgba(5,5,8,0.75);
+  backdrop-filter: blur(24px) saturate(1.2);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.nav-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: conic-gradient(from 135deg, var(--purple), var(--blue), var(--green), var(--purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 20px var(--purple-glow);
+}
+
+.nav-logo::after {
+  content: '';
+  position: absolute;
+  inset: 2.5px;
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.nav-logo span {
+  position: relative;
+  z-index: 1;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.nav-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-link {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+  letter-spacing: 0.2px;
+}
+
+.nav-link:hover { color: var(--text); }
+
+.nav-link.cta {
+  padding: 8px 18px;
+  background: var(--surface2);
+  border: 1px solid var(--border-bright);
+  border-radius: 8px;
+  color: var(--text);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.nav-link.cta:hover {
+  background: var(--surface3);
+  border-color: var(--purple);
+}
+
+/* ═══ HERO ═══ */
+.hero {
+  padding: 180px 48px 120px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-label .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--purple);
+  box-shadow: 0 0 10px var(--purple);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.hero h1 {
+  font-size: clamp(48px, 7vw, 86px);
+  font-weight: 900;
+  letter-spacing: -3px;
+  line-height: 1;
+  margin-bottom: 28px;
+}
+
+.hero h1 .line1 {
+  display: block;
+  color: var(--text);
+}
+
+.hero h1 .line2 {
+  display: block;
+  background: linear-gradient(135deg, var(--green) 0%, var(--blue) 35%, var(--purple) 70%, var(--pink) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 300% 300%;
+  animation: grad-shift 10s ease infinite;
+}
+
+@keyframes grad-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.hero-sub {
+  font-size: 19px;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 1.7;
+  max-width: 640px;
+  margin-bottom: 40px;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.hero-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.author-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--bg);
+  box-shadow: 0 0 24px var(--purple-glow);
+}
+
+.author-info .name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.author-info .role {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+.hero-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--border-bright);
+}
+
+.hero-stat {
+  text-align: center;
+}
+
+.hero-stat .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.hero-stat .label {
+  font-size: 11px;
+  color: var(--text-mute);
+  font-weight: 500;
+}
+
+/* ═══ SECTION DIVIDER ═══ */
+.section-divider {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sd-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+}
+
+.sd-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  flex-shrink: 0;
+}
+
+/* ═══ FEATURED ESSAY ═══ */
+.featured {
+  max-width: 1200px;
+  margin: 64px auto 0;
+  padding: 0 48px;
+}
+
+.featured-card {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.featured-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-3px);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+
+.fc-body {
+  padding: 48px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.fc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  width: fit-content;
+  margin-bottom: 20px;
+}
+
+.fc-tag.featured-tag {
+  background: var(--purple-glow);
+  color: var(--purple);
+  border: 1px solid rgba(167,139,250,0.25);
+}
+
+.fc-tag .tag-icon {
+  font-size: 12px;
+}
+
+.fc-title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+
+.fc-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-dim);
+  font-weight: 300;
+  margin-bottom: 24px;
+  max-width: 480px;
+}
+
+.fc-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.topic-chip {
+  padding: 5px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+
+.fc-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--purple);
+  letter-spacing: 0.5px;
+}
+
+.fc-cta .arrow {
+  transition: transform 0.2s;
+}
+
+.featured-card:hover .fc-cta .arrow {
+  transform: translateX(4px);
+}
+
+.fc-visual {
+  background: linear-gradient(135deg, var(--surface2), rgba(167,139,250,0.05));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 340px;
+}
+
+/* Animated preview graphic */
+.preview-graphic {
+  width: 280px;
+  height: 280px;
+  position: relative;
+}
+
+.pg-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(167,139,250,0.15);
+  animation: ring-spin 20s linear infinite;
+}
+
+.pg-ring.r2 {
+  inset: 20px;
+  border-style: dashed;
+  border-color: rgba(52,211,153,0.12);
+  animation-duration: 30s;
+  animation-direction: reverse;
+}
+
+.pg-ring.r3 {
+  inset: 40px;
+  border-color: rgba(96,165,250,0.1);
+  animation-duration: 40s;
+}
+
+@keyframes ring-spin {
+  to { transform: rotate(360deg); }
+}
+
+.pg-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--surface3), var(--surface));
+  border: 1.5px solid var(--purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 0 40px var(--purple-glow);
+}
+
+/* Floating orbit dots */
+.orbit-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 12px currentColor;
+}
+
+.orbit-dot:nth-child(4) { top: 20px; left: 50%; transform: translateX(-50%); color: var(--green); background: var(--green); }
+.orbit-dot:nth-child(5) { top: 50%; right: 20px; transform: translateY(-50%); color: var(--blue); background: var(--blue); }
+.orbit-dot:nth-child(6) { bottom: 20px; left: 50%; transform: translateX(-50%); color: var(--pink); background: var(--pink); }
+.orbit-dot:nth-child(7) { top: 50%; left: 20px; transform: translateY(-50%); color: var(--yellow); background: var(--yellow); }
+
+/* ═══ SERIES GRID ═══ */
+.series {
+  max-width: 1200px;
+  margin: 80px auto 0;
+  padding: 0 48px;
+}
+
+.series-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+}
+
+.series-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.series-subtitle {
+  font-size: 13px;
+  color: var(--text-mute);
+  font-weight: 400;
+}
+
+.essay-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.essay-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.essay-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45);
+}
+
+.ec-visual {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.ec-visual .ec-icon {
+  font-size: 40px;
+  position: relative;
+  z-index: 2;
+}
+
+.ec-visual .ec-glow {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.4;
+}
+
+.ec-body {
+  padding: 22px 24px 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ec-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  width: fit-content;
+  margin-bottom: 12px;
+}
+
+.ec-tag.published {
+  background: var(--green-glow);
+  color: var(--green);
+  border: 1px solid rgba(52,211,153,0.2);
+}
+
+.ec-tag.coming {
+  background: rgba(100,100,120,0.1);
+  color: var(--text-mute);
+  border: 1px solid var(--border);
+}
+
+.ec-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.ec-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: 300;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.ec-footer {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ec-topics {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ec-topic {
+  font-size: 10px;
+  color: var(--text-mute);
+  padding: 3px 8px;
+  background: var(--bg);
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.ec-read {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--purple);
+  letter-spacing: 0.5px;
+}
+
+.essay-card.coming-soon {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.essay-card.coming-soon:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border);
+}
+
+/* ═══ THESIS SECTION ═══ */
+.thesis {
+  max-width: 1200px;
+  margin: 100px auto 0;
+  padding: 0 48px;
+}
+
+.thesis-inner {
+  background: linear-gradient(135deg, var(--purple-glow), var(--blue-glow), var(--green-glow));
+  border: 1px solid rgba(167,139,250,0.15);
+  border-radius: 24px;
+  padding: 64px;
+  position: relative;
+  overflow: hidden;
+}
+
+.thesis-inner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(167,139,250,0.06), transparent 60%);
+  pointer-events: none;
+}
+
+.thesis-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.thesis-text {
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1.6;
+  max-width: 700px;
+  position: relative;
+  color: var(--text);
+}
+
+.thesis-text em {
+  font-style: normal;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--green), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ═══ SUBSCRIBE SECTION ═══ */
+.subscribe {
+  max-width: 1200px;
+  margin: 80px auto 0;
+  padding: 0 48px;
+  text-align: center;
+}
+
+.sub-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 56px 48px;
+}
+
+.sub-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 10px;
+}
+
+.sub-desc {
+  font-size: 14px;
+  color: var(--text-dim);
+  font-weight: 300;
+  margin-bottom: 28px;
+  max-width: 460px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.sub-form {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.sub-input {
+  flex: 1;
+  padding: 14px 18px;
+  background: var(--bg);
+  border: 1px solid var(--border-bright);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.sub-input::placeholder { color: var(--text-mute); }
+
+.sub-input:focus { border-color: var(--purple); }
+
+.sub-btn {
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--purple), #8b5cf6);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px var(--purple-glow);
+}
+
+.sub-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(167,139,250,0.3);
+}
+
+.sub-note {
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--text-mute);
+}
+
+/* ═══ FOOTER ═══ */
+footer {
+  max-width: 1200px;
+  margin: 80px auto 0;
+  padding: 32px 48px 48px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.foot-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.foot-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.foot-copy {
+  font-size: 12px;
+  color: var(--text-mute);
+}
+
+.foot-right {
+  display: flex;
+  gap: 20px;
+}
+
+.foot-link {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.foot-link:hover { color: var(--text); }
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 1024px) {
+  .featured-card { grid-template-columns: 1fr; }
+  .fc-visual { min-height: 240px; }
+  .essay-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-right .nav-link:not(.cta) { display: none; }
+  .hero { padding: 140px 20px 80px; }
+  .hero h1 { letter-spacing: -2px; }
+  .hero-meta { flex-wrap: wrap; gap: 16px; }
+  .featured { padding: 0 20px; }
+  .fc-body { padding: 28px 24px; }
+  .fc-title { font-size: 24px; }
+  .series { padding: 0 20px; }
+  .essay-grid { grid-template-columns: 1fr; }
+  .thesis { padding: 0 20px; }
+  .thesis-inner { padding: 36px 28px; }
+  .thesis-text { font-size: 20px; }
+  .subscribe { padding: 0 20px; }
+  .sub-form { flex-direction: column; }
+  footer { padding: 32px 20px 48px; flex-direction: column; gap: 16px; text-align: center; }
+  .foot-right { justify-content: center; }
+  .section-divider { padding: 0 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo"><span>T</span></div>
+    <div class="nav-name">Thundeeran</div>
+  </div>
+  <div class="nav-right">
+    <a href="#essays" class="nav-link">Essays</a>
+    <a href="#thesis" class="nav-link">Thesis</a>
+    <a href="#subscribe" class="nav-link cta">Subscribe</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-label">
+    <span class="dot"></span>
+    Interactive Research
+  </div>
+  <h1>
+    <span class="line1">The Future of</span>
+    <span class="line2">Building Software</span>
+  </h1>
+  <p class="hero-sub">Interactive essays exploring how software engineering evolves in the age of agentic AI. From pull requests to pipelines, governance to deployment &mdash; the systems that ship software are being reinvented.</p>
+
+  <div class="hero-meta">
+    <div class="hero-author">
+      <div class="author-avatar">T</div>
+      <div class="author-info">
+        <div class="name">Thundeeran</div>
+        <div class="role">Engineering &middot; Architecture &middot; Strategy</div>
+      </div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="num">01</div>
+      <div class="label">Published</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">05</div>
+      <div class="label">In Series</div>
+    </div>
+  </div>
+</section>
+
+<!-- Divider -->
+<div class="section-divider">
+  <div class="sd-line"></div>
+  <div class="sd-label">Featured</div>
+  <div class="sd-line"></div>
+</div>
+
+<!-- Featured Essay -->
+<section class="featured">
+  <a href="/essays/beyond-pull-requests/" class="featured-card">
+    <div class="fc-body">
+      <div class="fc-tag featured-tag">
+        <span class="tag-icon">&#9733;</span>
+        Featured Essay
+      </div>
+      <div class="fc-title">Beyond Pull Requests</div>
+      <p class="fc-desc">How the pull request disaggregates in the age of agentic workflows. An interactive exploration of the six components evolving at their own pace &mdash; from code review to confidence engines.</p>
+      <div class="fc-topics">
+        <span class="topic-chip">Pull Requests</span>
+        <span class="topic-chip">CI/CD</span>
+        <span class="topic-chip">Agentic AI</span>
+        <span class="topic-chip">Code Review</span>
+      </div>
+      <div class="fc-cta">
+        Read the interactive essay <span class="arrow">&rarr;</span>
+      </div>
+    </div>
+    <div class="fc-visual">
+      <div class="preview-graphic">
+        <div class="pg-ring"></div>
+        <div class="pg-ring r2"></div>
+        <div class="pg-ring r3"></div>
+        <div class="pg-center">&#129504;</div>
+        <div class="orbit-dot"></div>
+        <div class="orbit-dot"></div>
+        <div class="orbit-dot"></div>
+        <div class="orbit-dot"></div>
+      </div>
+    </div>
+  </a>
+</section>
+
+<!-- Series Grid -->
+<section class="series" id="essays">
+  <div class="series-header">
+    <div>
+      <div class="series-title">The SDLC Evolution Series</div>
+      <div class="series-subtitle">Where the software development lifecycle meets agentic intelligence</div>
+    </div>
+  </div>
+
+  <div class="essay-grid">
+
+    <!-- Essay 1: Published -->
+    <a href="/essays/beyond-pull-requests/" class="essay-card">
+      <div class="ec-visual" style="background: linear-gradient(135deg, var(--surface2), rgba(167,139,250,0.06));">
+        <div class="ec-glow" style="background: var(--purple);"></div>
+        <div class="ec-icon">&#128256;</div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-tag published">
+          <span>&#9679;</span> Published
+        </div>
+        <div class="ec-title">Beyond Pull Requests</div>
+        <p class="ec-desc">How the PR disaggregates into provenance chains, behavioral deltas, and confidence engines.</p>
+        <div class="ec-footer">
+          <div class="ec-topics">
+            <span class="ec-topic">PRs</span>
+            <span class="ec-topic">Code Review</span>
+          </div>
+          <span class="ec-read">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Essay 2: Coming -->
+    <div class="essay-card coming-soon">
+      <div class="ec-visual" style="background: linear-gradient(135deg, var(--surface2), rgba(52,211,153,0.04));">
+        <div class="ec-glow" style="background: var(--green);"></div>
+        <div class="ec-icon">&#128736;</div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-tag coming">
+          <span>&#9711;</span> Coming Soon
+        </div>
+        <div class="ec-title">The Adaptive Pipeline</div>
+        <p class="ec-desc">CI/CD evolves from fixed sequences to confidence markets that acquire evidence proportional to risk.</p>
+        <div class="ec-footer">
+          <div class="ec-topics">
+            <span class="ec-topic">CI/CD</span>
+            <span class="ec-topic">Testing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Essay 3: Coming -->
+    <div class="essay-card coming-soon">
+      <div class="ec-visual" style="background: linear-gradient(135deg, var(--surface2), rgba(248,113,113,0.04));">
+        <div class="ec-glow" style="background: var(--red);"></div>
+        <div class="ec-icon">&#128737;</div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-tag coming">
+          <span>&#9711;</span> Coming Soon
+        </div>
+        <div class="ec-title">Governance in the Agent Age</div>
+        <p class="ec-desc">How compliance, audit, and security policy evolve when agents author 90% of code changes.</p>
+        <div class="ec-footer">
+          <div class="ec-topics">
+            <span class="ec-topic">Security</span>
+            <span class="ec-topic">Compliance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Essay 4: Coming -->
+    <div class="essay-card coming-soon">
+      <div class="ec-visual" style="background: linear-gradient(135deg, var(--surface2), rgba(96,165,250,0.04));">
+        <div class="ec-glow" style="background: var(--blue);"></div>
+        <div class="ec-icon">&#129302;</div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-tag coming">
+          <span>&#9711;</span> Coming Soon
+        </div>
+        <div class="ec-title">Who Owns the Spec?</div>
+        <p class="ec-desc">Requirements engineering transforms when the spec becomes the source of truth and code becomes disposable.</p>
+        <div class="ec-footer">
+          <div class="ec-topics">
+            <span class="ec-topic">Requirements</span>
+            <span class="ec-topic">Architecture</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Essay 5: Coming -->
+    <div class="essay-card coming-soon">
+      <div class="ec-visual" style="background: linear-gradient(135deg, var(--surface2), rgba(251,191,36,0.04));">
+        <div class="ec-glow" style="background: var(--yellow);"></div>
+        <div class="ec-icon">&#128200;</div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-tag coming">
+          <span>&#9711;</span> Coming Soon
+        </div>
+        <div class="ec-title">The End of Sprints</div>
+        <p class="ec-desc">Agile ceremonies built for human coordination collapse when agents work continuously. What replaces them?</p>
+        <div class="ec-footer">
+          <div class="ec-topics">
+            <span class="ec-topic">Agile</span>
+            <span class="ec-topic">Process</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Essay 6: Coming -->
+    <div class="essay-card coming-soon">
+      <div class="ec-visual" style="background: linear-gradient(135deg, var(--surface2), rgba(244,114,182,0.04));">
+        <div class="ec-glow" style="background: var(--pink);"></div>
+        <div class="ec-icon">&#127891;</div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-tag coming">
+          <span>&#9711;</span> Coming Soon
+        </div>
+        <div class="ec-title">The New Engineering Ladder</div>
+        <p class="ec-desc">Career paths, skills, and organizational structure in a world where agents handle execution.</p>
+        <div class="ec-footer">
+          <div class="ec-topics">
+            <span class="ec-topic">Careers</span>
+            <span class="ec-topic">Organization</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Thesis -->
+<section class="thesis" id="thesis">
+  <div class="thesis-inner">
+    <div class="thesis-label">The Thesis</div>
+    <p class="thesis-text">
+      Every layer of the SDLC was designed around a single assumption: <em>humans are the bottleneck</em>. Pull requests, pipelines, sprints, approval gates &mdash; all built to manage human cognitive limits. As agentic AI removes that constraint, these systems don't just get faster. They <em>fundamentally reshape</em>.
+    </p>
+  </div>
+</section>
+
+<!-- Subscribe -->
+<section class="subscribe" id="subscribe">
+  <div class="sub-card">
+    <div class="sub-title">Get the next essay first</div>
+    <p class="sub-desc">New interactive essays on the future of software engineering, delivered when they're ready. No spam, just deep research.</p>
+    <div class="sub-form">
+      <input type="email" class="sub-input" placeholder="you@company.com">
+      <button class="sub-btn">SUBSCRIBE</button>
+    </div>
+    <div class="sub-note">Unsubscribe anytime. No tracking, no ads.</div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="foot-left">
+    <div class="foot-name">Thundeeran</div>
+    <div class="foot-copy">&copy; 2026</div>
+  </div>
+  <div class="foot-right">
+    <a href="https://linkedin.com" class="foot-link">LinkedIn</a>
+    <a href="https://twitter.com" class="foot-link">X / Twitter</a>
+    <a href="https://github.com" class="foot-link">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>

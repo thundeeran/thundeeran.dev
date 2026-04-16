@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PR Evolution // Observatory</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg: #030306;
+  --bg2: #07070c;
+  --surface: #0b0b12;
+  --surface2: #10101a;
+  --surface3: #15151f;
+  --border: #1a1a26;
+  --border-bright: #28283a;
+  --text: #e8e8f0;
+  --text-bright: #ffffff;
+  --text-dim: #a0a0b8;
+  --text-mute: #6b6b85;
+  --green: #34d399;
+  --green-glow: rgba(52,211,153,0.15);
+  --yellow: #fbbf24;
+  --yellow-glow: rgba(251,191,36,0.15);
+  --red: #f87171;
+  --red-glow: rgba(248,113,113,0.15);
+  --purple: #a78bfa;
+  --purple-glow: rgba(167,139,250,0.15);
+  --blue: #60a5fa;
+  --blue-glow: rgba(96,165,250,0.15);
+  --pink: #f472b6;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'ss01';
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(96,165,250,0.05), transparent 40%),
+    radial-gradient(circle at 70% 80%, rgba(167,139,250,0.04), transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(52,211,153,0.03), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══ APP ═══ */
+.app {
+  position: relative;
+  min-height: 100vh;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ═══ TOP BAR ═══ */
+.topbar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(3,3,6,0.8);
+  backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.tb-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: conic-gradient(from 0deg, var(--green), var(--blue), var(--purple), var(--pink), var(--green));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(167,139,250,0.25);
+  position: relative;
+}
+
+.logo-mark::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 5px;
+  background: var(--bg);
+}
+
+.logo-mark span {
+  position: relative;
+  z-index: 1;
+  color: var(--text-bright);
+  font-weight: 800;
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.logo-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.logo-text .dim { color: var(--text-mute); }
+
+.tb-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-bright);
+}
+
+.breadcrumb {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.breadcrumb .active {
+  color: var(--purple);
+  font-weight: 600;
+}
+
+.tb-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-bright);
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-dim);
+  letter-spacing: 0.8px;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ═══ HERO ═══ */
+.hero {
+  padding: 64px 32px 48px;
+  text-align: center;
+  position: relative;
+}
+
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-size: clamp(40px, 6.5vw, 80px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -3px;
+  margin-bottom: 20px;
+}
+
+.hero h1 .strike {
+  position: relative;
+  color: var(--text-mute);
+}
+
+.hero h1 .strike::before {
+  content: '';
+  position: absolute;
+  top: 52%;
+  left: -4px;
+  right: -4px;
+  height: 3px;
+  background: var(--red);
+  transform: rotate(-2deg);
+  opacity: 0.7;
+}
+
+.hero h1 .morph {
+  background: linear-gradient(135deg, var(--green) 0%, var(--blue) 40%, var(--purple) 80%, var(--pink) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 300% 300%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.hero-sub {
+  font-size: 17px;
+  font-weight: 300;
+  color: var(--text-dim);
+  max-width: 560px;
+  line-height: 1.7;
+  margin: 0 auto;
+}
+
+/* ═══ ERA SELECTOR ═══ */
+.era-control {
+  display: flex;
+  justify-content: center;
+  margin: 40px auto 0;
+  padding: 0 32px;
+  max-width: 1200px;
+}
+
+.era-track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  position: relative;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+}
+
+.era-btn {
+  padding: 12px 28px;
+  background: transparent;
+  border: none;
+  color: var(--text-mute);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 100px;
+  transition: color 0.3s;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.era-btn .era-year {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.era-btn .era-name {
+  font-size: 8px;
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+
+.era-btn:hover { color: var(--text-dim); }
+
+.era-btn.active {
+  color: var(--text-bright);
+}
+
+.era-slider {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  width: calc(33.333% - 4px);
+  left: 6px;
+  background: linear-gradient(135deg, var(--surface3), var(--surface2));
+  border-radius: 100px;
+  transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+  border: 1px solid var(--border-bright);
+  box-shadow: 0 0 0 1px var(--border-bright);
+  z-index: 1;
+}
+
+.era-slider.pos-0 { transform: translateX(0); }
+.era-slider.pos-1 { transform: translateX(100%); }
+.era-slider.pos-2 { transform: translateX(200%); }
+
+.era-slider.era-0 { box-shadow: 0 0 24px var(--red-glow), 0 0 0 1px rgba(248,113,113,0.3); }
+.era-slider.era-1 { box-shadow: 0 0 24px var(--yellow-glow), 0 0 0 1px rgba(251,191,36,0.3); }
+.era-slider.era-2 { box-shadow: 0 0 24px var(--green-glow), 0 0 0 1px rgba(52,211,153,0.3); }
+
+/* ═══ MAIN GRID ═══ */
+.main {
+  max-width: 1400px;
+  margin: 48px auto 0;
+  padding: 0 32px 64px;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+}
+
+/* ═══ LEFT: SPECIMEN ═══ */
+.specimen-panel {
+  position: sticky;
+  top: 80px;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel-heading {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.panel-heading::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--purple);
+  box-shadow: 0 0 8px var(--purple);
+}
+
+.specimen {
+  height: 340px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s;
+}
+
+.specimen-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Era 0: Monolithic PR */
+.spec-monolith {
+  width: 180px;
+  height: 240px;
+  background: linear-gradient(180deg, var(--surface2), var(--surface3));
+  border: 1px solid var(--red);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 14px;
+  box-shadow: 0 0 40px rgba(248,113,113,0.15);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.5s;
+}
+
+.spec-monolith.visible { opacity: 1; transform: scale(1); }
+
+.spec-monolith .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--red);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.spec-monolith .title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.spec-monolith .desc {
+  font-size: 9px;
+  color: var(--text-mute);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.spec-monolith .diff-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: var(--bg);
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+}
+
+.spec-monolith .diff-row {
+  display: flex;
+  gap: 6px;
+}
+
+.spec-monolith .diff-row.add { color: var(--green); }
+.spec-monolith .diff-row.del { color: var(--red); }
+.spec-monolith .diff-row .num { color: var(--text-mute); }
+
+.spec-monolith .check-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 9px;
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.spec-monolith .check-row .k { color: var(--text-dim); }
+.spec-monolith .check-row .v { color: var(--yellow); }
+
+/* Era 1: Tiered */
+.spec-tiered {
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.5s;
+}
+
+.spec-tiered.visible { opacity: 1; transform: translateY(0); display: flex; }
+
+.tier-layer {
+  flex: 1;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid;
+}
+
+.tier-layer .tier-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tier-layer .tier-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.tier-layer .tier-ratio {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.tier-layer.auto { background: var(--green-glow); border-color: rgba(52,211,153,0.3); color: var(--green); }
+.tier-layer.auto .tier-dot { background: var(--green); }
+
+.tier-layer.light { background: var(--yellow-glow); border-color: rgba(251,191,36,0.3); color: var(--yellow); }
+.tier-layer.light .tier-dot { background: var(--yellow); }
+
+.tier-layer.deep { background: var(--red-glow); border-color: rgba(248,113,113,0.3); color: var(--red); }
+.tier-layer.deep .tier-dot { background: var(--red); }
+
+/* Era 2: Stream */
+.spec-stream {
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.spec-stream.visible { opacity: 1; display: flex; }
+
+.spec-stream svg {
+  width: 100%;
+  height: 100%;
+}
+
+.stream-flow {
+  stroke-dasharray: 4 6;
+  animation: flow 2s linear infinite;
+}
+
+@keyframes flow {
+  to { stroke-dashoffset: -20; }
+}
+
+/* Specimen stats */
+.specimen-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.stat-mini {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  transition: all 0.3s;
+}
+
+.stat-mini .stat-key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.stat-mini .stat-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.stat-mini .stat-trend {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.stat-trend.up { color: var(--green); }
+.stat-trend.down { color: var(--red); }
+.stat-trend.neutral { color: var(--text-dim); }
+
+/* Narrative card */
+.narrative {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  border-left: 3px solid var(--purple);
+}
+
+.narrative .n-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--purple);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.narrative .n-text {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text-dim);
+  font-weight: 300;
+}
+
+.narrative .n-text strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ═══ RIGHT: COMPONENT GRID ═══ */
+.components {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.comp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.comp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.comp-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--era-color, var(--purple));
+  transition: background 0.5s;
+}
+
+.comp-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+
+.cc-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.cc-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.cc-title-wrap { flex: 1; min-width: 0; }
+
+.cc-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text-mute);
+  letter-spacing: 1px;
+}
+
+.cc-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+  margin-top: 2px;
+}
+
+.cc-era-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  background: var(--era-glow, var(--purple-glow));
+  color: var(--era-color, var(--purple));
+  border: 1px solid var(--era-color, var(--purple));
+}
+
+.cc-era-tag .tag-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Content transition */
+.cc-content {
+  min-height: 110px;
+  position: relative;
+}
+
+.cc-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--era-color, var(--purple));
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cc-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--era-color, var(--purple)), transparent);
+  opacity: 0.3;
+}
+
+.cc-desc {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text-dim);
+  font-weight: 300;
+}
+
+.cc-desc strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.cc-state-change {
+  animation: state-in 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes state-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Era-based color variables on the card */
+.comp-card.era-0 { --era-color: var(--red); --era-glow: var(--red-glow); }
+.comp-card.era-1 { --era-color: var(--yellow); --era-glow: var(--yellow-glow); }
+.comp-card.era-2 { --era-color: var(--green); --era-glow: var(--green-glow); }
+
+/* Morph indicator bar */
+.morph-bar {
+  margin-top: 16px;
+  height: 3px;
+  background: var(--bg);
+  border-radius: 2px;
+  overflow: hidden;
+  display: flex;
+}
+
+.morph-seg {
+  flex: 1;
+  transition: all 0.5s;
+}
+
+.morph-seg.active.s1 { background: var(--red); }
+.morph-seg.active.s2 { background: var(--yellow); }
+.morph-seg.active.s3 { background: var(--green); }
+
+.morph-seg:not(.active) { background: var(--border); opacity: 0.5; }
+
+/* ═══ BOTTOM: KEY SHIFTS ═══ */
+.shifts {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+.shifts-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.shift-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.shift-pill {
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  transition: all 0.3s;
+}
+
+.shift-pill:hover {
+  border-color: var(--border-bright);
+  transform: scale(1.01);
+}
+
+.shift-from {
+  font-size: 13px;
+  color: var(--text-mute);
+  text-decoration: line-through;
+  text-decoration-color: rgba(248,113,113,0.5);
+  text-align: right;
+}
+
+.shift-arrow {
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--purple);
+  font-size: 14px;
+}
+
+.shift-to {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  background: linear-gradient(135deg, var(--green), var(--blue), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Closing */
+.close-section {
+  max-width: 720px;
+  margin: 0 auto 80px;
+  padding: 56px 48px;
+  background: linear-gradient(135deg, var(--purple-glow), var(--green-glow));
+  border: 1px solid rgba(167,139,250,0.15);
+  border-radius: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.close-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(167,139,250,0.1), transparent 60%);
+  pointer-events: none;
+}
+
+.close-section .cs-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.close-section .cs-text {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--text);
+  position: relative;
+}
+
+.close-section .cs-text em {
+  font-style: normal;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--green), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .main { grid-template-columns: 1fr; }
+  .specimen-panel { position: static; }
+  .comp-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .hero { padding: 40px 20px 32px; }
+  .era-btn { padding: 10px 16px; }
+  .main { padding: 0 16px 40px; }
+  .shifts { padding: 0 16px 60px; }
+  .shift-pill { grid-template-columns: 1fr; text-align: center; }
+  .shift-from { text-align: center; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="tb-left">
+      <div class="logo-mark"><span>P</span></div>
+      <div class="logo-text">pr.evolution<span class="dim">.observatory</span></div>
+      <div class="tb-divider"></div>
+      <div class="breadcrumb">research / <span class="active">future-of-prs</span></div>
+    </div>
+    <div class="tb-right">
+      <div class="status-chip">
+        <div class="live-dot"></div>
+        <span>INTERACTIVE</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">The Evolution Observatory</div>
+    <h1>
+      The <span class="strike">Pull Request</span><br/>
+      <span class="morph">Disaggregates</span>
+    </h1>
+    <p class="hero-sub">Six components of the pull request evolving at their own pace. Drag through time to watch each one dissolve into something new.</p>
+
+    <!-- Era selector -->
+    <div class="era-control">
+      <div class="era-track" id="eraTrack">
+        <div class="era-slider pos-0 era-0" id="eraSlider"></div>
+        <button class="era-btn active" data-era="0">
+          <span class="era-year">2026</span>
+          <span class="era-name">Today</span>
+        </button>
+        <button class="era-btn" data-era="1">
+          <span class="era-year">2028</span>
+          <span class="era-name">Near-term</span>
+        </button>
+        <button class="era-btn" data-era="2">
+          <span class="era-year">2032</span>
+          <span class="era-name">Horizon</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main grid -->
+  <main class="main">
+
+    <!-- Left: Specimen + Stats -->
+    <aside class="specimen-panel">
+
+      <div class="panel-heading">The Specimen</div>
+
+      <div class="specimen" id="specimen">
+        <div class="specimen-inner">
+          <!-- Era 0: Monolith -->
+          <div class="spec-monolith visible" id="specMonolith">
+            <div class="label">PULL REQUEST #4721</div>
+            <div class="title">fix: auth pagination bug</div>
+            <div class="desc">Updates the login handler to preserve cursor state.</div>
+            <div class="diff-rows">
+              <div class="diff-row"><span class="num">42</span><span>const u = await fetch(...)</span></div>
+              <div class="diff-row del"><span class="num">43</span><span>- cursor: null,</span></div>
+              <div class="diff-row add"><span class="num">43</span><span>+ cursor: ctx.cursor,</span></div>
+              <div class="diff-row"><span class="num">44</span><span>return { user: u }</span></div>
+            </div>
+            <div class="check-row"><span class="k">reviewers</span><span class="v">2 required</span></div>
+            <div class="check-row"><span class="k">ci</span><span class="v">running...</span></div>
+          </div>
+
+          <!-- Era 1: Tiered -->
+          <div class="spec-tiered" id="specTiered">
+            <div class="tier-layer auto">
+              <div class="tier-dot"></div>
+              <div class="tier-name">auto-approved</div>
+              <div class="tier-ratio">62%</div>
+            </div>
+            <div class="tier-layer light">
+              <div class="tier-dot"></div>
+              <div class="tier-name">light review</div>
+              <div class="tier-ratio">28%</div>
+            </div>
+            <div class="tier-layer deep">
+              <div class="tier-dot"></div>
+              <div class="tier-name">deep review</div>
+              <div class="tier-ratio">10%</div>
+            </div>
+          </div>
+
+          <!-- Era 2: Stream -->
+          <div class="spec-stream" id="specStream">
+            <svg viewBox="0 0 320 300" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <linearGradient id="streamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#34d399" stop-opacity="0.1"/>
+                  <stop offset="50%" stop-color="#60a5fa" stop-opacity="0.6"/>
+                  <stop offset="100%" stop-color="#a78bfa" stop-opacity="0.1"/>
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="2" result="b"/>
+                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+
+              <!-- Source -->
+              <circle cx="40" cy="150" r="16" fill="var(--green)" opacity="0.2"/>
+              <circle cx="40" cy="150" r="8" fill="var(--green)" filter="url(#glow)"/>
+              <text x="40" y="180" text-anchor="middle" fill="#9a9ab0" font-family="JetBrains Mono" font-size="8" letter-spacing="1">INTENT</text>
+
+              <!-- Flowing lines -->
+              <g stroke-width="1" fill="none" filter="url(#glow)">
+                <path class="stream-flow" d="M 56 150 Q 140 80, 280 80" stroke="#34d399" opacity="0.8"/>
+                <path class="stream-flow" d="M 56 150 Q 140 120, 280 130" stroke="#60a5fa" opacity="0.8" style="animation-delay:-0.3s"/>
+                <path class="stream-flow" d="M 56 150 Q 140 150, 280 180" stroke="#a78bfa" opacity="0.8" style="animation-delay:-0.6s"/>
+                <path class="stream-flow" d="M 56 150 Q 140 220, 280 230" stroke="#f472b6" opacity="0.8" style="animation-delay:-0.9s"/>
+              </g>
+
+              <!-- Sinks -->
+              <g>
+                <circle cx="280" cy="80" r="6" fill="var(--green)" filter="url(#glow)"/>
+                <text x="280" y="65" text-anchor="middle" fill="#9a9ab0" font-family="JetBrains Mono" font-size="8">VERIFY</text>
+
+                <circle cx="280" cy="130" r="6" fill="var(--blue)" filter="url(#glow)"/>
+                <text x="280" y="115" text-anchor="middle" fill="#9a9ab0" font-family="JetBrains Mono" font-size="8">LEARN</text>
+
+                <circle cx="280" cy="180" r="6" fill="var(--purple)" filter="url(#glow)"/>
+                <text x="280" y="205" text-anchor="middle" fill="#9a9ab0" font-family="JetBrains Mono" font-size="8">AUDIT</text>
+
+                <circle cx="280" cy="230" r="6" fill="var(--pink)" filter="url(#glow)"/>
+                <text x="280" y="253" text-anchor="middle" fill="#9a9ab0" font-family="JetBrains Mono" font-size="8">SHIP</text>
+              </g>
+
+              <text x="160" y="20" text-anchor="middle" fill="#b8b8cc" font-family="JetBrains Mono" font-size="9" letter-spacing="2">CONTINUOUS CHANGE RECORD</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="specimen-stats">
+        <div class="stat-mini">
+          <div class="stat-key">Review Time</div>
+          <div class="stat-val" id="statReview">18h</div>
+          <div class="stat-trend down" id="trendReview">&darr; baseline</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-key">Changes / day</div>
+          <div class="stat-val" id="statChanges">12</div>
+          <div class="stat-trend neutral" id="trendChanges">&rarr; baseline</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-key">Human Touch</div>
+          <div class="stat-val" id="statHuman">2.0x</div>
+          <div class="stat-trend neutral" id="trendHuman">&rarr; baseline</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-key">Verification</div>
+          <div class="stat-val" id="statVerify" style="font-size:14px;line-height:1.3;">Pass / Fail</div>
+          <div class="stat-trend neutral" id="trendVerify">&rarr; baseline</div>
+        </div>
+      </div>
+
+      <!-- Narrative -->
+      <div class="narrative">
+        <div class="n-label">What's Happening</div>
+        <div class="n-text" id="narrative"></div>
+      </div>
+
+    </aside>
+
+    <!-- Right: Components -->
+    <section class="components">
+
+      <div class="comp-header">
+        <div class="panel-heading">Six Components, Six Trajectories</div>
+      </div>
+
+      <div class="comp-grid" id="compGrid">
+        <!-- Populated by JS -->
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Key shifts -->
+  <section class="shifts">
+    <div class="shifts-title">&mdash; The Key Transformations &mdash;</div>
+    <div class="shift-row">
+      <div class="shift-pill">
+        <div class="shift-from">Code Review</div>
+        <div class="shift-arrow">&rarr;</div>
+        <div class="shift-to">Intent Review</div>
+      </div>
+      <div class="shift-pill">
+        <div class="shift-from">Binary Gates</div>
+        <div class="shift-arrow">&rarr;</div>
+        <div class="shift-to">Confidence Scores</div>
+      </div>
+      <div class="shift-pill">
+        <div class="shift-from">Batch Merge</div>
+        <div class="shift-arrow">&rarr;</div>
+        <div class="shift-to">Continuous Flow</div>
+      </div>
+      <div class="shift-pill">
+        <div class="shift-from">Comment Threads</div>
+        <div class="shift-arrow">&rarr;</div>
+        <div class="shift-to">Knowledge Graph</div>
+      </div>
+      <div class="shift-pill">
+        <div class="shift-from">Single Author</div>
+        <div class="shift-arrow">&rarr;</div>
+        <div class="shift-to">Provenance Chain</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing -->
+  <section class="close-section">
+    <div class="cs-label">The Synthesis</div>
+    <div class="cs-text">
+      The pull request doesn't disappear.<br/>
+      It <em>disaggregates</em> into a living change record &mdash; with human attention surgically applied only where it adds value.
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// Component Data
+// ═══════════════════════════════════════════════
+
+const COMPONENTS = [
+  {
+    num: '01',
+    icon: '\u{270D}',
+    title: 'Change Authorship',
+    states: [
+      { label: 'Human Author', desc: 'A developer writes code, attaches a description, links a ticket. <strong>Single author</strong>, single commit history.' },
+      { label: 'Human + Agent Pair', desc: 'Human specifies intent, agent produces code. Metadata captures <strong>both the directive and the execution</strong>.' },
+      { label: 'Provenance Graph', desc: 'Authorship becomes an execution DAG \u2014 specs trigger agents that spawn sub-agents. <strong>Full chain-of-custody tracking</strong>.' }
+    ]
+  },
+  {
+    num: '02',
+    icon: '\u{1F4C4}',
+    title: 'The Diff',
+    states: [
+      { label: 'Line-by-Line', desc: 'Textual diffs. Humans scan for correctness, style, and unintended side effects. <strong>Pure syntax view</strong>.' },
+      { label: 'Semantic Diff', desc: 'Each hunk auto-explained with <strong>why it changed</strong>. Semantic diffs show behavioral changes alongside textual ones.' },
+      { label: 'Behavioral Delta', desc: 'Primary artifact is a <strong>behavioral contract diff</strong> with before/after proofs. Raw code becomes an appendable detail.' }
+    ]
+  },
+  {
+    num: '03',
+    icon: '\u{2705}',
+    title: 'Testing & Validation',
+    states: [
+      { label: 'CI Pass / Fail', desc: 'Test suite runs. <strong>Binary green/red check</strong>. Coverage measured by line count. Often a bottleneck.' },
+      { label: 'Agent-Generated Tests', desc: 'Agents produce tests alongside code. Validation expands to <strong>property-based testing, fuzzing, contract checks</strong>.' },
+      { label: 'Probabilistic Confidence', desc: '<strong>Continuous confidence scores</strong> from thousands of synthetic scenarios. Human review triggered only below threshold.' }
+    ]
+  },
+  {
+    num: '04',
+    icon: '\u{1F512}',
+    title: 'Review Gate',
+    states: [
+      { label: 'Human Approval', desc: '1\u20132 humans must approve. <strong>Blocking gate</strong>. Biggest bottleneck in engineering velocity.' },
+      { label: 'Tiered Review', desc: 'Routine changes <strong>auto-approved</strong> via automated validation. Novel or high-risk changes still need humans.' },
+      { label: 'Risk-Proportional', desc: 'Low-risk flows continuously. High-risk escalates. Reviewer sees <strong>intent summaries and anomaly flags</strong>, not code.' }
+    ]
+  },
+  {
+    num: '05',
+    icon: '\u{1F4DA}',
+    title: 'Knowledge Transfer',
+    states: [
+      { label: 'Comment Threads', desc: '<strong>Scattered documentation</strong> across descriptions, inline comments, and review threads. Archaeology required.' },
+      { label: 'Auto-Generated Docs', desc: 'Changelogs, ADRs, and documentation updates <strong>generated as part of the PR</strong>. Knowledge gets formalized.' },
+      { label: 'Living Knowledge Graph', desc: 'Every change is <strong>self-documenting</strong>. A queryable system explains why things are the way they are.' }
+    ]
+  },
+  {
+    num: '06',
+    icon: '\u{1F680}',
+    title: 'Merge & Deploy',
+    states: [
+      { label: 'Manual Pipeline', desc: 'Manual merge, then a separate deploy pipeline. Often <strong>decoupled and manual</strong>.' },
+      { label: 'Deploy Proposals', desc: 'Merge and deploy collapse into a single decision. <strong>Rollback guarantees</strong> via feature flags and canary releases.' },
+      { label: 'Continuous Flow', desc: 'No discrete merge event. Code flows into production <strong>continuously</strong> behind feature gates. Branches obsolete.' }
+    ]
+  }
+];
+
+const ERA_STATS = [
+  {
+    review: '18h',
+    reviewTrend: 'baseline',
+    changes: '12',
+    changesTrend: 'baseline',
+    human: '2.0x',
+    humanTrend: 'baseline',
+    verify: 'Pass / Fail',
+    verifyTrend: 'baseline',
+    narrative: 'The <strong>human is the bottleneck</strong>. Every change waits on a colleague to read a diff and click approve. Pipelines run the same gauntlet regardless of what changed. This is the model that got us here \u2014 it won\u2019t get us to the next 100x.'
+  },
+  {
+    review: '2.1h',
+    reviewTrend: '\u2193 88%',
+    changes: '87',
+    changesTrend: '\u2191 7x',
+    human: '0.3x',
+    humanTrend: '\u2193 85%',
+    verify: 'Tiered',
+    verifyTrend: 'adaptive',
+    narrative: 'Agents <strong>author and review</strong>. Humans become curators of intent and exception handlers. Most routine changes flow through auto-approval. The PR is still the unit \u2014 but it has become intelligent, self-documenting, and risk-aware.'
+  },
+  {
+    review: '8s',
+    reviewTrend: '\u2193 99.9%',
+    changes: '1.2K',
+    changesTrend: '\u2191 100x',
+    human: '0.02x',
+    humanTrend: '\u2193 99%',
+    verify: 'Continuous',
+    verifyTrend: 'probabilistic',
+    narrative: 'The PR <strong>no longer exists as a unit</strong>. Changes flow continuously as verified deltas with full provenance. Humans review only the top 1% of anomalous or high-stakes decisions. The pipeline is a living confidence graph.'
+  }
+];
+
+let currentEra = 0;
+
+// ═══════════════════════════════════════════════
+// DOM
+// ═══════════════════════════════════════════════
+
+const $ = id => document.getElementById(id);
+const eraButtons = document.querySelectorAll('.era-btn');
+const eraSlider = $('eraSlider');
+const compGrid = $('compGrid');
+const specimen = $('specimen');
+const specMonolith = $('specMonolith');
+const specTiered = $('specTiered');
+const specStream = $('specStream');
+const narrative = $('narrative');
+
+// Stats
+const statReview = $('statReview');
+const trendReview = $('trendReview');
+const statChanges = $('statChanges');
+const trendChanges = $('trendChanges');
+const statHuman = $('statHuman');
+const trendHuman = $('trendHuman');
+const statVerify = $('statVerify');
+const trendVerify = $('trendVerify');
+
+// ═══════════════════════════════════════════════
+// Render Components
+// ═══════════════════════════════════════════════
+
+function renderComponents() {
+  compGrid.innerHTML = '';
+  COMPONENTS.forEach((comp, idx) => {
+    const state = comp.states[currentEra];
+    const card = document.createElement('div');
+    card.className = `comp-card era-${currentEra}`;
+    card.innerHTML = `
+      <div class="cc-head">
+        <div class="cc-icon-wrap">${comp.icon}</div>
+        <div class="cc-title-wrap">
+          <div class="cc-num">${comp.num}</div>
+          <div class="cc-title">${comp.title}</div>
+        </div>
+      </div>
+      <div class="cc-content">
+        <div class="cc-label cc-state-change">
+          <span class="tag-dot"></span>
+          ${state.label}
+        </div>
+        <div class="cc-desc cc-state-change">${state.desc}</div>
+      </div>
+      <div class="morph-bar">
+        <div class="morph-seg s1 ${currentEra >= 0 ? 'active' : ''}"></div>
+        <div class="morph-seg s2 ${currentEra >= 1 ? 'active' : ''}"></div>
+        <div class="morph-seg s3 ${currentEra >= 2 ? 'active' : ''}"></div>
+      </div>
+    `;
+    compGrid.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// Render Specimen
+// ═══════════════════════════════════════════════
+
+function renderSpecimen() {
+  specMonolith.classList.remove('visible');
+  specTiered.classList.remove('visible');
+  specStream.classList.remove('visible');
+
+  setTimeout(() => {
+    if (currentEra === 0) specMonolith.classList.add('visible');
+    else if (currentEra === 1) specTiered.classList.add('visible');
+    else specStream.classList.add('visible');
+  }, 300);
+}
+
+// ═══════════════════════════════════════════════
+// Render Stats
+// ═══════════════════════════════════════════════
+
+function renderStats() {
+  const s = ERA_STATS[currentEra];
+  statReview.textContent = s.review;
+  trendReview.textContent = s.reviewTrend;
+  trendReview.className = 'stat-trend ' + (currentEra === 0 ? 'neutral' : 'up');
+
+  statChanges.textContent = s.changes;
+  trendChanges.textContent = s.changesTrend;
+  trendChanges.className = 'stat-trend ' + (currentEra === 0 ? 'neutral' : 'up');
+
+  statHuman.textContent = s.human;
+  trendHuman.textContent = s.humanTrend;
+  trendHuman.className = 'stat-trend ' + (currentEra === 0 ? 'neutral' : 'up');
+
+  statVerify.textContent = s.verify;
+  trendVerify.textContent = s.verifyTrend;
+  trendVerify.className = 'stat-trend ' + (currentEra === 0 ? 'neutral' : 'up');
+
+  narrative.innerHTML = s.narrative;
+}
+
+// ═══════════════════════════════════════════════
+// Era Switch
+// ═══════════════════════════════════════════════
+
+function setEra(era) {
+  currentEra = era;
+
+  eraButtons.forEach((b, i) => {
+    b.classList.toggle('active', i === era);
+  });
+
+  eraSlider.className = `era-slider pos-${era} era-${era}`;
+
+  renderComponents();
+  renderSpecimen();
+  renderStats();
+}
+
+eraButtons.forEach(b => {
+  b.addEventListener('click', () => {
+    setEra(parseInt(b.dataset.era));
+  });
+});
+
+// Keyboard nav
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' && currentEra < 2) setEra(currentEra + 1);
+  if (e.key === 'ArrowLeft' && currentEra > 0) setEra(currentEra - 1);
+});
+
+// Init
+renderComponents();
+renderStats();
+
+// Auto-scrub after a beat (once)
+let autoPlayed = false;
+setTimeout(() => {
+  if (!autoPlayed) {
+    autoPlayed = true;
+    setEra(1);
+    setTimeout(() => setEra(2), 1600);
+    setTimeout(() => setEra(0), 3400);
+  }
+}, 2000);
+
+</script>
+
+</body>
+</html>

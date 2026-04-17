@@ -610,6 +610,29 @@
             color: var(--text);
         }
 
+        /* ===== DEEP DIVE LINKS ===== */
+        .deep-dive-link {
+            display: inline-block;
+            margin-top: 32px;
+            padding: 12px 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--green);
+            text-decoration: none;
+            border: 1px solid rgba(52, 211, 153, 0.25);
+            border-radius: 8px;
+            background: rgba(52, 211, 153, 0.05);
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .deep-dive-link:hover {
+            background: rgba(52, 211, 153, 0.12);
+            border-color: var(--green);
+            box-shadow: 0 0 20px rgba(52, 211, 153, 0.1);
+        }
+
         /* ===== SCENE 5: CLOSING ===== */
         .closing-section {
             flex-direction: column;
@@ -835,6 +858,10 @@
             <div class="components-grid" id="componentsGrid">
                 <!-- Populated by JavaScript -->
             </div>
+
+            <a href="/labs/pr-evolution.html" class="deep-dive-link" data-track-click="launch-observatory" target="_blank">
+                Launch the full PR Evolution Observatory &rarr;
+            </a>
         </section>
 
         <!-- SCENE 4: CONFIDENCE ENGINE -->
@@ -884,6 +911,10 @@
                     <button class="dispatch-btn" id="dispatchBtn">Dispatch</button>
                 </div>
             </div>
+
+            <a href="/labs/confidence-engine.html" class="deep-dive-link" data-track-click="launch-confidence-engine" target="_blank">
+                Open the full Confidence Engine deep dive &rarr;
+            </a>
         </section>
 
         <!-- SCENE 5: CLOSING -->

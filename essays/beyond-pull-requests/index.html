@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beyond Pull Requests — An Interactive Exploration</title>
     <meta property="og:title" content="Beyond Pull Requests — An Interactive Exploration">
-    <meta property="og:description" content="How the pull request disaggregates in the age of agentic workflows. An interactive essay by Thundeeran.">
+    <meta property="og:description" content="You don't read about how PRs evolve. You push code and watch it happen — across three eras. Research you run, not research you read. By Thundeeran.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://thundeeran.dev/beyond-pull-requests">
     <meta name="twitter:card" content="summary_large_image">
@@ -304,7 +304,446 @@
             color: var(--text-dim);
         }
 
-        /* ===== SCENE 3: THE EVOLUTION ===== */
+        /* ===== NARRATIVE SECTIONS ===== */
+        .narrative-section {
+            flex-direction: column;
+            min-height: auto;
+            padding: 80px 40px;
+        }
+
+        .narrative-content {
+            max-width: 720px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .narrative-content .section-title {
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+        .prose {
+            text-align: left;
+        }
+
+        .prose p {
+            font-size: 1.05rem;
+            line-height: 1.85;
+            color: var(--text-dim);
+            margin-bottom: 24px;
+        }
+
+        .prose p:last-child {
+            margin-bottom: 0;
+        }
+
+        .prose strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .prose em {
+            color: var(--green);
+            font-style: normal;
+        }
+
+        .closing-prose {
+            max-width: 720px;
+            margin: 48px auto 0;
+        }
+
+        /* ===== EXPERIENCE SECTION (SIMULATOR) ===== */
+        .experience-section {
+            flex-direction: column;
+        }
+
+        .experience-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease-out 0.1s both;
+        }
+
+        .experience-narrative {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 32px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .experience-narrative p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+        }
+
+        /* ===== SIMULATOR STYLES (with .sim- prefix) ===== */
+        .sim-container {
+            width: 100%;
+            max-width: 1400px;
+            background: var(--surface2);
+            border: 1px solid var(--border-bright);
+            border-radius: 16px;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out 0.2s both;
+        }
+
+        .sim-top-bar {
+            height: 56px;
+            background: var(--surface2);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            gap: 16px;
+        }
+
+        .sim-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--green);
+        }
+
+        .sim-era-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .sim-era-btn {
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sim-era-btn:hover {
+            border-color: var(--border-bright);
+            color: var(--text);
+        }
+
+        .sim-era-btn.active {
+            background: var(--surface);
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .sim-era-btn.era-2026.active { color: var(--red); border-color: var(--red); }
+        .sim-era-btn.era-2028.active { color: var(--yellow); border-color: var(--yellow); }
+        .sim-era-btn.era-2032.active { color: var(--green); border-color: var(--green); }
+
+        .sim-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 0;
+            height: 600px;
+            background: var(--surface);
+        }
+
+        .sim-panel {
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sim-panel:last-child {
+            border-right: none;
+        }
+
+        .sim-panel-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .sim-panel-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-mute);
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .sim-change-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .sim-change-card {
+            padding: 10px;
+            border: 1px solid var(--border);
+            background: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            color: var(--text-dim);
+            transition: all 0.2s ease;
+        }
+
+        .sim-change-card:hover {
+            border-color: var(--border-bright);
+            background: rgba(96, 165, 250, 0.05);
+        }
+
+        .sim-change-card.selected {
+            border-color: var(--blue);
+            background: rgba(96, 165, 250, 0.1);
+            color: var(--blue);
+        }
+
+        .sim-change-card-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .sim-change-card-meta {
+            font-size: 10px;
+            color: var(--text-mute);
+        }
+
+        .sim-code-editor {
+            flex: 1;
+            padding: 16px;
+            overflow: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            background: var(--surface);
+        }
+
+        .sim-code-line {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1px;
+        }
+
+        .sim-code-line-number {
+            color: var(--text-mute);
+            user-select: none;
+            min-width: 35px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .sim-code-line-content {
+            flex: 1;
+            white-space: pre-wrap;
+        }
+
+        .sim-code-line.removed {
+            background: rgba(248, 113, 113, 0.1);
+            color: var(--red);
+        }
+
+        .sim-code-line.added {
+            background: rgba(52, 211, 153, 0.1);
+            color: var(--green);
+        }
+
+        .sim-code-line.neutral {
+            color: var(--text-dim);
+        }
+
+        .sim-timeline-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sim-timeline-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .sim-timeline-subtitle {
+            font-size: 11px;
+            color: var(--text-mute);
+        }
+
+        .sim-timeline {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .sim-timeline-step {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 11px;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .sim-timeline-step.active {
+            opacity: 1;
+            border-color: var(--border-bright);
+        }
+
+        .sim-timeline-step.waiting {
+            border-color: var(--yellow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .sim-timeline-step.running {
+            border-color: var(--blue);
+            background: rgba(96, 165, 250, 0.05);
+        }
+
+        .sim-timeline-step.complete {
+            border-color: var(--green);
+            background: rgba(52, 211, 153, 0.05);
+        }
+
+        .sim-timeline-step.skipped {
+            opacity: 0.2;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .sim-step-icon {
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            color: var(--text-mute);
+            flex-shrink: 0;
+        }
+
+        .sim-timeline-step.waiting .sim-step-icon {
+            border-color: var(--yellow);
+            color: var(--yellow);
+        }
+
+        .sim-timeline-step.running .sim-step-icon {
+            border-color: var(--blue);
+            color: var(--blue);
+            animation: spin 1.5s linear infinite;
+        }
+
+        .sim-timeline-step.complete .sim-step-icon {
+            border-color: var(--green);
+            color: var(--green);
+            background: rgba(52, 211, 153, 0.2);
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .sim-step-content {
+            flex: 1;
+        }
+
+        .sim-step-label {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .sim-step-description {
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        .sim-metrics-section {
+            margin-bottom: 16px;
+        }
+
+        .sim-metric-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-mute);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .sim-metric-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .sim-metric-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .sim-metric-bar-fill {
+            height: 100%;
+            background: var(--green);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .sim-push-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            border: none;
+            border-radius: 6px;
+            color: var(--surface);
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .sim-push-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(52, 211, 153, 0.3);
+        }
+
+        .sim-push-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ===== SCENE 4: THE EVOLUTION ===== */
         .evolution-section {
             flex-direction: column;
         }
@@ -432,208 +871,7 @@
             background: var(--green);
         }
 
-        /* ===== SCENE 4: CONFIDENCE ENGINE ===== */
-        .engine-section {
-            flex-direction: column;
-        }
-
-        .engine-container {
-            display: grid;
-            grid-template-columns: 240px 1fr 280px;
-            gap: 32px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .engine-sidebar-left {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .change-type-btn {
-            padding: 16px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--surface2);
-            color: var(--text-dim);
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .change-type-btn:hover {
-            border-color: var(--border-bright);
-            color: var(--text);
-        }
-
-        .change-type-btn.active {
-            background: var(--surface);
-            border-color: var(--green);
-            color: var(--green);
-        }
-
-        .risk-badge {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            margin-top: 8px;
-            display: block;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding-top: 8px;
-            border-top: 1px solid var(--border);
-        }
-
-        .risk-low { color: var(--green); }
-        .risk-med { color: var(--yellow); }
-        .risk-high { color: var(--red); }
-        .risk-crit { color: var(--purple); }
-
-        .engine-canvas {
-            background: var(--surface2);
-            border: 1px solid var(--border-bright);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 500px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .engine-canvas canvas {
-            display: block;
-            max-width: 100%;
-        }
-
-        .engine-sidebar-right {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding: 24px;
-            background: var(--surface2);
-            border: 1px solid var(--border-bright);
-            border-radius: 16px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-        }
-
-        .telemetry-block {
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 16px;
-        }
-
-        .telemetry-block:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .telemetry-label {
-            color: var(--text-mute);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .telemetry-value {
-            color: var(--text);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .telemetry-meter {
-            width: 100%;
-            height: 6px;
-            background: var(--border);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .telemetry-meter-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--red), var(--yellow), var(--green));
-            border-radius: 3px;
-            transition: width 0.3s ease-out;
-            width: 0%;
-        }
-
-        .dispatch-btn {
-            padding: 16px;
-            background: linear-gradient(135deg, var(--green), var(--blue));
-            border: none;
-            border-radius: 12px;
-            color: var(--surface);
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            letter-spacing: 1px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-top: 16px;
-        }
-
-        .dispatch-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(52, 211, 153, 0.3);
-        }
-
-        .dispatch-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .trace-log {
-            max-height: 200px;
-            overflow-y: auto;
-            font-size: 0.75rem;
-            color: var(--text-mute);
-        }
-
-        .trace-entry {
-            padding: 4px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .trace-entry:last-child {
-            border-bottom: none;
-        }
-
-        .trace-time {
-            color: var(--text-mute);
-        }
-
-        .trace-action {
-            color: var(--text);
-        }
-
-        /* ===== DEEP DIVE LINKS ===== */
-        .deep-dive-link {
-            display: inline-block;
-            margin-top: 32px;
-            padding: 12px 24px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--green);
-            text-decoration: none;
-            border: 1px solid rgba(52, 211, 153, 0.25);
-            border-radius: 8px;
-            background: rgba(52, 211, 153, 0.05);
-            transition: all 0.3s ease;
-            letter-spacing: 0.3px;
-        }
-
-        .deep-dive-link:hover {
-            background: rgba(52, 211, 153, 0.12);
-            border-color: var(--green);
-            box-shadow: 0 0 20px rgba(52, 211, 153, 0.1);
-        }
-
-        /* ===== SCENE 5: CLOSING ===== */
+        /* ===== CLOSING ===== */
         .closing-section {
             flex-direction: column;
         }
@@ -716,17 +954,28 @@
 
         /* Mobile responsiveness */
         @media (max-width: 1024px) {
-            .engine-container {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
             .components-grid {
                 grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             }
 
             .problem-stats {
                 grid-template-columns: 1fr;
+            }
+
+            .sim-content {
+                grid-template-columns: 1fr;
+                height: auto;
+                min-height: 600px;
+            }
+
+            .sim-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                min-height: 200px;
+            }
+
+            .sim-panel:last-child {
+                border-bottom: none;
             }
         }
 
@@ -757,12 +1006,18 @@
                 flex: 1;
             }
 
-            .engine-sidebar-left {
-                grid-column: 1;
+            .sim-content {
+                grid-template-columns: 1fr;
             }
 
-            .engine-canvas {
-                min-height: 300px;
+            .sim-era-selector {
+                flex-wrap: wrap;
+                font-size: 9px;
+            }
+
+            .sim-era-btn {
+                padding: 4px 10px;
+                font-size: 9px;
             }
         }
     </style>
@@ -772,13 +1027,13 @@
         <!-- SCENE 1: HERO -->
         <section class="hero" data-track="hero">
             <h1 class="hero-title">Beyond Pull Requests</h1>
-            <p class="hero-subtitle">An interactive exploration of how the PR disaggregates in the age of agentic workflows</p>
+            <p class="hero-subtitle">This isn't an article about how pull requests evolve. It's a working model. You'll push code, watch workflows reshape across three eras, and feel the friction disappear. Research you run, not research you read.</p>
             <div class="hero-byline">
                 <span class="byline-text">By Thundeeran</span>
                 <div class="byline-dot"></div>
                 <span class="byline-text">2026</span>
             </div>
-            <div class="scroll-hint">Scroll to explore</div>
+            <div class="scroll-hint">Scroll to begin</div>
         </section>
 
         <!-- SCENE 2: THE PROBLEM -->
@@ -838,15 +1093,127 @@
             </div>
 
             <div class="problem-narrative">
-                <p>Today's pull request conflates six distinct concerns into a single blocking gate. Code review, validation, knowledge capture, and deployment are bundled together—forcing every change through the same gauntlet regardless of risk. The result: precious human attention spent on style checks, testing waits for coverage reports, and deployment decisions held hostage to review schedules. The pull request has become a monolith. It's time to disaggregate.</p>
+                <p>Today's pull request conflates six distinct concerns into a single blocking gate. Code review, validation, knowledge capture, and deployment are bundled together — forcing every change through the same gauntlet regardless of risk. The result: precious human attention spent on style checks, testing waits for coverage reports, and deployment decisions held hostage to review schedules. The pull request has become a monolith. It's time to disaggregate.</p>
             </div>
         </section>
 
-        <!-- SCENE 3: THE EVOLUTION -->
+        <!-- SCENE 3: THE THESIS -->
+        <section class="narrative-section" data-track="thesis">
+            <div class="narrative-content">
+                <h2 class="section-title">Why the PR Disaggregates</h2>
+                <div class="prose">
+                    <p>The pull request was designed for a world where humans wrote every line of code. A single developer authors a change, another reviews it, a CI pipeline validates it, and someone clicks merge. This linear, synchronous flow made sense when the bottleneck was human typing speed.</p>
+
+                    <p>Agentic AI breaks this assumption. When an agent can produce a 500-line refactor in seconds, the review process — not the authoring — becomes the constraint. When agents can generate thousands of test scenarios, a binary pass/fail signal becomes absurdly reductive. When agents can explain their own reasoning, forcing a human to read every diff line is a waste of the most expensive resource in the system: human attention.</p>
+
+                    <p>The pull request doesn't die. It <strong>disaggregates</strong> — splitting into six independent components, each evolving at its own pace. Authorship becomes a provenance chain. The diff becomes a behavioral contract. Testing becomes continuous confidence. Review becomes risk-proportional. Knowledge capture becomes automatic. And deployment becomes a continuous flow rather than a discrete event.</p>
+
+                    <p>Reading about this disaggregation only gets you so far. To understand it, you need to feel the friction change under your hands. Below is a working model. Pick a code change, push it, and watch the same change flow through three different eras. This is where the essay becomes executable.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENE 4: EXPERIENCE IT (SIMULATOR) -->
+        <section class="experience-section" data-track="simulator">
+            <div class="experience-header">
+                <h2 class="section-title">Experience the Evolution</h2>
+                <p class="section-description">Pick a code change below. Hit "git push." Watch the same change flow through today's process, then through 2028's agent-assisted workflow, then through 2032's continuous model. Feel the friction disappear.</p>
+            </div>
+
+            <div class="sim-container">
+                <!-- Top bar -->
+                <div class="sim-top-bar">
+                    <div class="sim-logo">∴ FLOW</div>
+                    <div class="sim-era-selector">
+                        <button class="sim-era-btn era-2026 active" data-era="2026">2026 — Current</button>
+                        <button class="sim-era-btn era-2028" data-era="2028">2028 — Smart</button>
+                        <button class="sim-era-btn era-2032" data-era="2032">2032 — Fluid</button>
+                        <button class="sim-era-btn" id="simCompareBtnEssay">Compare All</button>
+                    </div>
+                </div>
+
+                <!-- Content grid -->
+                <div class="sim-content">
+                    <!-- Left: Code Editor -->
+                    <div class="sim-panel">
+                        <div class="sim-panel-header">
+                            <div class="sim-panel-title">Change Preview</div>
+                        </div>
+                        <div style="padding: 12px; flex-shrink: 0;">
+                            <div class="sim-change-cards" id="simChangeCards"></div>
+                        </div>
+                        <div class="sim-code-editor" id="simCodeEditor"></div>
+                    </div>
+
+                    <!-- Center: Timeline -->
+                    <div class="sim-panel">
+                        <div class="sim-timeline-header">
+                            <div class="sim-timeline-title" id="simTimelineTitle">2026 — Current Era</div>
+                            <div class="sim-timeline-subtitle" id="simTimelineSubtitle">Push to production in ~18h</div>
+                        </div>
+                        <div class="sim-timeline" id="simTimeline"></div>
+                    </div>
+
+                    <!-- Right: Metrics -->
+                    <div class="sim-panel">
+                        <div class="sim-panel-header">
+                            <div class="sim-panel-title">Metrics</div>
+                        </div>
+                        <div style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                            <div class="sim-metrics-section">
+                                <div class="sim-metric-label">Elapsed Time</div>
+                                <div class="sim-metric-value" id="simElapsedTime">0s</div>
+                            </div>
+                            <div class="sim-metrics-section">
+                                <div class="sim-metric-label">Progress</div>
+                                <div class="sim-metric-bar">
+                                    <div class="sim-metric-bar-fill" id="simProgressBar"></div>
+                                </div>
+                            </div>
+                            <div class="sim-metrics-section">
+                                <div class="sim-metric-label">Tests Run</div>
+                                <div class="sim-metric-value" id="simTestsRun">0</div>
+                            </div>
+                            <div class="sim-metrics-section">
+                                <div class="sim-metric-label">Tests Skipped</div>
+                                <div class="sim-metric-value" id="simTestsSkipped" style="color: var(--green);">0</div>
+                            </div>
+                            <div class="sim-metrics-section" id="simConfidenceSection" style="display: none;">
+                                <div class="sim-metric-label">Confidence</div>
+                                <div class="sim-metric-value" id="simConfidenceScore">0%</div>
+                            </div>
+                            <button class="sim-push-btn" id="simPushBtn" data-track="simulator-push">▶ git push</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENE 5: ANALYSIS -->
+        <section class="narrative-section" data-track="analysis">
+            <div class="narrative-content">
+                <h2 class="section-title">What's Actually Changing</h2>
+                <div class="prose">
+                    <p>If you ran the simulator above, you noticed something beyond speed. The 2032 workflow isn't just faster — it's structurally different. The concept of a "pull request" as a unit of work has dissolved entirely.</p>
+
+                    <p>In 2026, <strong>authorship is singular</strong>: one human writes code, another reads it. By 2032, authorship becomes a directed acyclic graph — a spec triggers an agent that spawns sub-agents, each contributing to a provenance chain. The question shifts from "who wrote this?" to "what chain of decisions led here?"</p>
+
+                    <p>In 2026, <strong>the diff is textual</strong>: green lines added, red lines removed. By 2032, the primary artifact is a behavioral contract — a before/after proof of what the system does differently. Raw code becomes an appendix.</p>
+
+                    <p>In 2026, <strong>testing is binary</strong>: the suite passes or it doesn't. By 2032, validation is probabilistic — thousands of synthetic scenarios produce a continuous confidence score. A 94% confidence on a low-risk change ships. A 94% confidence on a database migration triggers human review.</p>
+
+                    <p>In 2026, <strong>review is a blocking gate</strong>: someone must click "approve." By 2032, review is risk-proportional. Trivial changes flow continuously. High-risk changes surface intent summaries and anomaly flags — the reviewer never reads a diff.</p>
+
+                    <p>Let's explore each of these six components across three time horizons.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENE 6: THE SIX COMPONENTS -->
         <section class="evolution-section" data-track="evolution">
             <div class="problem-header">
-                <h2 class="section-title">The Evolution</h2>
-                <p class="section-description">How each component disaggregates across three time horizons: today, the near term, and the horizon.</p>
+                <h2 class="section-title">The Six Components</h2>
+                <p class="section-description">Use the era selector to see how each component transforms across 2026, 2028, and 2032.</p>
             </div>
 
             <div class="era-selector" id="eraSelector">
@@ -858,66 +1225,9 @@
             <div class="components-grid" id="componentsGrid">
                 <!-- Populated by JavaScript -->
             </div>
-
-            <a href="/labs/pr-evolution.html" class="deep-dive-link" data-track-click="launch-observatory" target="_blank">
-                Launch the full PR Evolution Observatory &rarr;
-            </a>
         </section>
 
-        <!-- SCENE 4: CONFIDENCE ENGINE -->
-        <section class="engine-section" data-track="confidence-engine">
-            <div class="problem-header">
-                <h2 class="section-title">The Confidence Engine</h2>
-                <p class="section-description">Interactive simulator: witness how risk-proportional validation adapts evidence gathering to change complexity.</p>
-            </div>
-
-            <div class="engine-container">
-                <div class="engine-sidebar-left" id="changeTypes">
-                    <!-- Populated by JavaScript -->
-                </div>
-
-                <div class="engine-canvas">
-                    <canvas id="engineCanvas"></canvas>
-                </div>
-
-                <div class="engine-sidebar-right">
-                    <div class="telemetry-block">
-                        <div class="telemetry-label">Confidence</div>
-                        <div class="telemetry-value" id="confidenceScore">0%</div>
-                        <div class="telemetry-meter">
-                            <div class="telemetry-meter-fill" id="confidenceMeter"></div>
-                        </div>
-                    </div>
-                    <div class="telemetry-block">
-                        <div class="telemetry-label">Elapsed Time</div>
-                        <div class="telemetry-value" id="elapsedTime">0s</div>
-                    </div>
-                    <div class="telemetry-block">
-                        <div class="telemetry-label">Running</div>
-                        <div class="telemetry-value" id="runningCount">0</div>
-                    </div>
-                    <div class="telemetry-block">
-                        <div class="telemetry-label">Skipped</div>
-                        <div class="telemetry-value" id="skippedCount">0</div>
-                    </div>
-                    <div class="telemetry-block">
-                        <div class="telemetry-label">Saved vs Pipeline</div>
-                        <div class="telemetry-value" id="savedPercent">0%</div>
-                    </div>
-                    <div class="telemetry-block">
-                        <div class="telemetry-label">Trace Log</div>
-                        <div class="trace-log" id="traceLog"></div>
-                    </div>
-                    <button class="dispatch-btn" id="dispatchBtn">Dispatch</button>
-                </div>
-            </div>
-
-            <a href="/labs/confidence-engine.html" class="deep-dive-link" data-track-click="launch-confidence-engine" target="_blank">
-                Open the full Confidence Engine deep dive &rarr;
-            </a>
-        </section>
-
-        <!-- SCENE 5: CLOSING -->
+        <!-- CLOSING -->
         <section class="closing-section" data-track="closing">
             <div class="problem-header">
                 <h2 class="section-title">Key Transformations</h2>
@@ -954,15 +1264,316 @@
             <div class="closing-card">
                 <p class="closing-text">The pull request doesn't disappear. It disaggregates into a living change record — with human attention surgically applied only where it adds value.</p>
             </div>
+
+            <div class="closing-prose">
+                <div class="prose">
+                    <p>The organizations that thrive in this shift won't be the ones that adopt agentic AI fastest. They'll be the ones that rethink their change management models from first principles — replacing process-prescriptive gates with outcome-defining constraints, replacing binary approvals with continuous confidence, and replacing human-as-bottleneck with human-as-curator.</p>
+
+                    <p>The pull request served us well for two decades. What comes next will ship software at a pace we can barely imagine — while maintaining the safety, auditability, and governance that enterprises demand. You've just operated inside that transition. The transformation has already begun.</p>
+
+                    <p style="margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--border);"><strong>Next in the series:</strong> If the pull request disaggregates, what happens to the pipeline that validates it? In <em>The Adaptive Pipeline</em>, you'll dispatch changes into a confidence market and watch it gather exactly the evidence needed for the risk at hand. Another model to run, not read. <a href="https://thundeeran.dev/#essays" style="color: var(--green); text-decoration: none;">Coming soon &rarr;</a></p>
+                </div>
+            </div>
         </section>
     </main>
 
     <footer>
-        <p>By Thundeeran · 2026 · <a href="https://thundeeran.dev">thundeeran.dev</a></p>
+        <p>By Thundeeran · 2026 · <a href="https://thundeeran.dev">thundeeran.dev</a> · Research you run</p>
     </footer>
 
     <script>
-        // ===== COMPONENT DATA =====
+        // ===== SIMULATOR DATA =====
+        const SIM_CHANGES = [
+            {
+                id: 'typo',
+                title: 'README typo fix',
+                risk: 'TRIVIAL',
+                code: `- Welcome to our platfrom
++ Welcome to our platform`
+            },
+            {
+                id: 'button',
+                title: 'Button color change',
+                risk: 'LOW',
+                code: `- background-color: #3b82f6;
++ background-color: #8b5cf6;
++ border-radius: 12px;`
+            },
+            {
+                id: 'auth',
+                title: 'Auth login flow',
+                risk: 'MEDIUM',
+                code: `- const token = jwt.sign({ id: user.id }, SECRET);
++ const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: '1h' });
++ const refresh = jwt.sign({ id: user.id }, REFRESH_SECRET);`
+            },
+            {
+                id: 'migration',
+                title: 'Database migration',
+                risk: 'HIGH',
+                code: `- ALTER TABLE users ADD COLUMN last_login TIMESTAMP;
++ ALTER TABLE users ADD COLUMN last_login TIMESTAMP DEFAULT NOW();
++ CREATE INDEX idx_users_last_login ON users(last_login);`
+            }
+        ];
+
+        const SIM_WORKFLOWS = {
+            2026: [
+                { label: 'Push received', duration: 0.2, desc: 'Commit pushed to feature/auth-fix' },
+                { label: 'CI Pipeline starts', duration: 0.5, desc: 'Queuing behind 3 builds...' },
+                { label: 'Lint check', duration: 1.5, desc: 'Running ESLint' },
+                { label: 'Unit tests', duration: 3, desc: 'Running 847 tests', testsRun: 847 },
+                { label: 'Integration tests', duration: 2.5, desc: 'Test containers...' },
+                { label: 'Build', duration: 2, desc: 'Building bundle...' },
+                { label: 'Waiting for reviewer', duration: 4, desc: 'Assigned to @sarah', isWait: true },
+                { label: 'Code review', duration: 3, desc: 'Line by line...' },
+                { label: 'Address feedback', duration: 1.5, desc: 'Follow-up commit...' },
+                { label: 'Re-review', duration: 2, desc: 'Waiting approval...' },
+                { label: 'Manual merge', duration: 0.5, desc: 'Creating merge...' },
+                { label: 'Deploy', duration: 2, desc: 'To production...' }
+            ],
+            2028: [
+                { label: 'Push received', duration: 0.2, desc: 'Intent extracted' },
+                { label: 'Risk assessment', duration: 0.3, desc: 'Risk: MEDIUM' },
+                { label: 'Agent-generated tests', duration: 1, desc: 'Writing 12 tests', testsGenerated: 12 },
+                { label: 'Targeted validation', duration: 1.5, desc: 'Running 127/847', testsSaved: 720 },
+                { label: 'Semantic diff', duration: 0.5, desc: 'Behavioral changes' },
+                { label: 'Auto-generated description', duration: 0.3, desc: 'PR created' },
+                { label: 'Tiered review', duration: 0.3, desc: 'Risk MEDIUM → light review' },
+                { label: 'AI pre-review', duration: 0.8, desc: 'Agent analysis' },
+                { label: 'Human review', duration: 1, desc: 'Quick validation' },
+                { label: 'Canary deploy', duration: 0.8, desc: 'Deploy to 5%' },
+                { label: 'Full rollout', duration: 0.5, desc: 'Deploy to 100%' }
+            ],
+            2032: [
+                { label: 'Intent received', duration: 0.1, desc: 'Parsing intent' },
+                { label: 'Agent swarm', duration: 0.2, desc: '3 agents spawned' },
+                { label: 'Behavioral contract', duration: 0.3, desc: 'Contract generated' },
+                { label: 'Continuous confidence', duration: 0.5, desc: 'Confidence climbing...', confidence: true },
+                { label: 'Knowledge graph', duration: 0.1, desc: 'Architecture decision' },
+                { label: 'Flowing to production', duration: 0.2, desc: 'Behind feature gate' }
+            ]
+        };
+
+        let simState = {
+            currentEra: '2026',
+            selectedChange: 'typo',
+            isRunning: false,
+            isComparing: false
+        };
+
+        // SIMULATOR RENDERING
+        function renderSimChangeCards() {
+            const container = document.getElementById('simChangeCards');
+            container.innerHTML = SIM_CHANGES.map(change => `
+                <div class="sim-change-card ${change.id === simState.selectedChange ? 'selected' : ''}" data-id="${change.id}">
+                    <span class="sim-change-card-title">${change.title}</span>
+                    <div class="sim-change-card-meta">${change.risk}</div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.sim-change-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.sim-change-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    simState.selectedChange = card.dataset.id;
+                    renderSimCodeEditor();
+                });
+            });
+        }
+
+        function renderSimCodeEditor() {
+            const change = SIM_CHANGES.find(c => c.id === simState.selectedChange);
+            const codeLines = change.code.split('\n');
+            const editor = document.getElementById('simCodeEditor');
+
+            editor.innerHTML = codeLines.map((line, idx) => {
+                let className = 'sim-code-line neutral';
+                if (line.startsWith('-')) className = 'sim-code-line removed';
+                if (line.startsWith('+')) className = 'sim-code-line added';
+
+                return `
+                    <div class="${className}">
+                        <div class="sim-code-line-number">${idx + 1}</div>
+                        <div class="sim-code-line-content">${line}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function createSimTimelineStep(step) {
+            const stepEl = document.createElement('div');
+            stepEl.className = 'sim-timeline-step';
+            stepEl.innerHTML = `
+                <div class="sim-step-icon">${step.isWait ? '⧗' : '◯'}</div>
+                <div class="sim-step-content">
+                    <div class="sim-step-label">${step.label}</div>
+                    <div class="sim-step-description">${step.desc}</div>
+                </div>
+            `;
+            return stepEl;
+        }
+
+        function renderSimTimeline(era) {
+            const container = document.getElementById('simTimeline');
+            const workflow = SIM_WORKFLOWS[era];
+
+            container.innerHTML = '';
+            workflow.forEach(step => {
+                container.appendChild(createSimTimelineStep(step));
+            });
+
+            document.getElementById('simTimelineTitle').textContent = `${era} — ${era === '2026' ? 'Current Era' : era === '2028' ? 'Smart Era' : 'Fluid Era'}`;
+            const stats = {
+                2026: '18h',
+                2028: '2.1h',
+                2032: '8s'
+            };
+            document.getElementById('simTimelineSubtitle').textContent = `Push to production in ~${stats[era]}`;
+
+            if (era === '2032') {
+                document.getElementById('simConfidenceSection').style.display = 'block';
+            } else {
+                document.getElementById('simConfidenceSection').style.display = 'none';
+            }
+        }
+
+        function switchSimEra(era) {
+            simState.currentEra = era;
+            document.querySelectorAll('.sim-era-btn[data-era]').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.era === era) btn.classList.add('active');
+            });
+            document.getElementById('simCompareBtnEssay').classList.remove('active');
+            simState.isComparing = false;
+            renderSimTimeline(era);
+            resetSimMetrics();
+        }
+
+        function resetSimMetrics() {
+            document.getElementById('simElapsedTime').textContent = '0s';
+            document.getElementById('simProgressBar').style.width = '0%';
+            document.getElementById('simTestsRun').textContent = '0';
+            document.getElementById('simTestsSkipped').textContent = '0';
+            document.getElementById('simConfidenceScore').textContent = '0%';
+            document.getElementById('simPushBtn').disabled = false;
+        }
+
+        async function runSimWorkflow(era) {
+            if (simState.isRunning) return;
+            simState.isRunning = true;
+            document.getElementById('simPushBtn').disabled = true;
+
+            renderSimTimeline(era);
+            const steps = document.querySelectorAll('#simTimeline .sim-timeline-step');
+            const workflow = SIM_WORKFLOWS[era];
+
+            const startTime = Date.now();
+
+            for (let i = 0; i < workflow.length; i++) {
+                const step = workflow[i];
+                const stepEl = steps[i];
+                const duration = step.duration * 1000;
+
+                stepEl.classList.add('active');
+                if (step.isWait) {
+                    stepEl.classList.add('waiting');
+                } else if (i > 0) {
+                    stepEl.classList.add('running');
+                }
+
+                // Handle confidence animation for 2032
+                if (step.confidence) {
+                    const maxConfidence = 97;
+                    let currentConfidence = 0;
+                    const confInterval = setInterval(() => {
+                        currentConfidence = Math.min(currentConfidence + Math.random() * 25, maxConfidence);
+                        document.getElementById('simConfidenceScore').textContent = Math.floor(currentConfidence) + '%';
+                    }, 100);
+
+                    await new Promise(resolve => setTimeout(resolve, duration));
+                    clearInterval(confInterval);
+                    document.getElementById('simConfidenceScore').textContent = '97%';
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, duration));
+                }
+
+                stepEl.classList.remove('running', 'waiting');
+                stepEl.classList.add('complete');
+                stepEl.querySelector('.sim-step-icon').textContent = '✓';
+
+                // Update metrics
+                const elapsed = (Date.now() - startTime) / 1000;
+                document.getElementById('simElapsedTime').textContent = Math.round(elapsed) + 's';
+
+                const progress = ((i + 1) / workflow.length) * 100;
+                document.getElementById('simProgressBar').style.width = progress + '%';
+
+                // Update test metrics
+                const stats2026 = { tests: 847, saved: 0 };
+                const stats2028 = { tests: 127, saved: 720 };
+                const stats2032 = { tests: 2847, saved: 0 };
+                const allStats = { '2026': stats2026, '2028': stats2028, '2032': stats2032 };
+                const currentStats = allStats[era];
+
+                document.getElementById('simTestsRun').textContent = currentStats.tests;
+                document.getElementById('simTestsSkipped').textContent = currentStats.saved;
+            }
+
+            simState.isRunning = false;
+            document.getElementById('simPushBtn').disabled = false;
+        }
+
+        async function runSimComparison() {
+            if (simState.isRunning) return;
+            simState.isRunning = true;
+            simState.isComparing = true;
+            document.getElementById('simPushBtn').disabled = true;
+
+            // For comparison, run all three simultaneously
+            const promises = ['2026', '2028', '2032'].map(era => {
+                return runSimWorkflowSilent(era);
+            });
+
+            await Promise.all(promises);
+
+            simState.isRunning = false;
+            document.getElementById('simPushBtn').disabled = false;
+        }
+
+        async function runSimWorkflowSilent(era) {
+            const steps = document.querySelectorAll('#simTimeline .sim-timeline-step');
+            const workflow = SIM_WORKFLOWS[era];
+
+            for (let i = 0; i < workflow.length; i++) {
+                const step = workflow[i];
+                const duration = step.duration * 1000;
+                await new Promise(resolve => setTimeout(resolve, duration));
+            }
+        }
+
+        // EVENT LISTENERS FOR SIMULATOR
+        document.querySelectorAll('.sim-era-btn[data-era]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchSimEra(btn.dataset.era);
+            });
+        });
+
+        document.getElementById('simCompareBtnEssay').addEventListener('click', () => {
+            document.querySelectorAll('.sim-era-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('simCompareBtnEssay').classList.add('active');
+            runSimComparison();
+        });
+
+        document.getElementById('simPushBtn').addEventListener('click', () => {
+            if (simState.isComparing) {
+                runSimComparison();
+            } else {
+                runSimWorkflow(simState.currentEra);
+            }
+        });
+
+        // ===== MAIN ESSAY COMPONENT DATA =====
         const componentData = {
             'Change Authorship': {
                 icon: '👤',
@@ -1002,28 +1613,15 @@
             }
         };
 
-        // ===== ERA SELECTOR =====
+        // ===== ERA SELECTOR (for evolution section) =====
         let currentEra = '2026';
         const eraButtons = document.querySelectorAll('.era-button');
-        const eraSelector = document.getElementById('eraSelector');
 
         eraButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const era = e.target.dataset.era;
                 switchEra(era);
             });
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') {
-                const eras = ['2026', '2028', '2032'];
-                const idx = eras.indexOf(currentEra);
-                if (idx > 0) switchEra(eras[idx - 1]);
-            } else if (e.key === 'ArrowRight') {
-                const eras = ['2026', '2028', '2032'];
-                const idx = eras.indexOf(currentEra);
-                if (idx < eras.length - 1) switchEra(eras[idx + 1]);
-            }
         });
 
         function switchEra(era) {
@@ -1045,14 +1643,8 @@
                 card.className = 'component-card';
                 card.style.animation = `fadeIn 0.6s ease-out ${idx * 0.1}s both`;
 
-                // Determine progress segments
                 const eras = ['2026', '2028', '2032'];
                 const eraIdx = eras.indexOf(currentEra);
-                const segments = eras.map((e, i) => {
-                    if (i < eraIdx) return 'completed';
-                    if (i === eraIdx) return 'active';
-                    return '';
-                }).join(' ');
 
                 card.innerHTML = `
                     <div class="component-icon">${data.icon}</div>
@@ -1070,379 +1662,11 @@
             });
         }
 
-        // Auto-scrub through eras on load
-        async function autoScrub() {
-            await new Promise(r => setTimeout(r, 2000));
-            for (const era of ['2026', '2028', '2032']) {
-                switchEra(era);
-                await new Promise(r => setTimeout(r, 2000));
-            }
-            switchEra('2026');
-        }
-
-        // ===== CONFIDENCE ENGINE =====
-        const changePlans = {
-            'README typo': {
-                risk: 'low',
-                plan: { lint: 'light', unit: 'skip', security: 'skip', e2e: 'skip', canary: 'skip', perf: 'skip', contract: 'skip', visual: 'skip' }
-            },
-            'Button color': {
-                risk: 'low',
-                plan: { lint: 'light', unit: 'light', security: 'skip', e2e: 'skip', canary: 'skip', perf: 'skip', contract: 'skip', visual: 'medium' }
-            },
-            'Auth login': {
-                risk: 'crit',
-                plan: { lint: 'light', unit: 'light', security: 'deep', e2e: 'full', canary: 'medium', perf: 'skip', contract: 'light', visual: 'skip' }
-            },
-            'DB migration': {
-                risk: 'high',
-                plan: { lint: 'light', unit: 'medium', security: 'deep', e2e: 'full', canary: 'full', perf: 'deep', contract: 'full', visual: 'skip' }
-            },
-            'API refactor': {
-                risk: 'high',
-                plan: { lint: 'light', unit: 'medium', security: 'medium', e2e: 'medium', canary: 'medium', perf: 'light', contract: 'deep', visual: 'skip' }
-            },
-            'Query optimization': {
-                risk: 'med',
-                plan: { lint: 'light', unit: 'light', security: 'skip', e2e: 'light', canary: 'medium', perf: 'full', contract: 'light', visual: 'skip' }
-            }
-        };
-
-        const depthColors = {
-            skip: '#555555',
-            light: '#34d399',
-            medium: '#fbbf24',
-            deep: '#f87171',
-            full: '#a78bfa'
-        };
-
-        let selectedChange = 'Auth login';
-        let engineRunning = false;
-
-        function populateChangeTypes() {
-            const container = document.getElementById('changeTypes');
-            Object.keys(changePlans).forEach(change => {
-                const btn = document.createElement('button');
-                btn.className = 'change-type-btn';
-                if (change === selectedChange) btn.classList.add('active');
-                btn.innerHTML = `
-                    <div>${change}</div>
-                    <span class="risk-badge risk-${changePlans[change].risk}">${changePlans[change].risk.toUpperCase()}</span>
-                `;
-                btn.addEventListener('click', () => {
-                    selectedChange = change;
-                    document.querySelectorAll('.change-type-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                });
-                container.appendChild(btn);
-            });
-        }
-
-        // Canvas engine visualization
-        class ConfidenceEngine {
-            constructor(canvas) {
-                this.canvas = canvas;
-                this.ctx = canvas.getContext('2d');
-                this.dpr = window.devicePixelRatio || 1;
-                this.setupCanvas();
-                this.nodes = [];
-                this.particles = [];
-                this.nodeStates = {};
-                this.init();
-                window.addEventListener('resize', () => this.setupCanvas());
-            }
-
-            setupCanvas() {
-                const rect = this.canvas.parentElement.getBoundingClientRect();
-                this.canvas.width = rect.width * this.dpr;
-                this.canvas.height = rect.height * this.dpr;
-                this.canvas.style.width = rect.width + 'px';
-                this.canvas.style.height = rect.height + 'px';
-                this.ctx.scale(this.dpr, this.dpr);
-                this.w = rect.width;
-                this.h = rect.height;
-            }
-
-            init() {
-                const cx = this.w / 2;
-                const cy = this.h / 2;
-                const radius = Math.min(this.w, this.h) / 3;
-
-                const nodeNames = ['Lint', 'Unit', 'Security', 'E2E', 'Canary', 'Perf', 'Contract', 'Visual'];
-                this.nodes = nodeNames.map((name, i) => {
-                    const angle = (i / nodeNames.length) * Math.PI * 2 - Math.PI / 2;
-                    return {
-                        name,
-                        x: cx + Math.cos(angle) * radius,
-                        y: cy + Math.sin(angle) * radius,
-                        angle,
-                        state: 'idle',
-                        rotation: 0
-                    };
-                });
-
-                this.centerX = cx;
-                this.centerY = cy;
-            }
-
-            drawCoreGlow() {
-                const gradient = this.ctx.createRadialGradient(this.centerX, this.centerY, 0, this.centerX, this.centerY, 80);
-                gradient.addColorStop(0, 'rgba(52, 211, 153, 0.3)');
-                gradient.addColorStop(1, 'rgba(52, 211, 153, 0)');
-                this.ctx.fillStyle = gradient;
-                this.ctx.fillRect(this.centerX - 100, this.centerY - 100, 200, 200);
-            }
-
-            drawOrbits() {
-                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-                this.ctx.lineWidth = 1;
-                this.ctx.setLineDash([5, 5]);
-                for (let i = 0; i < 3; i++) {
-                    const r = 60 + i * 40;
-                    this.ctx.beginPath();
-                    this.ctx.arc(this.centerX, this.centerY, r, 0, Math.PI * 2);
-                    this.ctx.stroke();
-                }
-                this.ctx.setLineDash([]);
-            }
-
-            drawConnections() {
-                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-                this.ctx.lineWidth = 1;
-                this.nodes.forEach(node => {
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(this.centerX, this.centerY);
-                    this.ctx.lineTo(node.x, node.y);
-                    this.ctx.stroke();
-                });
-            }
-
-            drawCore() {
-                this.ctx.fillStyle = '#34d399';
-                this.ctx.beginPath();
-                this.ctx.arc(this.centerX, this.centerY, 16, 0, Math.PI * 2);
-                this.ctx.fill();
-
-                const time = Date.now() / 1000;
-                this.ctx.strokeStyle = 'rgba(52, 211, 153, 0.5)';
-                this.ctx.lineWidth = 2;
-                this.ctx.beginPath();
-                this.ctx.arc(this.centerX, this.centerY, 20 + Math.sin(time * 3) * 5, 0, Math.PI * 2);
-                this.ctx.stroke();
-            }
-
-            drawNodes() {
-                this.nodes.forEach(node => {
-                    const state = this.nodeStates[node.name] || 'idle';
-
-                    let color = '#555555';
-                    if (state !== 'idle' && state !== 'skipped') {
-                        color = depthColors[state] || '#34d399';
-                    } else if (state === 'skipped') {
-                        color = '#555555';
-                    }
-
-                    // Rotation for running nodes
-                    if (state !== 'idle' && state !== 'skipped' && state !== 'complete') {
-                        node.rotation += 0.15;
-                    }
-
-                    const size = 28;
-                    const padding = 12;
-
-                    // Node background
-                    this.ctx.fillStyle = 'rgba(11, 11, 18, 0.8)';
-                    this.ctx.beginPath();
-                    this.ctx.arc(node.x, node.y, size / 2 + padding, 0, Math.PI * 2);
-                    this.ctx.fill();
-
-                    // Node border
-                    this.ctx.strokeStyle = color;
-                    this.ctx.lineWidth = 2;
-                    this.ctx.beginPath();
-                    this.ctx.arc(node.x, node.y, size / 2 + padding, 0, Math.PI * 2);
-                    this.ctx.stroke();
-
-                    // Node label
-                    this.ctx.fillStyle = color;
-                    this.ctx.font = 'bold 11px "JetBrains Mono"';
-                    this.ctx.textAlign = 'center';
-                    this.ctx.textBaseline = 'middle';
-                    this.ctx.fillText(node.name.slice(0, 3), node.x, node.y);
-
-                    // Checkmark for complete
-                    if (state === 'complete') {
-                        this.ctx.fillStyle = color;
-                        this.ctx.font = 'bold 18px Arial';
-                        this.ctx.fillText('✓', node.x, node.y);
-                    }
-                });
-            }
-
-            drawParticles() {
-                this.particles.forEach((p, idx) => {
-                    const progress = p.life / p.maxLife;
-                    this.ctx.fillStyle = `rgba(52, 211, 153, ${progress * 0.7})`;
-                    this.ctx.beginPath();
-                    this.ctx.arc(p.x, p.y, p.size * progress, 0, Math.PI * 2);
-                    this.ctx.fill();
-
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.life--;
-                    if (p.life <= 0) this.particles.splice(idx, 1);
-                });
-            }
-
-            spawnParticles(fromX, fromY, toX, toY) {
-                for (let i = 0; i < 3; i++) {
-                    const t = Math.random();
-                    this.particles.push({
-                        x: fromX + (toX - fromX) * t,
-                        y: fromY + (toY - fromY) * t,
-                        vx: (Math.random() - 0.5) * 2,
-                        vy: (Math.random() - 0.5) * 2,
-                        size: Math.random() * 3 + 1,
-                        life: 20,
-                        maxLife: 20
-                    });
-                }
-            }
-
-            animate() {
-                this.ctx.fillStyle = 'rgba(3, 3, 6, 0.1)';
-                this.ctx.fillRect(0, 0, this.w, this.h);
-
-                this.drawCoreGlow();
-                this.drawOrbits();
-                this.drawConnections();
-
-                // Spawn particles for running nodes
-                this.nodes.forEach(node => {
-                    const state = this.nodeStates[node.name];
-                    if (state && state !== 'idle' && state !== 'skipped' && state !== 'complete') {
-                        if (Math.random() < 0.4) {
-                            this.spawnParticles(this.centerX, this.centerY, node.x, node.y);
-                        }
-                    }
-                });
-
-                this.drawParticles();
-                this.drawCore();
-                this.drawNodes();
-
-                if (engineRunning) requestAnimationFrame(() => this.animate());
-            }
-        }
-
-        const canvas = document.getElementById('engineCanvas');
-        const engine = new ConfidenceEngine(canvas);
-        let animationFrame = null;
-
-        function startAnimation() {
-            if (!animationFrame) {
-                animationFrame = requestAnimationFrame(() => engine.animate());
-            }
-        }
-
-        async function runSimulation() {
-            if (engineRunning) return;
-            engineRunning = true;
-            document.getElementById('dispatchBtn').disabled = true;
-
-            const plan = changePlans[selectedChange].plan;
-            const nodeNames = Object.keys(plan);
-
-            Object.keys(engine.nodeStates).forEach(k => delete engine.nodeStates[k]);
-            document.getElementById('traceLog').innerHTML = '';
-
-            const depths = { skip: 0, light: 800, medium: 1600, deep: 2800, full: 4200 };
-            const maxDepth = Math.max(...Object.values(plan).map(d => depths[d]));
-
-            const startTime = Date.now();
-            let completedCount = 0;
-            let skippedCount = 0;
-
-            startAnimation();
-
-            for (const nodeName of nodeNames) {
-                const depth = plan[nodeName];
-                if (depth === 'skip') {
-                    engine.nodeStates[nodeName] = 'skipped';
-                    skippedCount++;
-                    addTrace(`[${nodeName}] SKIPPED`);
-                } else {
-                    engine.nodeStates[nodeName] = depth;
-                    addTrace(`[${nodeName}] STARTED (${depth.toUpperCase()})`);
-                }
-            }
-
-            const depths_arr = Object.values(plan).map(d => depths[d]);
-            const totalDuration = Math.max(...depths_arr);
-
-            const checkInterval = setInterval(() => {
-                const elapsed = Date.now() - startTime;
-                document.getElementById('elapsedTime').textContent = (elapsed / 1000).toFixed(1) + 's';
-
-                let newCompleted = 0;
-                for (const nodeName of nodeNames) {
-                    const depth = plan[nodeName];
-                    if (depth !== 'skip' && elapsed >= depths[depth]) {
-                        if (engine.nodeStates[nodeName] !== 'complete') {
-                            engine.nodeStates[nodeName] = 'complete';
-                            newCompleted++;
-                            addTrace(`[${nodeName}] COMPLETE`);
-                        }
-                    }
-                }
-                completedCount += newCompleted;
-
-                const runningCount = nodeNames.filter(n => {
-                    const d = plan[n];
-                    return d !== 'skip' && elapsed < depths[d];
-                }).length;
-
-                document.getElementById('runningCount').textContent = runningCount;
-                document.getElementById('skippedCount').textContent = skippedCount;
-
-                const confidence = Math.min(100, (elapsed / totalDuration) * 100);
-                document.getElementById('confidenceScore').textContent = Math.round(confidence) + '%';
-                document.getElementById('confidenceMeter').style.width = confidence + '%';
-
-                const saved = ((skippedCount * 100) / nodeNames.length);
-                document.getElementById('savedPercent').textContent = Math.round(saved) + '%';
-
-                if (elapsed >= totalDuration) {
-                    clearInterval(checkInterval);
-                    engineRunning = false;
-                    document.getElementById('dispatchBtn').disabled = false;
-                    addTrace(`[DISPATCH] COMPLETE`);
-                }
-            }, 50);
-        }
-
-        function addTrace(msg) {
-            const log = document.getElementById('traceLog');
-            const entry = document.createElement('div');
-            entry.className = 'trace-entry';
-            const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            entry.innerHTML = `<span class="trace-time">[${time}]</span> <span class="trace-action">${msg}</span>`;
-            log.appendChild(entry);
-            log.scrollTop = log.scrollHeight;
-        }
-
-        document.getElementById('dispatchBtn').addEventListener('click', runSimulation);
-
-        // Initialize
-        populateChangeTypes();
+        // Initialize all components
+        renderSimChangeCards();
+        renderSimCodeEditor();
+        renderSimTimeline('2026');
         renderComponents();
-
-        // Auto-run demo on load
-        window.addEventListener('load', async () => {
-            startAnimation();
-            await new Promise(r => setTimeout(r, 1000));
-            runSimulation();
-        });
     </script>
 </body>
 </html>

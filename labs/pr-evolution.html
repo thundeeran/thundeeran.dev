@@ -256,7 +256,7 @@ body::after {
   margin: 0 auto;
 }
 
-/* ═══ ERA SELECTOR ═══ */
+/* ═══ ERA SELECTOR (Observatory) ═══ */
 .era-control {
   display: flex;
   justify-content: center;
@@ -338,7 +338,7 @@ body::after {
 .era-slider.era-1 { box-shadow: 0 0 24px var(--yellow-glow), 0 0 0 1px rgba(251,191,36,0.3); }
 .era-slider.era-2 { box-shadow: 0 0 24px var(--green-glow), 0 0 0 1px rgba(52,211,153,0.3); }
 
-/* ═══ MAIN GRID ═══ */
+/* ═══ MAIN GRID (Observatory) ═══ */
 .main {
   max-width: 1400px;
   margin: 48px auto 0;
@@ -814,6 +814,511 @@ body::after {
 
 .morph-seg:not(.active) { background: var(--border); opacity: 0.5; }
 
+/* ═══ DIVIDER ═══ */
+.section-divider {
+  max-width: 1400px;
+  margin: 80px auto 0;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+}
+
+.section-divider::after {
+  background: linear-gradient(90deg, transparent 0%, var(--border) 100%);
+}
+
+/* ═══ BRIDGE ═══ */
+.bridge {
+  max-width: 1400px;
+  margin: 60px auto 80px;
+  padding: 0 32px;
+  text-align: center;
+}
+
+.bridge-title {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.bridge-subtitle {
+  font-size: 16px;
+  color: var(--text-dim);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ═══ SIMULATOR STYLES ═══ */
+
+/* Simulator container */
+.sim-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+  display: grid;
+  grid-template-columns: 360px 1fr 300px;
+  gap: 24px;
+}
+
+/* Left: Code editor panel */
+.sim-editor-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sim-panel-heading {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.sim-panel-heading::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 8px var(--blue);
+}
+
+.sim-change-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.sim-change-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+.sim-change-card:hover {
+  border-color: var(--border-bright);
+  background: var(--surface2);
+}
+
+.sim-change-card.selected {
+  border-color: var(--blue);
+  background: rgba(96, 165, 250, 0.1);
+}
+
+.sim-change-card-title {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+.sim-change-card-risk {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.risk-trivial { background: rgba(52, 211, 153, 0.2); color: var(--green); }
+.risk-low { background: rgba(251, 191, 36, 0.2); color: var(--yellow); }
+.risk-medium { background: rgba(244, 114, 182, 0.2); color: var(--pink); }
+.risk-high { background: rgba(248, 113, 113, 0.2); color: var(--red); }
+
+.sim-change-card-meta {
+  color: var(--text-mute);
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Center: Timeline */
+.sim-timeline-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sim-era-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.sim-era-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sim-era-btn:hover {
+  border-color: var(--border-bright);
+  color: var(--text-dim);
+}
+
+.sim-era-btn.active {
+  background: var(--surface2);
+  color: var(--text-bright);
+}
+
+.sim-era-btn.era-2026 { --era-color: var(--red); }
+.sim-era-btn.era-2026.active { border-color: var(--red); color: var(--red); }
+
+.sim-era-btn.era-2028 { --era-color: var(--yellow); }
+.sim-era-btn.era-2028.active { border-color: var(--yellow); color: var(--yellow); }
+
+.sim-era-btn.era-2032 { --era-color: var(--green); }
+.sim-era-btn.era-2032.active { border-color: var(--green); color: var(--green); }
+
+.sim-timeline {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sim-step {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface2);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+  opacity: 0.4;
+}
+
+.sim-step.active {
+  opacity: 1;
+  border-color: var(--border-bright);
+}
+
+.sim-step.waiting {
+  border-color: var(--yellow);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.sim-step.running {
+  border-color: var(--blue);
+  background: rgba(96, 165, 250, 0.05);
+}
+
+.sim-step.complete {
+  border-color: var(--green);
+  background: rgba(52, 211, 153, 0.05);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.sim-step-icon {
+  min-width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--surface3);
+  border: 2px solid var(--border);
+  color: var(--text-mute);
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.sim-step.waiting .sim-step-icon {
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
+.sim-step.running .sim-step-icon {
+  border-color: var(--blue);
+  color: var(--blue);
+  animation: spin 2s linear infinite;
+}
+
+.sim-step.complete .sim-step-icon {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(52, 211, 153, 0.2);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.sim-step-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sim-step-label {
+  font-weight: 600;
+  font-size: 10px;
+  color: var(--text);
+  margin-bottom: 2px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.sim-step-desc {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-bottom: 2px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Right: Metrics */
+.sim-metrics-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sim-metrics {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sim-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.sim-metric-row:last-child {
+  border-bottom: none;
+}
+
+.sim-metric-name {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.sim-metric-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sim-push-btn {
+  padding: 12px 16px;
+  background: var(--blue);
+  border: none;
+  color: var(--bg);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 11px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sim-push-btn:hover:not(:disabled) {
+  background: rgba(96, 165, 250, 0.8);
+}
+
+.sim-push-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sim-run-again-btn {
+  padding: 12px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 11px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: none;
+}
+
+.sim-run-again-btn:hover {
+  border-color: var(--text-bright);
+  background: var(--surface2);
+}
+
+/* Results overlay */
+.sim-results-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(3, 3, 6, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.sim-results-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.sim-results-card {
+  background: var(--surface);
+  border: 1px solid var(--border-bright);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 520px;
+  width: 90%;
+}
+
+.sim-results-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 24px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.sim-results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.sim-result-item {
+  padding: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.sim-result-label {
+  font-size: 9px;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.sim-result-value {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text);
+}
+
+.sim-results-insight {
+  padding: 16px;
+  background: var(--surface2);
+  border-left: 3px solid var(--blue);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.sim-results-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.sim-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 11px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sim-btn:hover {
+  border-color: var(--text-bright);
+  background: var(--surface2);
+}
+
+.sim-btn.primary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--bg);
+}
+
+.sim-btn.primary:hover {
+  background: rgba(96, 165, 250, 0.8);
+}
+
 /* ═══ BOTTOM: KEY SHIFTS ═══ */
 .shifts {
   max-width: 1400px;
@@ -934,15 +1439,20 @@ body::after {
   .main { grid-template-columns: 1fr; }
   .specimen-panel { position: static; }
   .comp-grid { grid-template-columns: 1fr; }
+  .sim-container { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 600px) {
   .hero { padding: 40px 20px 32px; }
   .era-btn { padding: 10px 16px; }
   .main { padding: 0 16px 40px; }
+  .sim-container { padding: 0 16px 40px; }
   .shifts { padding: 0 16px 60px; }
   .shift-pill { grid-template-columns: 1fr; text-align: center; }
   .shift-from { text-align: center; }
+  .section-divider { padding: 0 16px; }
+  .bridge { padding: 0 16px; }
+  .sim-results-grid { grid-template-columns: 1fr; }
 }
 
 </style>
@@ -952,7 +1462,7 @@ body::after {
 <div class="app">
 
   <!-- Top Bar -->
-  <header class="topbar">
+  <header class="topbar" data-track="topbar">
     <div class="tb-left">
       <div class="logo-mark"><span>P</span></div>
       <div class="logo-text">pr.evolution<span class="dim">.observatory</span></div>
@@ -967,8 +1477,8 @@ body::after {
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="hero">
+  <!-- SECTION 1: HERO -->
+  <section class="hero" data-track="hero">
     <div class="hero-eyebrow">The Evolution Observatory</div>
     <h1>
       The <span class="strike">Pull Request</span><br/>
@@ -996,8 +1506,8 @@ body::after {
     </div>
   </section>
 
-  <!-- Main grid -->
-  <main class="main">
+  <!-- SECTION 2: OBSERVATORY -->
+  <main class="main" data-track="observatory">
 
     <!-- Left: Specimen + Stats -->
     <aside class="specimen-panel">
@@ -1136,8 +1646,94 @@ body::after {
 
   </main>
 
-  <!-- Key shifts -->
-  <section class="shifts">
+  <!-- SECTION 3: BRIDGE -->
+  <section class="bridge" data-track="bridge">
+    <h2 class="bridge-title">Now Experience It Yourself</h2>
+    <p class="bridge-subtitle">You've seen the components evolve. Now push a real change and feel the difference between 2026 and 2032.</p>
+  </section>
+
+  <!-- SECTION 4: SIMULATOR -->
+  <section class="sim-container" data-track="simulator">
+
+    <!-- Left: Code Editor -->
+    <div class="sim-editor-panel">
+      <div class="sim-panel-heading">Choose a Change</div>
+      <div class="sim-change-cards" id="simChangeCards"></div>
+    </div>
+
+    <!-- Center: Timeline -->
+    <div class="sim-timeline-panel">
+      <div class="sim-panel-heading">Workflow Pipeline</div>
+      <div class="sim-era-selector">
+        <button class="sim-era-btn era-2026 active" data-era="2026">2026</button>
+        <button class="sim-era-btn era-2028" data-era="2028">2028</button>
+        <button class="sim-era-btn era-2032" data-era="2032">2032</button>
+        <button class="sim-era-btn" id="simComparBtn">Compare</button>
+      </div>
+      <div class="sim-timeline" id="simTimeline"></div>
+    </div>
+
+    <!-- Right: Metrics -->
+    <div class="sim-metrics-panel">
+      <div class="sim-panel-heading">Live Metrics</div>
+      <div class="sim-metrics">
+        <div class="sim-metric-row">
+          <div class="sim-metric-name">Elapsed</div>
+          <div class="sim-metric-value" id="simElapsed">0s</div>
+        </div>
+        <div class="sim-metric-row">
+          <div class="sim-metric-name">Tests Run</div>
+          <div class="sim-metric-value" id="simTests">0</div>
+        </div>
+        <div class="sim-metric-row">
+          <div class="sim-metric-name">Human Time</div>
+          <div class="sim-metric-value" id="simHuman">-</div>
+        </div>
+        <div class="sim-metric-row">
+          <div class="sim-metric-name">Handoffs</div>
+          <div class="sim-metric-value" id="simHandoffs">0</div>
+        </div>
+      </div>
+      <button class="sim-push-btn" id="simPushBtn">▶ git push</button>
+      <button class="sim-run-again-btn" id="simRunAgainBtn">Run Again</button>
+    </div>
+
+  </section>
+
+  <!-- Results Overlay -->
+  <div class="sim-results-overlay" id="simResultsOverlay">
+    <div class="sim-results-card">
+      <div class="sim-results-title">Workflow Complete</div>
+      <div class="sim-results-grid">
+        <div class="sim-result-item">
+          <div class="sim-result-label">Total Time</div>
+          <div class="sim-result-value" id="simResultTime">18h</div>
+        </div>
+        <div class="sim-result-item">
+          <div class="sim-result-label">Human Time</div>
+          <div class="sim-result-value" id="simResultHuman">4h</div>
+        </div>
+        <div class="sim-result-item">
+          <div class="sim-result-label">Tests</div>
+          <div class="sim-result-value" id="simResultTests">847</div>
+        </div>
+        <div class="sim-result-item">
+          <div class="sim-result-label">Handoffs</div>
+          <div class="sim-result-value" id="simResultHandoffs">3</div>
+        </div>
+      </div>
+      <div class="sim-results-insight" id="simResultsInsight">
+        In 2026, a complex change requires multiple handoffs and human reviews.
+      </div>
+      <div class="sim-results-buttons">
+        <button class="sim-btn" id="simCloseBtn">Close</button>
+        <button class="sim-btn primary" id="simCompareResultsBtn">Compare Eras</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: KEY SHIFTS -->
+  <section class="shifts" data-track="shifts">
     <div class="shifts-title">&mdash; The Key Transformations &mdash;</div>
     <div class="shift-row">
       <div class="shift-pill">
@@ -1168,8 +1764,8 @@ body::after {
     </div>
   </section>
 
-  <!-- Closing -->
-  <section class="close-section">
+  <!-- SECTION 6: CLOSING -->
+  <section class="close-section" data-track="closing">
     <div class="cs-label">The Synthesis</div>
     <div class="cs-text">
       The pull request doesn't disappear.<br/>
@@ -1180,9 +1776,11 @@ body::after {
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-// Component Data
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════
+// OBSERVATORY NAMESPACE
+// ═════════════════════════════════════════════════════════════════
+
+const observatory = (() => {
 
 const COMPONENTS = [
   {
@@ -1283,42 +1881,19 @@ const ERA_STATS = [
   }
 ];
 
-let currentEra = 0;
-
-// ═══════════════════════════════════════════════
-// DOM
-// ═══════════════════════════════════════════════
+let state = {
+  currentEra: 0
+};
 
 const $ = id => document.getElementById(id);
-const eraButtons = document.querySelectorAll('.era-btn');
-const eraSlider = $('eraSlider');
-const compGrid = $('compGrid');
-const specimen = $('specimen');
-const specMonolith = $('specMonolith');
-const specTiered = $('specTiered');
-const specStream = $('specStream');
-const narrative = $('narrative');
-
-// Stats
-const statReview = $('statReview');
-const trendReview = $('trendReview');
-const statChanges = $('statChanges');
-const trendChanges = $('trendChanges');
-const statHuman = $('statHuman');
-const trendHuman = $('trendHuman');
-const statVerify = $('statVerify');
-const trendVerify = $('trendVerify');
-
-// ═══════════════════════════════════════════════
-// Render Components
-// ═══════════════════════════════════════════════
 
 function renderComponents() {
+  const compGrid = $('compGrid');
   compGrid.innerHTML = '';
   COMPONENTS.forEach((comp, idx) => {
-    const state = comp.states[currentEra];
+    const state_obj = comp.states[state.currentEra];
     const card = document.createElement('div');
-    card.className = `comp-card era-${currentEra}`;
+    card.className = `comp-card era-${state.currentEra}`;
     card.innerHTML = `
       <div class="cc-head">
         <div class="cc-icon-wrap">${comp.icon}</div>
@@ -1330,72 +1905,76 @@ function renderComponents() {
       <div class="cc-content">
         <div class="cc-label cc-state-change">
           <span class="tag-dot"></span>
-          ${state.label}
+          ${state_obj.label}
         </div>
-        <div class="cc-desc cc-state-change">${state.desc}</div>
+        <div class="cc-desc cc-state-change">${state_obj.desc}</div>
       </div>
       <div class="morph-bar">
-        <div class="morph-seg s1 ${currentEra >= 0 ? 'active' : ''}"></div>
-        <div class="morph-seg s2 ${currentEra >= 1 ? 'active' : ''}"></div>
-        <div class="morph-seg s3 ${currentEra >= 2 ? 'active' : ''}"></div>
+        <div class="morph-seg s1 ${state.currentEra >= 0 ? 'active' : ''}"></div>
+        <div class="morph-seg s2 ${state.currentEra >= 1 ? 'active' : ''}"></div>
+        <div class="morph-seg s3 ${state.currentEra >= 2 ? 'active' : ''}"></div>
       </div>
     `;
     compGrid.appendChild(card);
   });
 }
 
-// ═══════════════════════════════════════════════
-// Render Specimen
-// ═══════════════════════════════════════════════
-
 function renderSpecimen() {
+  const specMonolith = $('specMonolith');
+  const specTiered = $('specTiered');
+  const specStream = $('specStream');
+
   specMonolith.classList.remove('visible');
   specTiered.classList.remove('visible');
   specStream.classList.remove('visible');
 
   setTimeout(() => {
-    if (currentEra === 0) specMonolith.classList.add('visible');
-    else if (currentEra === 1) specTiered.classList.add('visible');
+    if (state.currentEra === 0) specMonolith.classList.add('visible');
+    else if (state.currentEra === 1) specTiered.classList.add('visible');
     else specStream.classList.add('visible');
   }, 300);
 }
 
-// ═══════════════════════════════════════════════
-// Render Stats
-// ═══════════════════════════════════════════════
-
 function renderStats() {
-  const s = ERA_STATS[currentEra];
+  const s = ERA_STATS[state.currentEra];
+  const statReview = $('statReview');
+  const trendReview = $('trendReview');
+  const statChanges = $('statChanges');
+  const trendChanges = $('trendChanges');
+  const statHuman = $('statHuman');
+  const trendHuman = $('trendHuman');
+  const statVerify = $('statVerify');
+  const trendVerify = $('trendVerify');
+  const narrative = $('narrative');
+
   statReview.textContent = s.review;
   trendReview.textContent = s.reviewTrend;
-  trendReview.className = 'stat-trend ' + (currentEra === 0 ? 'neutral' : 'up');
+  trendReview.className = 'stat-trend ' + (state.currentEra === 0 ? 'neutral' : 'up');
 
   statChanges.textContent = s.changes;
   trendChanges.textContent = s.changesTrend;
-  trendChanges.className = 'stat-trend ' + (currentEra === 0 ? 'neutral' : 'up');
+  trendChanges.className = 'stat-trend ' + (state.currentEra === 0 ? 'neutral' : 'up');
 
   statHuman.textContent = s.human;
   trendHuman.textContent = s.humanTrend;
-  trendHuman.className = 'stat-trend ' + (currentEra === 0 ? 'neutral' : 'up');
+  trendHuman.className = 'stat-trend ' + (state.currentEra === 0 ? 'neutral' : 'up');
 
   statVerify.textContent = s.verify;
   trendVerify.textContent = s.verifyTrend;
-  trendVerify.className = 'stat-trend ' + (currentEra === 0 ? 'neutral' : 'up');
+  trendVerify.className = 'stat-trend ' + (state.currentEra === 0 ? 'neutral' : 'up');
 
   narrative.innerHTML = s.narrative;
 }
 
-// ═══════════════════════════════════════════════
-// Era Switch
-// ═══════════════════════════════════════════════
-
 function setEra(era) {
-  currentEra = era;
+  state.currentEra = era;
 
+  const eraButtons = document.querySelectorAll('.era-btn');
   eraButtons.forEach((b, i) => {
     b.classList.toggle('active', i === era);
   });
 
+  const eraSlider = $('eraSlider');
   eraSlider.className = `era-slider pos-${era} era-${era}`;
 
   renderComponents();
@@ -1403,32 +1982,408 @@ function setEra(era) {
   renderStats();
 }
 
-eraButtons.forEach(b => {
-  b.addEventListener('click', () => {
-    setEra(parseInt(b.dataset.era));
+function init() {
+  const eraButtons = document.querySelectorAll('.era-btn');
+  eraButtons.forEach(b => {
+    b.addEventListener('click', () => {
+      setEra(parseInt(b.dataset.era));
+    });
   });
-});
 
-// Keyboard nav
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' && currentEra < 2) setEra(currentEra + 1);
-  if (e.key === 'ArrowLeft' && currentEra > 0) setEra(currentEra - 1);
-});
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' && state.currentEra < 2) setEra(state.currentEra + 1);
+    if (e.key === 'ArrowLeft' && state.currentEra > 0) setEra(state.currentEra - 1);
+  });
 
-// Init
-renderComponents();
-renderStats();
+  renderComponents();
+  renderStats();
 
-// Auto-scrub after a beat (once)
-let autoPlayed = false;
-setTimeout(() => {
-  if (!autoPlayed) {
-    autoPlayed = true;
-    setEra(1);
-    setTimeout(() => setEra(2), 1600);
-    setTimeout(() => setEra(0), 3400);
+  // Auto-scrub demo on load
+  let autoPlayed = false;
+  setTimeout(() => {
+    if (!autoPlayed) {
+      autoPlayed = true;
+      setEra(1);
+      setTimeout(() => setEra(2), 1600);
+      setTimeout(() => setEra(0), 3400);
+    }
+  }, 2000);
+}
+
+return { init };
+
+})();
+
+// ═════════════════════════════════════════════════════════════════
+// SIMULATOR NAMESPACE
+// ═════════════════════════════════════════════════════════════════
+
+const simulator = (() => {
+
+const CHANGES = [
+  {
+    id: 'typo',
+    title: 'README typo fix',
+    risk: 'TRIVIAL',
+    files: 1,
+    lines: 1,
+    code: `- Welcome to our platfrom\n+ Welcome to our platform`
+  },
+  {
+    id: 'button',
+    title: 'Button color change',
+    risk: 'LOW',
+    files: 1,
+    lines: 3,
+    code: `- background-color: #3b82f6;\n+ background-color: #8b5cf6;\n+ border-radius: 12px;\n+ transition: all 0.2s ease;`
+  },
+  {
+    id: 'auth',
+    title: 'Auth login flow',
+    risk: 'MEDIUM',
+    files: 3,
+    lines: 12,
+    code: `- const token = jwt.sign({ id: user.id }, SECRET);\n+ const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: '1h' });\n+ const refresh = jwt.sign({ id: user.id }, REFRESH_SECRET, { expiresIn: '7d' });\n+ await redis.set(\`refresh:\${user.id}\`, refresh);`
+  },
+  {
+    id: 'migration',
+    title: 'Database migration',
+    risk: 'HIGH',
+    files: 4,
+    lines: 47,
+    code: `- ALTER TABLE users ADD COLUMN last_login TIMESTAMP;\n+ ALTER TABLE users ADD COLUMN last_login TIMESTAMP DEFAULT NOW();\n+ CREATE INDEX CONCURRENTLY idx_users_last_login ON users(last_login);\n+ ALTER TABLE sessions ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;`
   }
-}, 2000);
+];
+
+const WORKFLOWS = {
+  '2026': [
+    { label: 'Push received', duration: 0.2, description: 'Commit pushed to feature/auth-fix' },
+    { label: 'CI Pipeline starts', duration: 0.5, description: 'Queuing behind 3 other builds...' },
+    { label: 'Lint check', duration: 1.5, description: 'Running ESLint across codebase' },
+    { label: 'Unit tests', duration: 3, description: 'Running 847 tests' },
+    { label: 'Integration tests', duration: 2.5, description: 'Spinning up test containers...' },
+    { label: 'Build', duration: 2, description: 'Building production bundle...' },
+    { label: 'Waiting for reviewer', duration: 4, description: 'Assigned to @sarah. Away until 3pm.', isWait: true },
+    { label: 'Code review', duration: 3, description: 'Reviewing line by line...' },
+    { label: 'Address feedback', duration: 1.5, description: 'Pushing follow-up commit...' },
+    { label: 'Re-review', duration: 2, description: 'Waiting for approval...' },
+    { label: 'Manual merge', duration: 0.5, description: 'Creating merge commit...' },
+    { label: 'Deploy pipeline', duration: 2, description: 'Deploying to staging and production...' }
+  ],
+  '2028': [
+    { label: 'Push received', duration: 0.2, description: 'Intent extracted: Modify auth tokens' },
+    { label: 'Risk assessment', duration: 0.3, description: 'Risk: MEDIUM — auth surface change' },
+    { label: 'Agent-generated tests', duration: 1, description: 'Writing 12 additional test cases' },
+    { label: 'Targeted validation', duration: 1.5, description: 'Running 127 of 847 tests' },
+    { label: 'Semantic diff', duration: 0.5, description: 'This change adds role-based claims to JWT' },
+    { label: 'Auto-generated description', duration: 0.3, description: 'PR description created' },
+    { label: 'Tiered review decision', duration: 0.3, description: 'Risk MEDIUM → Requires light review' },
+    { label: 'AI pre-review', duration: 0.8, description: 'Agent suggests: consider rate limiting' },
+    { label: 'Human review', duration: 1, description: 'Quick human validation...' },
+    { label: 'Canary deploy', duration: 0.8, description: 'Deploying to 5% of traffic...' },
+    { label: 'Full rollout', duration: 0.5, description: 'Rolling out to 100%' }
+  ],
+  '2032': [
+    { label: 'Intent received', duration: 0.1, description: 'Parsing behavioral intent' },
+    { label: 'Agent swarm dispatched', duration: 0.2, description: '3 agents spawned: CodeGen, TestGen, DocGen' },
+    { label: 'Behavioral contract', duration: 0.3, description: 'BEFORE vs AFTER contract generated' },
+    { label: 'Continuous confidence', duration: 0.5, description: 'Confidence climbing...' },
+    { label: 'Knowledge graph update', duration: 0.1, description: 'Architecture decision recorded' },
+    { label: 'Flowing to production', duration: 0.2, description: 'Behind feature gate auth.refresh_v2' }
+  ]
+};
+
+let state = {
+  currentEra: '2026',
+  selectedChange: 'typo',
+  isRunning: false,
+  isComparing: false,
+  completedEras: new Set(),
+  startTime: null
+};
+
+function formatTime(seconds) {
+  if (seconds < 60) return Math.round(seconds) + 's';
+  if (seconds < 3600) return (seconds / 60).toFixed(1) + 'm';
+  return (seconds / 3600).toFixed(1) + 'h';
+}
+
+function renderChangeCards() {
+  const container = document.getElementById('simChangeCards');
+  container.innerHTML = CHANGES.map(change => `
+    <div class="sim-change-card ${change.id === state.selectedChange ? 'selected' : ''}" data-id="${change.id}">
+      <div class="sim-change-card-title">${change.title}</div>
+      <div class="sim-change-card-risk risk-${change.risk.toLowerCase()}">${change.risk}</div>
+      <div class="sim-change-card-meta">
+        ${change.files} files | ${change.lines} lines
+      </div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.sim-change-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.sim-change-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      state.selectedChange = card.dataset.id;
+    });
+  });
+}
+
+function getWorkflowStats(era) {
+  const stats = {
+    '2026': { totalTime: '18h', humanTime: '4h', testsRun: 847, handoffs: 3, insight: 'In 2026, a complex change requires multiple handoffs and human reviews spanning an entire day.' },
+    '2028': { totalTime: '2.1h', humanTime: '0.5h', testsRun: 127, handoffs: 1, insight: 'In 2028, agents handle most validation. Humans review intent summaries, not raw code.' },
+    '2032': { totalTime: '8s', humanTime: '<1s', testsRun: 2847, handoffs: 0, insight: 'In 2032, code changes flow continuously behind feature gates. No discrete reviews or handoffs.' }
+  };
+  return stats[era];
+}
+
+function createTimelineStep(step) {
+  const stepEl = document.createElement('div');
+  stepEl.className = 'sim-step';
+
+  let statusIcon = '◯';
+  if (step.isWait) statusIcon = '⧗';
+
+  stepEl.innerHTML = `
+    <div class="sim-step-icon">${statusIcon}</div>
+    <div class="sim-step-content">
+      <div class="sim-step-label">${step.label}</div>
+      <div class="sim-step-desc">${step.description}</div>
+    </div>
+  `;
+
+  return { el: stepEl, step };
+}
+
+function renderTimeline(era) {
+  const container = document.getElementById('simTimeline');
+  const workflow = WORKFLOWS[era];
+
+  container.innerHTML = '';
+  workflow.forEach(step => {
+    const { el } = createTimelineStep(step);
+    container.appendChild(el);
+  });
+}
+
+async function runWorkflow(era) {
+  state.isRunning = true;
+  state.startTime = Date.now();
+  state.currentEra = era;
+
+  const pushBtn = document.getElementById('simPushBtn');
+  pushBtn.disabled = true;
+
+  renderTimeline(era);
+  const steps = document.querySelectorAll('#simTimeline .sim-step');
+  const workflow = WORKFLOWS[era];
+
+  const startRealTime = Date.now();
+
+  for (let i = 0; i < workflow.length; i++) {
+    const step = workflow[i];
+    const stepEl = steps[i];
+    const duration = step.duration * 1000;
+
+    stepEl.classList.add('active');
+    if (step.isWait) {
+      stepEl.classList.add('waiting');
+    } else if (i > 0) {
+      stepEl.classList.add('running');
+    }
+
+    await new Promise(resolve => setTimeout(resolve, duration));
+
+    stepEl.classList.remove('running', 'waiting');
+    stepEl.classList.add('complete');
+    stepEl.querySelector('.sim-step-icon').textContent = '✓';
+
+    const elapsed = (Date.now() - startRealTime) / 1000;
+    document.getElementById('simElapsed').textContent = formatTime(elapsed);
+
+    const stats = getWorkflowStats(era);
+    document.getElementById('simTests').textContent = stats.testsRun;
+    document.getElementById('simHuman').textContent = stats.humanTime;
+  }
+
+  showResults(era);
+  state.isRunning = false;
+  state.completedEras.add(era);
+  document.getElementById('simRunAgainBtn').style.display = 'block';
+}
+
+function showResults(era) {
+  const stats = getWorkflowStats(era);
+  document.getElementById('simResultTime').textContent = stats.totalTime;
+  document.getElementById('simResultHuman').textContent = stats.humanTime;
+  document.getElementById('simResultTests').textContent = stats.testsRun;
+  document.getElementById('simResultHandoffs').textContent = stats.handoffs;
+  document.getElementById('simResultsInsight').textContent = stats.insight;
+  document.getElementById('simResultsOverlay').classList.add('visible');
+}
+
+async function runComparison() {
+  state.isComparing = true;
+  const pushBtn = document.getElementById('simPushBtn');
+  pushBtn.disabled = true;
+
+  const timeline = document.getElementById('simTimeline');
+  timeline.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;height:100%;" id="compareGrid"></div>';
+  const compareGrid = document.getElementById('compareGrid');
+
+  ['2026', '2028', '2032'].forEach(era => {
+    const col = document.createElement('div');
+    col.style.display = 'flex';
+    col.style.flexDirection = 'column';
+    col.style.gap = '8px';
+    col.style.overflow = 'auto';
+
+    const header = document.createElement('div');
+    header.style.fontWeight = '600';
+    header.style.fontSize = '10px';
+    header.style.paddingBottom = '8px';
+    header.style.borderBottom = '1px solid var(--border)';
+    header.textContent = era;
+    col.appendChild(header);
+
+    const workflow = WORKFLOWS[era];
+    workflow.forEach(step => {
+      const { el } = createTimelineStep(step);
+      col.appendChild(el);
+    });
+
+    compareGrid.appendChild(col);
+    runComparisonEra(era);
+  });
+}
+
+async function runComparisonEra(era) {
+  const steps = document.querySelectorAll(`#compareGrid > div:nth-child(${era === '2026' ? '1' : era === '2028' ? '2' : '3'}) .sim-step`);
+  const workflow = WORKFLOWS[era];
+
+  for (let i = 0; i < workflow.length; i++) {
+    const step = workflow[i];
+    const stepEl = steps[i];
+    const duration = step.duration * 1000;
+
+    stepEl.classList.add('active');
+    if (step.isWait) stepEl.classList.add('waiting');
+    else if (i > 0) stepEl.classList.add('running');
+
+    await new Promise(resolve => setTimeout(resolve, duration));
+
+    stepEl.classList.remove('running', 'waiting');
+    stepEl.classList.add('complete');
+    stepEl.querySelector('.sim-step-icon').textContent = '✓';
+  }
+
+  checkComparisonComplete();
+}
+
+function checkComparisonComplete() {
+  const all2026Done = document.querySelectorAll('#compareGrid > div:nth-child(1) .sim-step.complete').length === WORKFLOWS['2026'].length;
+  const all2028Done = document.querySelectorAll('#compareGrid > div:nth-child(2) .sim-step.complete').length === WORKFLOWS['2028'].length;
+  const all2032Done = document.querySelectorAll('#compareGrid > div:nth-child(3) .sim-step.complete').length === WORKFLOWS['2032'].length;
+
+  if (all2026Done && all2028Done && all2032Done) {
+    state.isRunning = false;
+    state.isComparing = false;
+    document.getElementById('simRunAgainBtn').style.display = 'block';
+
+    const stats2026 = getWorkflowStats('2026');
+    const stats2028 = getWorkflowStats('2028');
+    const stats2032 = getWorkflowStats('2032');
+
+    document.getElementById('simResultsInsight').textContent =
+      `2026: ${stats2026.totalTime} (${stats2026.humanTime} human). ` +
+      `2028: ${stats2028.totalTime} (${stats2028.humanTime} human). ` +
+      `2032: ${stats2032.totalTime} (${stats2032.humanTime} human).`;
+
+    setTimeout(() => {
+      document.getElementById('simResultsOverlay').classList.add('visible');
+    }, 500);
+  }
+}
+
+function init() {
+  renderChangeCards();
+  renderTimeline('2026');
+
+  document.getElementById('simPushBtn').addEventListener('click', () => {
+    if (state.isComparing) {
+      runComparison();
+    } else if (!state.isRunning) {
+      runWorkflow(state.currentEra);
+    }
+  });
+
+  document.getElementById('simRunAgainBtn').addEventListener('click', () => {
+    state.completedEras.clear();
+    document.getElementById('simElapsed').textContent = '0s';
+    document.getElementById('simTests').textContent = '0';
+    document.getElementById('simHuman').textContent = '-';
+    document.getElementById('simHandoffs').textContent = '0';
+    document.getElementById('simResultsOverlay').classList.remove('visible');
+    document.getElementById('simPushBtn').disabled = false;
+    state.isRunning = false;
+    state.isComparing = false;
+    renderTimeline(state.currentEra);
+  });
+
+  document.querySelectorAll('.sim-era-btn[data-era]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const era = btn.dataset.era;
+      document.querySelectorAll('.sim-era-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      state.currentEra = era;
+      state.isComparing = false;
+      document.getElementById('simTimeline').innerHTML = '';
+      renderTimeline(era);
+
+      document.getElementById('simPushBtn').disabled = false;
+      document.getElementById('simRunAgainBtn').style.display = 'none';
+      document.getElementById('simResultsOverlay').classList.remove('visible');
+      document.getElementById('simElapsed').textContent = '0s';
+    });
+  });
+
+  document.getElementById('simComparBtn').addEventListener('click', () => {
+    if (state.isRunning) return;
+    document.querySelectorAll('.sim-era-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('simComparBtn').classList.add('active');
+
+    state.isComparing = true;
+    state.currentEra = 'compare';
+    document.getElementById('simRunAgainBtn').style.display = 'none';
+    document.getElementById('simResultsOverlay').classList.remove('visible');
+
+    runComparison();
+  });
+
+  document.getElementById('simCloseBtn').addEventListener('click', () => {
+    document.getElementById('simResultsOverlay').classList.remove('visible');
+  });
+
+  document.getElementById('simCompareResultsBtn').addEventListener('click', () => {
+    document.getElementById('simResultsOverlay').classList.remove('visible');
+    document.getElementById('simComparBtn').click();
+  });
+}
+
+return { init };
+
+})();
+
+// ═════════════════════════════════════════════════════════════════
+// INIT
+// ═════════════════════════════════════════════════════════════════
+
+window.addEventListener('DOMContentLoaded', () => {
+  observatory.init();
+  simulator.init();
+});
 
 </script>
 

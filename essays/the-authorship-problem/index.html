@@ -1,0 +1,3167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Authorship Problem — Who Wrote This Code?</title>
+    <meta property="og:title" content="The Authorship Problem — Who Wrote This Code?">
+    <meta property="og:description" content="AI already writes your code. Your trust infrastructure doesn't know. Push a feature through three eras and watch the trust gap open — then close. Research you run, not research you read.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://thundeeran.dev/essays/the-authorship-problem">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="author" content="Thundeeran">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="/analytics/tracker.js" defer></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #050508;
+            --bg2: #08080e;
+            --surface: #0c0c14;
+            --surface2: #111119;
+            --surface3: #16161f;
+            --border: #1c1c2a;
+            --border-bright: #2a2a3c;
+            --text: #eaeaf2;
+            --text-dim: #a0a0b8;
+            --text-mute: #6e6e88;
+            --green: #34d399;
+            --yellow: #fbbf24;
+            --red: #f87171;
+            --purple: #a78bfa;
+            --blue: #60a5fa;
+            --pink: #f472b6;
+            --cyan: #22d3ee;
+            --orange: #fb923c;
+            --green-glow: rgba(52,211,153,0.12);
+            --purple-glow: rgba(167,139,250,0.12);
+            --blue-glow: rgba(96,165,250,0.12);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 56px 56px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 25% 0%, rgba(167,139,250,0.06), transparent 50%),
+                radial-gradient(ellipse at 75% 100%, rgba(52,211,153,0.04), transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ═══ NAVIGATION ═══ */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+            background: rgba(5,5,8,0.75);
+            backdrop-filter: blur(24px) saturate(1.2);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-left a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: conic-gradient(from 135deg, var(--purple), var(--blue), var(--green), var(--purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 20px var(--purple-glow);
+        }
+
+        .nav-logo::after {
+            content: '';
+            position: absolute;
+            inset: 2.5px;
+            border-radius: 6px;
+            background: var(--bg);
+        }
+
+        .nav-logo span {
+            position: relative;
+            z-index: 1;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .nav-name {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-link {
+            font-size: 13px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            letter-spacing: 0.2px;
+        }
+
+        .nav-link:hover { color: var(--text); }
+
+        .nav-series {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--purple);
+            padding: 6px 14px;
+            background: var(--purple-glow);
+            border: 1px solid rgba(167,139,250,0.2);
+            border-radius: 100px;
+        }
+
+        main { position: relative; z-index: 2; }
+
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px;
+        }
+
+        /* ===== HERO ===== */
+        .hero { text-align: center; animation: fadeIn 0.8s ease-out; padding-top: 160px !important; }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -3px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--purple) 50%, var(--yellow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 300% 300%;
+            animation: grad-shift 10s ease infinite;
+            line-height: 1.2;
+        }
+
+        @keyframes grad-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            margin-bottom: 32px;
+            font-weight: 300;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        .hero-byline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 60px;
+            font-size: 0.95rem;
+        }
+
+        .byline-text { color: var(--text-dim); }
+        .byline-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text-mute); }
+
+        .scroll-hint {
+            animation: bounce 2s infinite;
+            color: var(--text-mute);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 40px;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(12px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== NARRATIVE SECTIONS ===== */
+        .narrative-section {
+            flex-direction: column;
+            min-height: auto;
+            padding: 80px 40px;
+        }
+
+        .narrative-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .section-description {
+            font-size: 1rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .prose { max-width: 720px; }
+
+        .prose p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+            margin-bottom: 24px;
+            font-weight: 300;
+        }
+
+        .prose p:last-child { margin-bottom: 0; }
+        .prose strong { color: var(--text); font-weight: 600; }
+        .prose em { color: var(--yellow); font-style: italic; }
+
+        /* ===== FAILURE PATTERNS — SPOT THE BUG ===== */
+        .failures-section {
+            flex-direction: column;
+            min-height: auto;
+            padding: 80px 40px;
+        }
+
+        .failures-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .challenge-container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .challenge-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .challenge-card {
+            background: var(--surface2);
+            border: 1px solid var(--border-bright);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .challenge-card.revealed .cc-code {
+            position: relative;
+        }
+
+        .cc-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cc-type {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .cc-type.human {
+            color: var(--blue);
+            background: rgba(96,165,250,0.1);
+        }
+
+        .cc-type.ai {
+            color: var(--yellow);
+            background: rgba(251,191,36,0.1);
+        }
+
+        .cc-scenario {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        .cc-code {
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.7;
+            color: var(--text-dim);
+            overflow-x: auto;
+        }
+
+        .cc-code .line {
+            display: block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            transition: all 0.3s;
+            white-space: pre;
+        }
+
+        .cc-code .line.bug {
+            background: transparent;
+            color: var(--text-dim);
+        }
+
+        .challenge-card.revealed .cc-code .line.bug {
+            background: rgba(248,113,113,0.1);
+            border-left: 3px solid var(--red);
+            color: var(--red);
+        }
+
+        .cc-reveal {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: none;
+        }
+
+        .challenge-card.revealed .cc-reveal {
+            display: block;
+        }
+
+        .cc-reveal-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .cc-reveal-title.human-bug { color: var(--blue); }
+        .cc-reveal-title.ai-bug { color: var(--red); }
+
+        .cc-reveal-text {
+            font-size: 12px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .cc-tool-coverage {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .cc-tool {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .cc-tool.catches {
+            color: var(--green);
+            background: rgba(52,211,153,0.1);
+            border: 1px solid rgba(52,211,153,0.2);
+        }
+
+        .cc-tool.misses {
+            color: var(--red);
+            background: rgba(248,113,113,0.08);
+            border: 1px solid rgba(248,113,113,0.15);
+        }
+
+        .reveal-all-btn {
+            display: block;
+            margin: 0 auto 40px;
+            padding: 12px 32px;
+            background: var(--surface3);
+            border: 1px solid var(--border-bright);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
+        }
+
+        .reveal-all-btn:hover {
+            border-color: var(--purple);
+            background: rgba(167,139,250,0.06);
+        }
+
+        /* Coverage matrix */
+        .coverage-matrix {
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+
+        .coverage-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .coverage-table th {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-mute);
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-bright);
+        }
+
+        .coverage-table th:first-child {
+            text-align: left;
+            min-width: 180px;
+        }
+
+        .coverage-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .coverage-table td:first-child {
+            text-align: left;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .coverage-table tr.human-row td:first-child { color: var(--blue); }
+        .coverage-table tr.ai-row td:first-child { color: var(--yellow); }
+
+        .cov-cell {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .cov-cell.catches {
+            background: rgba(52,211,153,0.12);
+            color: var(--green);
+        }
+
+        .cov-cell.partial {
+            background: rgba(251,191,36,0.1);
+            color: var(--yellow);
+        }
+
+        .cov-cell.misses {
+            background: rgba(248,113,113,0.08);
+            color: var(--red);
+        }
+
+        .coverage-legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 16px;
+            font-size: 11px;
+            color: var(--text-mute);
+        }
+
+        .coverage-legend span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .matrix-insight {
+            max-width: 1000px;
+            margin: 32px auto 0;
+            background: rgba(248,113,113,0.04);
+            border: 1px solid rgba(248,113,113,0.12);
+            border-radius: 12px;
+            padding: 20px 24px;
+            text-align: center;
+        }
+
+        .matrix-insight p {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+
+        .matrix-insight strong { color: var(--red); }
+
+        @media (max-width: 768px) {
+            .challenge-pair { grid-template-columns: 1fr; }
+            .failures-section { padding: 60px 20px; }
+        }
+
+        /* ===== THE PROBLEM — MESSY MIDDLE ===== */
+        .problem-section {
+            flex-direction: column;
+            padding: 80px 40px;
+        }
+
+        .problem-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .blind-spot-demo {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .blind-spot-card {
+            background: var(--surface2);
+            border: 1px solid var(--border-bright);
+            border-radius: 16px;
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blind-spot-card.reality {
+            border-color: rgba(251,191,36,0.3);
+        }
+
+        .bsc-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bsc-label.sees { color: var(--green); }
+        .bsc-label.reality { color: var(--yellow); }
+
+        .bsc-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .git-blame {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            margin-bottom: 16px;
+        }
+
+        .git-line {
+            display: flex;
+            gap: 12px;
+            padding: 3px 0;
+            align-items: center;
+        }
+
+        .git-hash { color: var(--text-mute); min-width: 60px; }
+        .git-author { color: var(--blue); min-width: 90px; }
+        .git-code { color: var(--text-dim); }
+
+        .git-line.ai-generated { position: relative; }
+        .git-line.ai-generated .git-code { color: var(--yellow); }
+
+        .ai-badge {
+            font-size: 9px;
+            background: rgba(251,191,36,0.15);
+            color: var(--yellow);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .tool-gates {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .gate-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: var(--bg);
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .gate-name {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        .gate-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        .gate-status.pass { color: var(--green); }
+        .gate-status.blind { color: var(--yellow); }
+
+        .problem-insight {
+            max-width: 900px;
+            margin: 40px auto 0;
+            background: rgba(251,191,36,0.06);
+            border: 1px solid rgba(251,191,36,0.15);
+            border-radius: 12px;
+            padding: 24px 28px;
+            text-align: center;
+        }
+
+        .problem-insight p {
+            font-size: 1rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .problem-insight strong { color: var(--yellow); }
+
+        /* ===== ARTICLE AUDIO PLAYER ===== */
+        .audio-player {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999;
+            background: rgba(12,12,20,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-bright);
+            border-radius: 16px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            max-width: 720px;
+            width: calc(100% - 32px);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .audio-player.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .audio-play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), #8b5cf6);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            box-shadow: 0 4px 16px var(--purple-glow);
+        }
+
+        .audio-play-btn:hover { transform: scale(1.08); }
+
+        .audio-play-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .audio-middle {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .audio-section-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .audio-progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .audio-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--purple), var(--cyan));
+            width: 0%;
+            transition: width 0.3s linear;
+            border-radius: 2px;
+        }
+
+        .audio-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-mute);
+            margin-top: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .audio-progress-bar:hover .audio-progress-fill {
+            background: linear-gradient(90deg, var(--purple), var(--cyan));
+            filter: brightness(1.3);
+        }
+
+        .audio-source-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--text-mute);
+            opacity: 0.6;
+            padding: 2px 6px;
+            background: var(--surface3);
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .audio-skip-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--surface3);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .audio-skip-btn:hover {
+            background: var(--surface2);
+            color: var(--text);
+        }
+
+        .audio-skip-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        .audio-close-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: none;
+            border: none;
+            color: var(--text-mute);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: color 0.2s;
+            font-size: 18px;
+        }
+
+        .audio-close-btn:hover { color: var(--text); }
+
+        /* Listen button in hero */
+        .listen-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 10px 24px;
+            background: var(--surface2);
+            border: 1px solid var(--border-bright);
+            border-radius: 10px;
+            color: var(--text-dim);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .listen-btn:hover {
+            background: var(--surface3);
+            color: var(--text);
+            border-color: var(--purple);
+        }
+
+        .listen-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* Active section highlight during audio */
+        section.audio-active {
+            position: relative;
+        }
+
+        section.audio-active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--purple), transparent);
+            border-radius: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .audio-player {
+                top: auto;
+                bottom: 16px;
+                border-radius: 14px;
+                padding: 10px 14px;
+                gap: 10px;
+            }
+        }
+
+        /* ===== CINEMATIC SIMULATOR ===== */
+        .sim-section {
+            flex-direction: column;
+            min-height: auto;
+            padding: 80px 40px;
+        }
+
+        .sim-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .sim-header .section-description {
+            max-width: 700px;
+        }
+
+        /* Cinema top bar: change info + era tabs + progress */
+        .cinema-bar {
+            max-width: 1100px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .cinema-change-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .cinema-change-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .cinema-change-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            background: rgba(251,191,36,0.08);
+        }
+
+        .cinema-change-badge.risk-high { color: var(--orange); background: rgba(251,146,60,0.08); }
+        .cinema-change-badge.risk-critical { color: var(--red); background: rgba(248,113,113,0.08); }
+        .cinema-change-badge.risk-medium { color: var(--yellow); background: rgba(251,191,36,0.08); }
+        .cinema-change-badge.risk-low { color: var(--blue); background: rgba(96,165,250,0.08); }
+
+        .cinema-ai-pct {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-mute);
+        }
+
+        /* Era timeline tabs */
+        .cinema-era-tabs {
+            display: flex;
+            gap: 2px;
+            background: var(--surface);
+            padding: 3px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .cinema-era-tab {
+            padding: 8px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            background: none;
+            border: none;
+            color: var(--text-mute);
+            border-radius: 8px;
+            transition: all 0.3s;
+            position: relative;
+            cursor: default;
+        }
+
+        .cinema-era-tab.active {
+            background: var(--surface3);
+            color: var(--text);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .cinema-era-tab.done {
+            color: var(--text-dim);
+        }
+
+        .cinema-era-tab .era-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-right: 6px;
+            vertical-align: middle;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cinema-era-tab.active .era-dot,
+        .cinema-era-tab.done .era-dot { opacity: 1; }
+        .cinema-era-tab[data-era="2026"] .era-dot { background: var(--yellow); }
+        .cinema-era-tab[data-era="2028"] .era-dot { background: var(--cyan); }
+        .cinema-era-tab[data-era="2032"] .era-dot { background: var(--green); }
+
+        /* Cinema controls */
+        .cinema-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cinema-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), #8b5cf6);
+            border: none;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s;
+            box-shadow: 0 4px 16px var(--purple-glow);
+        }
+
+        .cinema-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 24px rgba(167,139,250,0.3);
+        }
+
+        .cinema-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .cinema-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .cinema-btn-narrate {
+            background: var(--surface3);
+            border: 1px solid var(--border-bright);
+            box-shadow: none;
+        }
+
+        .cinema-btn-narrate:hover {
+            background: var(--surface2);
+            box-shadow: none;
+        }
+
+        .cinema-btn-narrate.active {
+            background: linear-gradient(135deg, var(--purple), #8b5cf6);
+            border-color: transparent;
+            box-shadow: 0 4px 16px var(--purple-glow);
+        }
+
+        .cinema-btn-narrate:not(.active) svg {
+            opacity: 0.4;
+        }
+
+        /* Narration caption bar */
+        .cinema-caption {
+            max-width: 1100px;
+            margin: 0 auto;
+            min-height: 28px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-dim);
+            font-style: italic;
+            line-height: 1.5;
+            padding: 6px 24px;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .cinema-caption.visible {
+            opacity: 1;
+        }
+
+        /* Progress bar under the cinema */
+        .cinema-progress {
+            max-width: 1100px;
+            margin: 0 auto 8px;
+            height: 3px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .cinema-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--yellow), var(--cyan), var(--green));
+            width: 0%;
+            transition: width 0.3s linear;
+            border-radius: 2px;
+        }
+
+        /* Pipeline container */
+        .pipeline-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: var(--surface);
+            border: 1px solid var(--border-bright);
+            border-radius: 20px;
+            padding: 40px 32px;
+            position: relative;
+            overflow: visible;
+            min-height: 420px;
+        }
+
+        .pipeline-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(167,139,250,0.03), transparent 60%);
+            pointer-events: none;
+            border-radius: 20px;
+        }
+
+        .pipeline-era-banner {
+            text-align: center;
+            margin-bottom: 32px;
+            transition: opacity 0.4s;
+        }
+
+        .pipeline-era-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--purple);
+            margin-bottom: 6px;
+            transition: color 0.4s;
+        }
+
+        .pipeline-era-title.era-2026 { color: var(--yellow); }
+        .pipeline-era-title.era-2028 { color: var(--cyan); }
+        .pipeline-era-title.era-2032 { color: var(--green); }
+
+        .pipeline-era-desc {
+            font-size: 13px;
+            color: var(--text-mute);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Horizontal pipeline nodes */
+        .pipeline-track {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 0;
+            position: relative;
+            padding: 20px 0 0;
+        }
+
+        .pipeline-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            max-width: 160px;
+            position: relative;
+            opacity: 0.25;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .pipeline-node.active { opacity: 1; }
+        .pipeline-node.completed { opacity: 1; }
+        .pipeline-node.waiting { opacity: 0.25; }
+
+        /* Node circle with trust ring */
+        .node-ring {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .node-ring-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            transition: all 0.5s;
+        }
+
+        .pipeline-node.active .node-ring-bg {
+            border-color: var(--purple);
+            box-shadow: 0 0 20px var(--purple-glow);
+        }
+
+        .pipeline-node.completed .node-ring-bg {
+            border-color: var(--green);
+        }
+
+        .pipeline-node.completed.trust-blind .node-ring-bg {
+            border-color: var(--yellow);
+            box-shadow: 0 0 12px rgba(251,191,36,0.15);
+        }
+
+        .pipeline-node.completed.trust-aware .node-ring-bg {
+            border-color: var(--cyan);
+            box-shadow: 0 0 12px rgba(34,211,238,0.12);
+        }
+
+        .pipeline-node.completed.trust-proven .node-ring-bg {
+            border-color: var(--green);
+            box-shadow: 0 0 12px rgba(52,211,153,0.15);
+        }
+
+        /* SVG progress ring */
+        .node-progress {
+            position: absolute;
+            inset: -2px;
+            transform: rotate(-90deg);
+        }
+
+        .node-progress circle {
+            fill: none;
+            stroke-width: 3;
+            stroke-linecap: round;
+        }
+
+        .node-progress .track { stroke: transparent; }
+
+        .node-progress .fill {
+            stroke: var(--purple);
+            stroke-dasharray: 213;
+            stroke-dashoffset: 213;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .pipeline-node.active .node-progress .fill {
+            animation: ring-fill 1s ease forwards;
+        }
+
+        @keyframes ring-fill {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .node-icon {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            z-index: 2;
+        }
+
+        /* Trust badge on node */
+        .node-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            z-index: 3;
+            border: 2px solid var(--surface);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .pipeline-node.completed .node-badge {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .node-badge.blind { background: var(--yellow); color: var(--bg); }
+        .node-badge.aware { background: var(--cyan); color: var(--bg); }
+        .node-badge.verified { background: var(--green); color: var(--bg); }
+
+        /* Connector lines between nodes */
+        .pipeline-connector {
+            width: 40px;
+            height: 3px;
+            background: var(--border);
+            margin-top: 31px;
+            position: relative;
+            flex-shrink: 0;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+
+        .connector-fill {
+            position: absolute;
+            inset: 0;
+            background: var(--purple);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+            border-radius: 2px;
+        }
+
+        .pipeline-connector.filled .connector-fill { transform: scaleX(1); }
+
+        .connector-pulse {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--purple);
+            top: -3px;
+            left: -4px;
+            opacity: 0;
+            box-shadow: 0 0 8px var(--purple);
+        }
+
+        .pipeline-connector.filling .connector-pulse {
+            opacity: 1;
+            animation: pulse-travel 0.5s ease forwards;
+        }
+
+        @keyframes pulse-travel {
+            from { left: -4px; }
+            to { left: calc(100% - 4px); }
+        }
+
+        .node-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            text-align: center;
+            margin-bottom: 4px;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .node-sublabel {
+            font-size: 9px;
+            color: var(--text-mute);
+            text-align: center;
+            max-width: 120px;
+            line-height: 1.4;
+        }
+
+        /* Auto-expanding detail card below active node */
+        .node-detail {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            background: var(--surface2);
+            border: 1px solid var(--border-bright);
+            border-radius: 12px;
+            padding: 14px 16px;
+            min-width: 210px;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+        }
+
+        .pipeline-node.show-detail .node-detail {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(12px);
+        }
+
+        .node-detail-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .node-detail-title.blind { color: var(--yellow); }
+        .node-detail-title.aware { color: var(--cyan); }
+        .node-detail-title.verified { color: var(--green); }
+
+        .nd-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 0;
+            font-size: 11px;
+        }
+
+        .nd-key { color: var(--text-mute); }
+        .nd-val { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; }
+        .nd-val.green { color: var(--green); }
+        .nd-val.yellow { color: var(--yellow); }
+        .nd-val.red { color: var(--red); }
+        .nd-val.cyan { color: var(--cyan); }
+        .nd-val.purple { color: var(--purple); }
+
+        /* Trust gauges */
+        .trust-gauge-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+
+        .trust-gauge { text-align: center; }
+
+        .trust-gauge-ring {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            margin: 0 auto 10px;
+        }
+
+        .trust-gauge-ring svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .trust-gauge-ring .gauge-track {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 6;
+        }
+
+        .trust-gauge-ring .gauge-fill {
+            fill: none;
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 251;
+            stroke-dashoffset: 251;
+            transition: stroke-dashoffset 1.5s ease, stroke 0.5s;
+        }
+
+        .trust-gauge-value {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .trust-gauge-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
+
+        .trust-gauge-sublabel {
+            font-size: 10px;
+            color: var(--text-mute);
+            margin-top: 2px;
+        }
+
+        /* Verdict */
+        .sim-verdict {
+            margin-top: 32px;
+            padding: 24px 28px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s;
+        }
+
+        .sim-verdict.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .sim-verdict.gap { background: rgba(251,191,36,0.04); border-color: rgba(251,191,36,0.2); }
+        .sim-verdict.closed { background: rgba(34,211,238,0.04); border-color: rgba(34,211,238,0.2); }
+        .sim-verdict.proven { background: rgba(52,211,153,0.04); border-color: rgba(52,211,153,0.2); }
+
+        .verdict-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .sim-verdict.gap .verdict-title { color: var(--yellow); }
+        .sim-verdict.closed .verdict-title { color: var(--cyan); }
+        .sim-verdict.proven .verdict-title { color: var(--green); }
+
+        .verdict-text {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Era transition overlay */
+        .era-transition {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(5,5,8,0.92);
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+            border-radius: 20px;
+        }
+
+        .era-transition.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .era-transition-content {
+            text-align: center;
+        }
+
+        .era-transition-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, var(--purple), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            animation: transition-pulse 1s ease;
+        }
+
+        .era-transition-label {
+            font-size: 14px;
+            color: var(--text-dim);
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        @keyframes transition-pulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Mobile cinema */
+        @media (max-width: 1024px) {
+            .pipeline-track { flex-wrap: wrap; gap: 16px; }
+            .pipeline-connector { display: none; }
+            .pipeline-node { max-width: none; flex-basis: calc(33% - 16px); }
+            .trust-gauge-container { flex-wrap: wrap; }
+            .cinema-bar { justify-content: center; }
+        }
+
+        @media (max-width: 768px) {
+            .cinema-bar { flex-direction: column; align-items: center; gap: 12px; }
+            .pipeline-node { flex-basis: calc(50% - 16px); }
+            .pipeline-container { padding: 24px 16px; }
+        }
+
+        /* ===== TRANSFORMATION TABLE ===== */
+        .transformation-grid {
+            max-width: 800px;
+            margin: 40px auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .transformation-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 20px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .transformation-old {
+            flex: 1;
+            text-align: right;
+            font-size: 14px;
+            color: var(--text-mute);
+            font-weight: 400;
+        }
+
+        .transformation-arrow {
+            color: var(--yellow);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .transformation-new {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* ===== CLOSING ===== */
+        .closing-section {
+            flex-direction: column;
+            text-align: center;
+            padding: 80px 40px;
+        }
+
+        .closing-card {
+            max-width: 700px;
+            margin: 32px auto;
+            padding: 32px;
+            background: rgba(167,139,250,0.04);
+            border: 1px solid rgba(167,139,250,0.15);
+            border-radius: 16px;
+        }
+
+        .closing-text {
+            font-size: 1.2rem;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text);
+        }
+
+        .closing-prose {
+            max-width: 720px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--border);
+            color: var(--text-mute);
+            font-size: 13px;
+        }
+
+        footer a { color: var(--text-dim); text-decoration: none; }
+        footer a:hover { color: var(--purple); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .sim-body { grid-template-columns: 1fr; }
+            .sim-sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+            .sim-sidebar-label { width: 100%; }
+            .sim-change-card { flex: 1; min-width: 140px; }
+            .sim-push-btn { margin-top: 0; }
+            .blind-spot-demo { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .nav-series { display: none; }
+            section { padding: 60px 20px; }
+            .hero { padding-top: 120px !important; }
+            .narrative-section { padding: 60px 20px; }
+            .sim-section { padding: 60px 16px; }
+            .hero-title { font-size: 2.5rem; letter-spacing: -2px; }
+            .hero-subtitle { font-size: 1.05rem; }
+            .section-title { font-size: 1.8rem; }
+            .sim-era-selector { flex-wrap: wrap; font-size: 9px; }
+            .sim-era-btn { padding: 4px 10px; font-size: 9px; }
+            .sim-sidebar {
+                flex-direction: column;
+            }
+            .sim-change-card { min-width: auto; }
+            .transformation-row { flex-direction: column; gap: 6px; text-align: center; }
+            .transformation-old, .transformation-new { text-align: center; flex: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-left">
+            <a href="/">
+                <div class="nav-logo"><span>T</span></div>
+                <div class="nav-name">Thundeeran</div>
+            </a>
+        </div>
+        <div class="nav-right">
+            <span class="nav-series">Essay 02</span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/#essays" class="nav-link">All Essays</a>
+        </div>
+    </nav>
+
+    <main>
+        <!-- HERO -->
+        <section class="hero" data-track="hero">
+            <h1 class="hero-title">The Authorship Problem</h1>
+            <p class="hero-subtitle">AI already writes your code. Your trust infrastructure doesn't know. This is a working model — push a feature through three eras and watch the trust gap open, then close. Research you run, not research you read.</p>
+            <div class="hero-byline">
+                <span class="byline-text">By Thundeeran</span>
+                <div class="byline-dot"></div>
+                <span class="byline-text">2026</span>
+                <div class="byline-dot"></div>
+                <span class="byline-text">Essay 02</span>
+            </div>
+            <button class="listen-btn" id="listen-btn" onclick="startArticleAudio()">
+                <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                Listen to this article
+            </button>
+            <div class="scroll-hint">Scroll to begin</div>
+        </section>
+
+        <!-- Floating audio player -->
+        <div class="audio-player" id="audio-player">
+            <button class="audio-play-btn" id="audio-play-btn" title="Play/Pause">
+                <svg id="audio-icon-play" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                <svg id="audio-icon-pause" viewBox="0 0 24 24" style="display:none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            </button>
+            <div class="audio-middle">
+                <div class="audio-section-name" id="audio-section-name">The Authorship Problem</div>
+                <div class="audio-progress-bar" id="audio-progress-bar">
+                    <div class="audio-progress-fill" id="audio-progress-fill"></div>
+                </div>
+                <div class="audio-time">
+                    <span id="audio-time-current">0:00</span>
+                    <span id="audio-current-section">Section 1 of 7</span>
+                    <span id="audio-speed" style="cursor:pointer;" title="Playback speed">1.0x</span>
+                </div>
+            </div>
+            <button class="audio-skip-btn" id="audio-skip-back" title="Previous section">
+                <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" transform="scale(-1,1) translate(-24,0)"/></svg>
+            </button>
+            <button class="audio-skip-btn" id="audio-skip-fwd" title="Next section">
+                <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+            </button>
+            <span class="audio-source-badge" id="audio-source-badge"></span>
+            <button class="audio-close-btn" id="audio-close" title="Close">&times;</button>
+        </div>
+        <!-- Hidden HTML5 audio element for ElevenLabs MP3 playback -->
+        <audio id="audio-element" preload="auto"></audio>
+
+        <!-- THE PROBLEM: THE MESSY MIDDLE -->
+        <section class="problem-section" data-track="problem">
+            <div class="problem-header">
+                <h2 class="section-title">The Half-Blind Spot</h2>
+                <p class="section-description">Claude Code already adds "Co-Authored-By: Claude" to commits. We know AI was involved. But knowing <em>that</em> AI co-authored code is very different from knowing <em>which lines, from what prompt, with what model, and what the human changed</em>. Here's the gap.</p>
+            </div>
+
+            <div class="blind-spot-demo">
+                <!-- What the tools see -->
+                <div class="blind-spot-card">
+                    <div class="bsc-label sees"><span class="bsc-dot"></span> What your tools see</div>
+                    <div class="git-blame">
+                        <div class="git-line">
+                            <span class="git-hash">a3f2c1d</span>
+                            <span class="git-author">sarah_dev</span>
+                            <span class="git-code">async function rateLimit(req) {</span>
+                        </div>
+                        <div class="git-line">
+                            <span class="git-hash">a3f2c1d</span>
+                            <span class="git-author">sarah_dev</span>
+                            <span class="git-code">  const bucket = getBucket(req.ip);</span>
+                        </div>
+                        <div class="git-line">
+                            <span class="git-hash">a3f2c1d</span>
+                            <span class="git-author">sarah_dev</span>
+                            <span class="git-code">  if (bucket.tokens <= 0) {</span>
+                        </div>
+                        <div class="git-line">
+                            <span class="git-hash">a3f2c1d</span>
+                            <span class="git-author">sarah_dev</span>
+                            <span class="git-code">    throw new RateLimitError();</span>
+                        </div>
+                        <div class="git-line">
+                            <span class="git-hash">a3f2c1d</span>
+                            <span class="git-author">sarah_dev</span>
+                            <span class="git-code">  }</span>
+                        </div>
+                        <div class="git-line" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);">
+                            <span class="git-hash" style="color: var(--cyan);">tag:</span>
+                            <span class="git-code" style="color: var(--cyan); font-size: 11px;">Co-Authored-By: Claude <noreply@anthropic.com></span>
+                        </div>
+                    </div>
+                    <div class="tool-gates">
+                        <div class="gate-row"><span class="gate-name">Co-Author Tag</span><span class="gate-status pass" style="color: var(--cyan);">&#10003; AI FLAGGED</span></div>
+                        <div class="gate-row"><span class="gate-name">SonarQube</span><span class="gate-status pass">&#10003; PASS</span></div>
+                        <div class="gate-row"><span class="gate-name">Snyk</span><span class="gate-status pass">&#10003; PASS</span></div>
+                        <div class="gate-row"><span class="gate-name">CodeQL</span><span class="gate-status pass">&#10003; PASS</span></div>
+                        <div class="gate-row"><span class="gate-name">ESLint</span><span class="gate-status pass">&#10003; PASS</span></div>
+                        <div class="gate-row"><span class="gate-name">Tests (94%)</span><span class="gate-status pass">&#10003; PASS</span></div>
+                        <div class="gate-row"><span class="gate-name">Code Review</span><span class="gate-status pass">&#10003; APPROVED</span></div>
+                    </div>
+                </div>
+
+                <!-- What's actually missing -->
+                <div class="blind-spot-card reality">
+                    <div class="bsc-label reality"><span class="bsc-dot"></span> What's missing from the picture</div>
+                    <div class="git-blame">
+                        <div class="git-line">
+                            <span class="git-hash">a3f2c1d</span>
+                            <span class="git-author">sarah_dev</span>
+                            <span class="git-code">async function rateLimit(req) {</span>
+                        </div>
+                        <div class="git-line ai-generated">
+                            <span class="git-hash">a3f2c1d</span>
+                            <span class="git-author">sarah_dev</span>
+                            <span class="git-code">  const bucket = getBucket(req.ip);</span>
+                            <span class="ai-badge">AI</span>
+                        </div>
+                        <div class="git-line ai-generated">
+                            <span class="git-hash">a3f2c1d</span>
+                            <span class="git-author">sarah_dev</span>
+                            <span class="git-code">  if (bucket.tokens <= 0) {</span>
+                            <span class="ai-badge">AI</span>
+                        </div>
+                        <div class="git-line ai-generated">
+                            <span class="git-hash">a3f2c1d</span>
+                            <span class="git-author">sarah_dev</span>
+                            <span class="git-code">    throw new RateLimitError();</span>
+                            <span class="ai-badge">AI</span>
+                        </div>
+                        <div class="git-line">
+                            <span class="git-hash">a3f2c1d</span>
+                            <span class="git-author">sarah_dev</span>
+                            <span class="git-code">  }</span>
+                        </div>
+                    </div>
+                    <div class="tool-gates">
+                        <div class="gate-row"><span class="gate-name">Which lines are AI?</span><span class="gate-status blind">UNKNOWN</span></div>
+                        <div class="gate-row"><span class="gate-name">What prompt produced it?</span><span class="gate-status blind">UNKNOWN</span></div>
+                        <div class="gate-row"><span class="gate-name">Which model version?</span><span class="gate-status blind">UNKNOWN</span></div>
+                        <div class="gate-row"><span class="gate-name">What did the human change?</span><span class="gate-status blind">UNKNOWN</span></div>
+                        <div class="gate-row"><span class="gate-name">AI hallucination checks?</span><span class="gate-status blind">NONE</span></div>
+                        <div class="gate-row"><span class="gate-name">Tools adapted to AI origin?</span><span class="gate-status blind">NO</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-insight">
+                <p><strong>We know Claude co-authored this commit. We don't know which lines, from what prompt, or what the human changed after.</strong> The "Co-Authored-By" tag is a confession without details. SonarQube sees it and runs the same checks. Snyk sees it and runs the same checks. The reviewer sees it and still can't tell which lines reflect human reasoning and which are model output. Every tool has the binary signal — "AI was here" — but none can act on it.</p>
+            </div>
+        </section>
+
+        <!-- THESIS -->
+        <section class="narrative-section" data-track="thesis">
+            <div class="narrative-content">
+                <h2 class="section-title">The Trust Gap</h2>
+                <div class="prose">
+                    <p>Credit where it's due: we're not starting from zero. Claude Code adds "Co-Authored-By" tags. GitHub flags Copilot suggestions. The industry has acknowledged that AI is in the authorship loop. <strong>The problem isn't awareness. It's granularity.</strong></p>
+
+                    <p>Today's tools — SonarQube, Snyk, CodeQL, your test suites, your code review process — are genuinely sophisticated. They catch real bugs, real vulnerabilities, real quality issues. Some of them can even see the co-author tag. But <strong>knowing "AI was involved" and knowing "these specific lines came from Claude 4, prompted with this intent, and the human modified the error handling" are fundamentally different levels of information.</strong> The first is a flag. The second is actionable provenance.</p>
+
+                    <p>This granularity matters because <em>AI-generated code fails differently than human-written code</em>. That's not a theoretical claim. The failure patterns are concretely different — and your current toolchain is optimized for one set while being largely blind to the other. Don't take our word for it. Try to spot the bugs yourself.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAILURE PATTERNS: SPOT THE BUG -->
+        <section class="failures-section" data-track="failure-patterns">
+            <div class="failures-header">
+                <h2 class="section-title">Spot the Bug</h2>
+                <p class="section-description">Each pair shows two code snippets with a bug. One was written by a human. One was generated by AI. Can you find both? Then see which of your current tools would catch each one.</p>
+            </div>
+
+            <div class="challenge-container">
+
+                <!-- Challenge 1: Auth -->
+                <div class="challenge-pair">
+                    <div class="challenge-card" id="challenge-1a">
+                        <div class="cc-header">
+                            <span class="cc-type human">Human-Written</span>
+                            <span class="cc-scenario">Authentication check</span>
+                        </div>
+                        <div class="cc-code">
+<span class="line">function verifyToken(token) {</span>
+<span class="line">  try {</span>
+<span class="line bug">    const decoded = jwt.verify(token, SECRET);</span>
+<span class="line bug">    return { valid: true, user: decoded };</span>
+<span class="line">  } catch (err) {</span>
+<span class="line">    return { valid: false };</span>
+<span class="line">  }</span>
+<span class="line">}</span>
+                        </div>
+                        <div class="cc-reveal">
+                            <div class="cc-reveal-title human-bug">Human Bug: Missing expiration check</div>
+                            <div class="cc-reveal-text">The developer forgot to check <code>decoded.exp</code> against the current time. An expired token still returns <code>valid: true</code>. Classic human oversight — they know JWT but forgot one check under time pressure.</div>
+                            <div class="cc-tool-coverage">
+                                <span class="cc-tool catches">ESLint &#10003;</span>
+                                <span class="cc-tool catches">CodeQL &#10003;</span>
+                                <span class="cc-tool catches">Snyk &#10003;</span>
+                                <span class="cc-tool catches">Code Review &#10003;</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="challenge-card" id="challenge-1b">
+                        <div class="cc-header">
+                            <span class="cc-type ai">AI-Generated</span>
+                            <span class="cc-scenario">Authentication check</span>
+                        </div>
+                        <div class="cc-code">
+<span class="line">function verifyToken(token) {</span>
+<span class="line">  try {</span>
+<span class="line">    const decoded = jwt.verify(token, SECRET);</span>
+<span class="line">    if (decoded.exp < Date.now()) {</span>
+<span class="line">      return { valid: false, reason: 'expired' };</span>
+<span class="line">    }</span>
+<span class="line bug">    if (!decoded.permissions.includes('read')) {</span>
+<span class="line">      return { valid: false, reason: 'insufficient' };</span>
+<span class="line">    }</span>
+<span class="line">    return { valid: true, user: decoded };</span>
+<span class="line">  } catch (err) {</span>
+<span class="line">    return { valid: false, reason: err.message };</span>
+<span class="line">  }</span>
+<span class="line">}</span>
+                        </div>
+                        <div class="cc-reveal">
+                            <div class="cc-reveal-title ai-bug">AI Bug: Hallucinated schema assumption</div>
+                            <div class="cc-reveal-text">The AI assumed the JWT payload has a <code>permissions</code> array because most training examples did. Your tokens use <code>roles</code>, not <code>permissions</code>. The code is structurally perfect — expiry check, permission check, error handling — but <code>decoded.permissions</code> is <code>undefined</code>, so <code>.includes()</code> throws. Every token fails in production.</div>
+                            <div class="cc-tool-coverage">
+                                <span class="cc-tool misses">ESLint &#10007;</span>
+                                <span class="cc-tool misses">CodeQL &#10007;</span>
+                                <span class="cc-tool misses">Snyk &#10007;</span>
+                                <span class="cc-tool catches">Tests &#10003;*</span>
+                                <span class="cc-tool misses">Code Review &#10007;**</span>
+                            </div>
+                            <div class="cc-reveal-text" style="margin-top: 8px; font-size: 10px; color: var(--text-mute);">* Only if tests use real token fixtures with your actual schema. ** Reviewer would need to know your JWT schema differs from the common pattern.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Challenge 2: Crypto -->
+                <div class="challenge-pair">
+                    <div class="challenge-card" id="challenge-2a">
+                        <div class="cc-header">
+                            <span class="cc-type human">Human-Written</span>
+                            <span class="cc-scenario">Data encryption</span>
+                        </div>
+                        <div class="cc-code">
+<span class="line">function encrypt(data, key) {</span>
+<span class="line">  const iv = crypto.randomBytes(16);</span>
+<span class="line bug">  const cipher = crypto.createCipheriv(</span>
+<span class="line bug">    'aes-256-cbc', key, iv</span>
+<span class="line bug">  );</span>
+<span class="line">  let encrypted = cipher.update(data, 'utf8', 'hex');</span>
+<span class="line">  encrypted += cipher.final('hex');</span>
+<span class="line">  return iv.toString('hex') + ':' + encrypted;</span>
+<span class="line">}</span>
+                        </div>
+                        <div class="cc-reveal">
+                            <div class="cc-reveal-title human-bug">Human Bug: CBC instead of GCM</div>
+                            <div class="cc-reveal-text">The developer used AES-256-CBC, which provides confidentiality but not integrity. An attacker can modify the ciphertext without detection (padding oracle attack). Should use AES-256-GCM which includes authentication. A common mistake from following older tutorials.</div>
+                            <div class="cc-tool-coverage">
+                                <span class="cc-tool catches">CodeQL &#10003;</span>
+                                <span class="cc-tool catches">Semgrep &#10003;</span>
+                                <span class="cc-tool catches">Code Review &#10003;</span>
+                                <span class="cc-tool misses">Tests &#10007;</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="challenge-card" id="challenge-2b">
+                        <div class="cc-header">
+                            <span class="cc-type ai">AI-Generated</span>
+                            <span class="cc-scenario">Data encryption</span>
+                        </div>
+                        <div class="cc-code">
+<span class="line">function encrypt(data, key) {</span>
+<span class="line">  const iv = crypto.randomBytes(12);</span>
+<span class="line">  const cipher = crypto.createCipheriv(</span>
+<span class="line">    'aes-256-gcm', key, iv</span>
+<span class="line">  );</span>
+<span class="line">  let encrypted = cipher.update(data, 'utf8', 'hex');</span>
+<span class="line">  encrypted += cipher.final('hex');</span>
+<span class="line">  const tag = cipher.getAuthTag();</span>
+<span class="line bug">  return iv.toString('hex') + ':' +</span>
+<span class="line bug">    encrypted + ':' + tag.toString('hex');</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">function decrypt(payload, key) {</span>
+<span class="line">  const [ivHex, encHex, tagHex] = payload.split(':');</span>
+<span class="line">  const decipher = crypto.createDecipheriv(</span>
+<span class="line">    'aes-256-gcm', key, Buffer.from(ivHex, 'hex')</span>
+<span class="line">  );</span>
+<span class="line bug">  decipher.setAuthTag(Buffer.from(tagHex, 'hex'));</span>
+<span class="line">  let decrypted = decipher.update(encHex, 'hex', 'utf8');</span>
+<span class="line">  decrypted += decipher.final('utf8');</span>
+<span class="line">  return decrypted;</span>
+<span class="line">}</span>
+                        </div>
+                        <div class="cc-reveal">
+                            <div class="cc-reveal-title ai-bug">AI Bug: Auth tag set before ciphertext</div>
+                            <div class="cc-reveal-text">The AI correctly chose GCM, generated a proper auth tag, and the code looks textbook-perfect. But <code>setAuthTag()</code> is called before <code>decipher.update()</code> — in some Node.js versions, the auth tag must be set after feeding all ciphertext but before <code>final()</code>. The code works in Node 16 but silently fails authentication in Node 20+. The AI pattern-matched from training data that spanned multiple Node versions.</div>
+                            <div class="cc-tool-coverage">
+                                <span class="cc-tool misses">CodeQL &#10007;</span>
+                                <span class="cc-tool misses">Semgrep &#10007;</span>
+                                <span class="cc-tool misses">Snyk &#10007;</span>
+                                <span class="cc-tool misses">Code Review &#10007;*</span>
+                                <span class="cc-tool catches">Tests &#10003;**</span>
+                            </div>
+                            <div class="cc-reveal-text" style="margin-top: 8px; font-size: 10px; color: var(--text-mute);">* Even a senior reviewer would likely approve this — the code looks correct. ** Only if running tests on the actual target Node version.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Challenge 3: Database -->
+                <div class="challenge-pair">
+                    <div class="challenge-card" id="challenge-3a">
+                        <div class="cc-header">
+                            <span class="cc-type human">Human-Written</span>
+                            <span class="cc-scenario">Database query</span>
+                        </div>
+                        <div class="cc-code">
+<span class="line">async function getActiveUsers(orgId) {</span>
+<span class="line">  const users = await db.query(</span>
+<span class="line bug">    `SELECT * FROM users</span>
+<span class="line bug">     WHERE org_id = ${orgId}</span>
+<span class="line bug">     AND status = 'active'`</span>
+<span class="line">  );</span>
+<span class="line">  return users.rows;</span>
+<span class="line">}</span>
+                        </div>
+                        <div class="cc-reveal">
+                            <div class="cc-reveal-title human-bug">Human Bug: SQL injection</div>
+                            <div class="cc-reveal-text">Classic SQL injection via string interpolation instead of parameterized query. Every security tool in existence catches this. It's the poster child of human security mistakes — the developer knew better but took a shortcut.</div>
+                            <div class="cc-tool-coverage">
+                                <span class="cc-tool catches">CodeQL &#10003;</span>
+                                <span class="cc-tool catches">Semgrep &#10003;</span>
+                                <span class="cc-tool catches">SonarQube &#10003;</span>
+                                <span class="cc-tool catches">ESLint &#10003;</span>
+                                <span class="cc-tool catches">Code Review &#10003;</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="challenge-card" id="challenge-3b">
+                        <div class="cc-header">
+                            <span class="cc-type ai">AI-Generated</span>
+                            <span class="cc-scenario">Database query</span>
+                        </div>
+                        <div class="cc-code">
+<span class="line">async function getActiveUsers(orgId) {</span>
+<span class="line">  const users = await db.query(</span>
+<span class="line">    'SELECT id, name, email, role FROM users ' +</span>
+<span class="line">    'WHERE org_id = $1 AND status = $2',</span>
+<span class="line">    [orgId, 'active']</span>
+<span class="line">  );</span>
+<span class="line bug">  return users.rows.map(u => ({</span>
+<span class="line bug">    ...u,</span>
+<span class="line bug">    isAdmin: u.role === 'admin'</span>
+<span class="line bug">  }));</span>
+<span class="line">}</span>
+                        </div>
+                        <div class="cc-reveal">
+                            <div class="cc-reveal-title ai-bug">AI Bug: Assumed schema, exposed role data</div>
+                            <div class="cc-reveal-text">The AI wrote a perfectly secure parameterized query. But it assumed <code>role</code> is a column on the users table (your schema stores roles in a separate junction table). The query returns <code>null</code> for <code>u.role</code>, so <code>isAdmin</code> is always <code>false</code> — silently breaking admin access. Also, by selecting and returning role data to the client, it exposes authorization info that should stay server-side. The query is safe. The data model assumption is wrong.</div>
+                            <div class="cc-tool-coverage">
+                                <span class="cc-tool misses">CodeQL &#10007;</span>
+                                <span class="cc-tool misses">SonarQube &#10007;</span>
+                                <span class="cc-tool misses">Snyk &#10007;</span>
+                                <span class="cc-tool catches">Tests &#10003;*</span>
+                                <span class="cc-tool misses">Code Review &#10007;**</span>
+                            </div>
+                            <div class="cc-reveal-text" style="margin-top: 8px; font-size: 10px; color: var(--text-mute);">* Only if integration tests check actual admin behavior. ** Reviewer would need deep schema knowledge to catch this.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="reveal-all-btn" id="reveal-bugs">Reveal all bugs &#8594;</button>
+
+                <!-- Coverage Matrix -->
+                <div class="coverage-matrix">
+                    <table class="coverage-table">
+                        <thead>
+                            <tr>
+                                <th>Failure Pattern</th>
+                                <th>ESLint</th>
+                                <th>SonarQube</th>
+                                <th>CodeQL</th>
+                                <th>Snyk</th>
+                                <th>Tests</th>
+                                <th>Review</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="human-row">
+                                <td>Missing null/expiry check</td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                            </tr>
+                            <tr class="human-row">
+                                <td>SQL injection</td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                            </tr>
+                            <tr class="human-row">
+                                <td>Wrong crypto mode (CBC)</td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell partial">~</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell catches">&#10003;</span></td>
+                            </tr>
+                            <tr style="height: 8px;"><td colspan="7" style="border: none; padding: 0;"></td></tr>
+                            <tr class="ai-row">
+                                <td>Hallucinated schema field</td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell partial">~</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                            </tr>
+                            <tr class="ai-row">
+                                <td>Cross-version API behavior</td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell partial">~</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                            </tr>
+                            <tr class="ai-row">
+                                <td>Plausible wrong assumption</td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                                <td><span class="cov-cell partial">~</span></td>
+                                <td><span class="cov-cell misses">&#10007;</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="coverage-legend">
+                        <span><span class="cov-cell catches" style="width:18px;height:18px;font-size:10px;">&#10003;</span> Catches reliably</span>
+                        <span><span class="cov-cell partial" style="width:18px;height:18px;font-size:10px;">~</span> Sometimes, with right config</span>
+                        <span><span class="cov-cell misses" style="width:18px;height:18px;font-size:10px;">&#10007;</span> Misses</span>
+                    </div>
+                </div>
+
+                <div class="matrix-insight">
+                    <p><strong>Human failure patterns: 17 out of 18 cells green.</strong> Our tools evolved over two decades to catch exactly these bugs. <strong>AI failure patterns: 0 out of 18 cells green.</strong> The toolchain has near-zero coverage for the failure modes that AI-generated code actually exhibits. This is the granularity gap — and closing it requires knowing which lines came from AI.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- BRIDGE TO SIMULATOR -->
+        <section class="narrative-section" data-track="bridge">
+            <div class="narrative-content">
+                <div class="prose">
+                    <p>The pattern is clear: human bugs are <strong>structurally visible</strong> — wrong syntax, missing checks, known anti-patterns. AI bugs are <strong>semantically invisible</strong> — correct syntax, plausible structure, wrong assumptions about your specific system. Your current tools are brilliant at the first category and nearly blind to the second.</p>
+
+                    <p>The authorship model is evolving through three phases — from a binary co-author flag, to line-level provenance, to a full provenance tree. In each phase, the trust infrastructure adapts to the granularity available — and gains the ability to target verification where AI-generated code actually needs it. Below is a working model. Watch the same high-risk OAuth2 feature flow through all three eras — and see how the trust layer transforms.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CINEMATIC SIMULATOR -->
+        <section class="sim-section" data-track="simulator">
+            <div class="sim-header">
+                <h2 class="section-title">Experience the Trust Evolution</h2>
+                <p class="section-description">Watch the same OAuth2 feature flow through three eras of trust infrastructure — from a blind flag to full provenance.</p>
+            </div>
+
+            <!-- Cinema bar: change info + era tabs + controls -->
+            <div class="cinema-bar">
+                <div class="cinema-change-info">
+                    <span class="cinema-change-name" id="cinema-change-name">OAuth2 integration</span>
+                    <span class="cinema-change-badge risk-high" id="cinema-change-badge">HIGH RISK</span>
+                    <span class="cinema-ai-pct" id="cinema-ai-pct">85% AI-generated</span>
+                </div>
+                <div class="cinema-era-tabs" id="cinema-era-tabs">
+                    <button class="cinema-era-tab active" data-era="2026"><span class="era-dot"></span>2026</button>
+                    <button class="cinema-era-tab" data-era="2028"><span class="era-dot"></span>2028</button>
+                    <button class="cinema-era-tab" data-era="2032"><span class="era-dot"></span>2032</button>
+                </div>
+                <div class="cinema-controls">
+                    <button class="cinema-btn cinema-btn-narrate active" id="cinema-narrate" title="Toggle narration">
+                        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    </button>
+                    <button class="cinema-btn" id="cinema-play" title="Play">
+                        <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                    </button>
+                    <button class="cinema-btn" id="cinema-replay" title="Replay" style="display:none;">
+                        <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="cinema-progress">
+                <div class="cinema-progress-fill" id="cinema-progress-fill"></div>
+            </div>
+
+            <!-- Caption bar for narration subtitles -->
+            <div class="cinema-caption" id="cinema-caption"></div>
+
+            <!-- Pipeline visualization -->
+            <div class="pipeline-container" id="pipeline-container">
+                <div class="pipeline-era-banner">
+                    <div class="pipeline-era-title era-2026" id="pipeline-era-title">2026 — Hybrid Authorship, Legacy Trust</div>
+                    <div class="pipeline-era-desc" id="pipeline-era-desc">Developer uses Copilot / Claude Code. Commit tagged "Co-Authored-By: Claude." Every tool sees the flag — none adapt their checks.</div>
+                </div>
+                <div class="pipeline-track" id="pipeline-track">
+                    <!-- Nodes rendered by JS -->
+                </div>
+                <div class="trust-gauge-container" id="trust-gauges">
+                    <!-- Gauges rendered by JS -->
+                </div>
+                <div class="sim-verdict" id="sim-verdict"></div>
+
+                <!-- Era transition overlay -->
+                <div class="era-transition" id="era-transition">
+                    <div class="era-transition-content">
+                        <div class="era-transition-year" id="era-transition-year">2028</div>
+                        <div class="era-transition-label" id="era-transition-label">Adaptive Trust</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANALYSIS -->
+        <section class="narrative-section" data-track="analysis">
+            <div class="narrative-content">
+                <h2 class="section-title">What's Actually Changing</h2>
+                <div class="prose">
+                    <p>The shift from identity-based trust to provenance-based trust isn't just a technical upgrade. It changes <strong>what we verify, how we verify it, and why</strong>.</p>
+
+                    <p>In 2026, <strong>authorship is a name and a flag</strong>. Git blame shows sarah_dev. The commit says "Co-Authored-By: Claude." We've acknowledged the AI — that's progress. But the flag is binary and commit-level. It doesn't tell the security scanner which three lines to check for hallucinated API calls. It doesn't tell the reviewer which function was entirely model-generated versus which one the human wrote from scratch. The gap isn't awareness. It's <em>actionable granularity</em>.</p>
+
+                    <p>In 2028, <strong>authorship is a chain</strong>. The system records: sarah_dev prompted Claude 5 to implement rate limiting using token bucket pattern, then reviewed and modified the output. Now the reviewer can assess intent-to-output alignment. The security scanner applies AI-specific checks to the generated portions. The test generator creates additional edge cases targeting known AI hallucination patterns. Trust becomes <em>informed</em>.</p>
+
+                    <p>In 2032, <strong>authorship is a tree</strong>. An orchestrator decomposed the feature request into sub-tasks. A code agent, a test agent, and a security agent each contributed. Every contribution carries provenance: which agent, which constraints, which model version, what evidence supports it. Trust isn't in any single actor. It's in the <em>completeness and integrity of the provenance chain</em> — and whether the evidence gathered is proportional to the risk.</p>
+                </div>
+
+                <div class="transformation-grid">
+                    <div class="transformation-row">
+                        <span class="transformation-old">Co-Authored-By: Claude</span>
+                        <span class="transformation-arrow">&#8594;</span>
+                        <span class="transformation-new">Line-level provenance chain</span>
+                    </div>
+                    <div class="transformation-row">
+                        <span class="transformation-old">Binary flag ("AI was here")</span>
+                        <span class="transformation-arrow">&#8594;</span>
+                        <span class="transformation-new">Granular metadata (which lines, what prompt, which model)</span>
+                    </div>
+                    <div class="transformation-row">
+                        <span class="transformation-old">Same checks for all code</span>
+                        <span class="transformation-arrow">&#8594;</span>
+                        <span class="transformation-new">AI-origin-aware verification</span>
+                    </div>
+                    <div class="transformation-row">
+                        <span class="transformation-old">Trust the author's identity</span>
+                        <span class="transformation-arrow">&#8594;</span>
+                        <span class="transformation-new">Trust the evidence chain</span>
+                    </div>
+                    <div class="transformation-row">
+                        <span class="transformation-old">Independent tool signals</span>
+                        <span class="transformation-arrow">&#8594;</span>
+                        <span class="transformation-new">Correlated, risk-proportional profile</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CLOSING -->
+        <section class="closing-section" data-track="closing">
+            <h2 class="section-title">The Trust Model Must Evolve</h2>
+
+            <div class="closing-card">
+                <p class="closing-text">The question is no longer "who wrote this code?" It's "is the evidence sufficient for the risk?" When we stop treating authorship as identity and start treating it as provenance, we build trust models that are honest about how code is actually produced — and rigorous about how it's actually verified.</p>
+            </div>
+
+            <div class="closing-prose">
+                <div class="prose">
+                    <p>The organizations that navigate this transition well won't be the ones that ban AI tools or the ones that adopt them blindly. They'll be the ones that <strong>rebuild their trust infrastructure to match the new authorship reality</strong> — declaring AI provenance, adapting verification to origin, and measuring evidence sufficiency against risk.</p>
+
+                    <p>You've just operated inside that transition. The blind spot in 2026 is real — it exists in your codebase right now. The question is whether you close it deliberately or wait until a failure forces you to.</p>
+
+                    <p style="margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--border);"><strong>Next in the series:</strong> If authorship becomes provenance and trust becomes evidence-based, what happens to the pipeline itself? In <em>The Adaptive Pipeline</em>, you'll watch CI/CD evolve from a fixed sequence of gates into a confidence market that gathers evidence proportional to risk. Another model to run, not read. <a href="https://thundeeran.dev/#essays" style="color: var(--purple); text-decoration: none;">Coming soon &#8594;</a></p>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>By Thundeeran &middot; 2026 &middot; <a href="https://thundeeran.dev">thundeeran.dev</a> &middot; Research you run</p>
+    </footer>
+
+    <script>
+        // ===== CINEMATIC PIPELINE SIMULATOR =====
+        const DEMO_CHANGE = { id: 'auth-flow', title: 'OAuth2 integration', risk: 'HIGH', riskClass: 'risk-high', aiPercent: 85 };
+        const ERAS = ['2026', '2028', '2032'];
+        const ERA_LABELS = { '2026': 'Legacy Trust', '2028': 'Adaptive Trust', '2032': 'Provenance Native' };
+
+        // ===== PIPELINE DEFINITIONS =====
+        const PIPELINES = {
+            '2026': {
+                title: '2026 — Hybrid Authorship, Legacy Trust',
+                desc: 'Developer uses Copilot / Claude Code. Commit tagged "Co-Authored-By: Claude." Every tool sees the flag — none adapt their checks.',
+                nodes: (c) => [
+                    { icon: '👩‍💻', label: 'Author', sub: `${c.aiPercent}% AI-generated`, trust: 'blind', duration: 800, detail: { title: 'blind', rows: [['Git author','sarah_dev','green'],['Co-Author tag','Claude','cyan'],['Which lines AI?','UNKNOWN','yellow'],['Prompt used','UNKNOWN','yellow']] } },
+                    { icon: '🔍', label: 'Static Analysis', sub: 'SonarQube — same checks', trust: 'blind', duration: 600, detail: { title: 'blind', rows: [['Sees co-author?','YES','cyan'],['Adapts checks?','NO','yellow'],['AI-specific rules','NONE','yellow'],['Quality','A','green']] } },
+                    { icon: '🛡️', label: 'Security Scan', sub: 'Snyk + CodeQL — unadapted', trust: 'blind', duration: 700, detail: { title: 'blind', rows: [['Sees co-author?','YES','cyan'],['Hallucination check','NONE','yellow'],['Line-level AI data?','NO','yellow'],['Vulnerabilities','0','green']] } },
+                    { icon: '🧪', label: 'Test Suite', sub: 'Binary pass/fail — fixed', trust: 'blind', duration: 800, detail: { title: 'blind', rows: [['Sees co-author?','YES','cyan'],['AI edge cases?','NONE','yellow'],['Risk-adapted?','NO','yellow'],['Coverage','94%','green']] } },
+                    { icon: '👀', label: 'Code Review', sub: 'Human reads diff blind', trust: 'blind', duration: 1000, detail: { title: 'blind', rows: [['Sees co-author?','YES','cyan'],['Knows which lines?','NO','yellow'],['Intent alignment?','IMPOSSIBLE','yellow'],['Review time','~2 hours','green']] } },
+                    { icon: '🚀', label: 'Deploy', sub: 'Merged — no granular trace', trust: 'blind', duration: 500, detail: { title: 'blind', rows: [['Co-author tag?','YES','cyan'],['Line provenance?','NO','red'],['Trust basis','IDENTITY + FLAG','yellow'],['Traceable?','NO','red']] } }
+                ],
+                gauges: (c) => ({ provenance: 8, toolAwareness: 15, trustScore: 22 }),
+                verdict: { cls: 'gap', title: '⚠ THE GRANULARITY GAP', getText: (c) => `This ${c.risk}-risk change was ${c.aiPercent}% AI-generated. The co-author tag told every tool AI was involved — none adapted. No tool knows which lines to scrutinize. The trust model has a flag, but not the provenance.` }
+            },
+            '2028': {
+                title: '2028 — Declared Authorship, Adaptive Trust',
+                desc: 'AI provenance recorded at line level. Tools know which code came from which model. Verification adapts to both AI origin and risk level.',
+                nodes: (c) => [
+                    { icon: '👩‍💻', label: 'Author + Provenance', sub: `Line-level AI metadata`, trust: 'aware', duration: 700, detail: { title: 'aware', rows: [['Git author','sarah_dev','green'],['AI model','Claude 5.2','cyan'],['Lines tagged','100%','cyan'],['Prompt hash','sha256:a8f3...','cyan']] } },
+                    { icon: '🔍', label: 'AI-Aware Analysis', sub: 'Extra checks on AI regions', trust: 'aware', duration: 700, detail: { title: 'aware', rows: [['Knows AI lines?','YES','cyan'],['AI-specific checks',`+${Math.ceil(c.aiPercent/10)}`,'cyan'],['Hallucination scan','0 found','green'],['Quality','A','green']] } },
+                    { icon: '🛡️', label: 'Risk-Adapted Scan', sub: `${c.risk === 'HIGH' || c.risk === 'CRITICAL' ? 'Deep analysis triggered' : 'Targeted scrutiny'}`, trust: 'aware', duration: c.risk === 'HIGH' || c.risk === 'CRITICAL' ? 1000 : 600, detail: { title: 'aware', rows: [['Knows AI lines?','YES','cyan'],['Risk level',c.risk, c.risk === 'CRITICAL' ? 'red' : 'cyan'],['Scan depth', c.risk === 'HIGH' || c.risk === 'CRITICAL' ? 'DEEP' : 'STANDARD','cyan'],['AI vulns','CHECKED','green']] } },
+                    { icon: '🧪', label: 'Targeted Tests', sub: 'AI edge cases generated', trust: 'aware', duration: 800, detail: { title: 'aware', rows: [['Knows AI lines?','YES','cyan'],['AI edge cases',`+${Math.ceil(c.aiPercent/5)}`,'cyan'],['Coverage','97%','green'],['Risk-adapted?','YES','green']] } },
+                    { icon: '👀', label: 'Informed Review', sub: 'Intent-to-output alignment', trust: 'aware', duration: 800, detail: { title: 'aware', rows: [['AI regions flagged?','YES','cyan'],['Intent alignment','VERIFIED','green'],['Review focus','AI REGIONS','cyan'],['Review time','~45 min','green']] } },
+                    { icon: '🚀', label: 'Deploy + Provenance', sub: 'Full chain recorded', trust: 'aware', duration: 400, detail: { title: 'aware', rows: [['Line provenance?','YES','green'],['Trust basis','PROCESS + EVIDENCE','cyan'],['Traceable?','YES','green'],['Audit-ready?','YES','green']] } }
+                ],
+                gauges: (c) => ({ provenance: 85, toolAwareness: 92, trustScore: 88 }),
+                verdict: { cls: 'closed', title: '✓ GRANULARITY GAP CLOSED', getText: (c) => `Same ${c.risk}-risk change, still ${c.aiPercent}% AI-generated. Now every tool knows which lines came from AI and adapts accordingly. Security applied targeted scrutiny. The reviewer verified intent alignment. Provenance is complete.` }
+            },
+            '2032': {
+                title: '2032 — Provenance-Native, Evidence-Proportional',
+                desc: 'Agents author entire features. Every artifact carries full provenance. Verification gathers evidence proportional to risk. Trust is in the chain, not the identity.',
+                nodes: (c) => [
+                    { icon: '🎯', label: 'Intent Declared', sub: 'Human defines, orchestrator decomposes', trust: 'proven', duration: 500, detail: { title: 'verified', rows: [['Intent author','sarah (human)','purple'],['Orchestrator','v4.1','purple'],['Sub-tasks',`${c.risk === 'CRITICAL' ? 5 : c.risk === 'HIGH' ? 4 : 3}`,'purple'],['Risk auto-class',c.risk, c.risk === 'CRITICAL' ? 'red' : 'purple']] } },
+                    { icon: '🤖', label: 'Agent Execution', sub: 'Code + Test + Security agents', trust: 'proven', duration: 800, detail: { title: 'verified', rows: [['Code agent','v3.2 — implemented','purple'],['Test agent',`v2.8 — ${c.risk === 'CRITICAL' ? 847 : c.risk === 'HIGH' ? 423 : 156} scenarios`,'green'],['Security agent','v5.1 — threat model','green'],['Constraints','ALL SATISFIED','green']] } },
+                    { icon: '🌳', label: 'Provenance Tree', sub: 'Every node signed + linked', trust: 'proven', duration: 600, detail: { title: 'verified', rows: [['Tree depth','4 levels','purple'],['Actors','1 human + 4 agents','purple'],['Crypto signature','sha256:f7a2...','green'],['Evidence nodes',`${c.risk === 'CRITICAL' ? 23 : c.risk === 'HIGH' ? 15 : 8} artifacts`,'purple']] } },
+                    { icon: '⚖️', label: 'Adaptive Verification', sub: `${c.risk === 'CRITICAL' ? 'Human required' : c.risk === 'HIGH' ? 'Deep + human review' : 'Auto-verified'}`, trust: 'proven', duration: c.risk === 'CRITICAL' ? 1200 : c.risk === 'HIGH' ? 900 : 400, detail: { title: 'verified', rows: [['Mode', c.risk === 'CRITICAL' ? 'MAXIMUM' : c.risk === 'HIGH' ? 'DEEP' : 'PROPORTIONAL','purple'],['Human needed?', c.risk === 'CRITICAL' || c.risk === 'HIGH' ? 'YES' : 'NO', c.risk === 'CRITICAL' ? 'red' : 'purple'],['Evidence sufficiency','98.2%','green'],['Confidence',c.risk === 'CRITICAL' ? '94.1%' : '97.8%','green']] } },
+                    { icon: '🌊', label: 'Continuous Deploy', sub: 'Provenance chain immutable', trust: 'proven', duration: 400, detail: { title: 'verified', rows: [['Provenance','COMPLETE TREE','green'],['Trust basis','EVIDENCE SUFFICIENCY','purple'],['Audit trail','CRYPTOGRAPHIC','green'],['Auto-rollback','IF DRIFT','green']] } }
+                ],
+                gauges: (c) => ({ provenance: 100, toolAwareness: 100, trustScore: c.risk === 'CRITICAL' ? 94 : 98 }),
+                verdict: { cls: 'proven', title: '◈ PROVENANCE-NATIVE TRUST', getText: (c) => `No single author. Full provenance tree with every contribution linked, signed, and verifiable. Trust comes from evidence sufficiency relative to ${c.risk} risk — not identity. Every claim is independently auditable.` }
+            }
+        };
+
+        // ===== STATE =====
+        let running = false;
+        let hasPlayed = false;
+        let cancelRequested = false;
+        let narrationEnabled = true;
+        const change = DEMO_CHANGE;
+
+        // ===== NARRATION ENGINE =====
+        const NARRATION = {
+            '2026_intro': "Twenty twenty-six. A developer uses Claude Code to build an OAuth2 integration. 85 percent of the code is AI-generated. The commit is tagged Co-Authored-By Claude. Let's see what the pipeline does with that.",
+            '2026_node_0': "The commit lands. Git records sarah underscore dev as the author, with a co-author tag for Claude. But which lines did the AI write? Unknown.",
+            '2026_node_1': "SonarQube runs static analysis. It sees the co-author tag — but doesn't change a single check. Same rules as a fully human commit.",
+            '2026_node_2': "Snyk and CodeQL scan for security vulnerabilities. They know AI was involved. They can't target which lines to scrutinize for hallucinated APIs.",
+            '2026_node_3': "The test suite runs. Binary pass or fail. No AI-specific edge cases generated. Same coverage threshold for a button color change and a high-risk auth flow.",
+            '2026_node_4': "A human reviewer reads the diff. They see the co-author tag, but can't tell which lines came from the model versus the developer. They review it all the same way.",
+            '2026_node_5': "Deployed. Every tool passed. But not a single one adapted to the fact that 85 percent of this high-risk code was AI-generated.",
+            '2026_verdict': "This is the granularity gap. The flag exists — the provenance doesn't. Every tool sees AI was involved. None of them know where, or how to adjust.",
+            '2028_intro': "Twenty twenty-eight. Same feature, same developer. But now provenance is recorded at the line level.",
+            '2028_node_0': "The commit carries line-level AI metadata. Every region is tagged: which model, which prompt, which lines were human-modified afterward.",
+            '2028_node_1': "Static analysis now knows which lines are AI-generated. It applies extra checks targeting known AI patterns — hallucinated APIs, cross-version assumptions.",
+            '2028_node_2': "The security scanner adapts to risk. High-risk AI-generated code triggers deep analysis — fuzzing, taint analysis, crypto audit.",
+            '2028_node_3': "The test generator creates targeted edge cases for AI-generated regions. Coverage goes from 94 to 97 percent because the tests actually probe AI failure modes.",
+            '2028_node_4': "The reviewer sees AI provenance annotations inline. They can verify intent-to-output alignment — did the model actually do what the developer asked?",
+            '2028_node_5': "Deployed with full provenance chain. Every tool's awareness is documented. Trust is now evidence-based, not flag-based.",
+            '2028_verdict': "The granularity gap is closed. Same code, same risk. But now every tool knows which lines to scrutinize and adapts accordingly.",
+            '2032_intro': "Twenty thirty-two. The human doesn't write code anymore. They declare intent. Agents do the rest.",
+            '2032_node_0': "Sarah declares intent: implement OAuth2. An orchestrator decomposes it into sub-tasks and auto-classifies the risk as high.",
+            '2032_node_1': "Three specialist agents execute in parallel. A code agent implements, a test agent generates 423 behavioral scenarios, a security agent builds a threat model.",
+            '2032_node_2': "A provenance tree is assembled. Every contribution is linked — who requested, which agent executed, what constraints governed, what evidence supports each claim. Cryptographically signed.",
+            '2032_node_3': "Verification adapts to risk. High-risk changes require human review on critical paths. The system gathers evidence proportional to the stakes.",
+            '2032_node_4': "Continuous deployment with an immutable provenance chain. Every claim is independently auditable. Auto-rollback triggers if drift is detected.",
+            '2032_verdict': "Provenance-native trust. No single author. Trust comes from the completeness of the evidence chain — not any identity."
+        };
+
+        let currentUtterance = null;
+
+        function speak(key) {
+            const text = NARRATION[key];
+            if (!text || !narrationEnabled) return Promise.resolve();
+
+            // Show caption
+            const caption = document.getElementById('cinema-caption');
+            caption.textContent = text;
+            caption.classList.add('visible');
+
+            if (!window.speechSynthesis) return Promise.resolve();
+
+            return new Promise(resolve => {
+                // Cancel any current speech
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                currentUtterance = utterance;
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 0.85;
+
+                // Try to pick a good voice
+                const voices = window.speechSynthesis.getVoices();
+                const preferred = voices.find(v =>
+                    v.name.includes('Samantha') ||
+                    v.name.includes('Daniel') ||
+                    v.name.includes('Google UK English Male') ||
+                    v.name.includes('Google US English') ||
+                    (v.lang.startsWith('en') && v.name.includes('Natural'))
+                ) || voices.find(v => v.lang.startsWith('en') && !v.name.includes('Zira'));
+                if (preferred) utterance.voice = preferred;
+
+                utterance.onend = () => {
+                    currentUtterance = null;
+                    resolve();
+                };
+                utterance.onerror = () => {
+                    currentUtterance = null;
+                    resolve();
+                };
+
+                window.speechSynthesis.speak(utterance);
+            });
+        }
+
+        function hideCaption() {
+            document.getElementById('cinema-caption').classList.remove('visible');
+        }
+
+        function stopSpeech() {
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            currentUtterance = null;
+            hideCaption();
+        }
+
+        // Preload voices
+        if (window.speechSynthesis) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        }
+
+        // ===== HELPERS =====
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        function setProgress(pct) {
+            document.getElementById('cinema-progress-fill').style.width = pct + '%';
+        }
+
+        function setEraTab(era) {
+            document.querySelectorAll('.cinema-era-tab').forEach(t => {
+                const e = t.dataset.era;
+                t.className = 'cinema-era-tab' + (e === era ? ' active' : (ERAS.indexOf(e) < ERAS.indexOf(era) ? ' done' : ''));
+            });
+        }
+
+        // ===== RENDER PIPELINE FOR A GIVEN ERA =====
+        function renderPipeline(era) {
+            const pipeline = PIPELINES[era];
+            const nodes = pipeline.nodes(change);
+
+            const titleEl = document.getElementById('pipeline-era-title');
+            titleEl.textContent = pipeline.title;
+            titleEl.className = 'pipeline-era-title era-' + era;
+            document.getElementById('pipeline-era-desc').textContent = pipeline.desc;
+
+            const track = document.getElementById('pipeline-track');
+            let html = '';
+            nodes.forEach((node, i) => {
+                if (i > 0) {
+                    html += `<div class="pipeline-connector" id="conn-${i}"><div class="connector-fill"></div><div class="connector-pulse"></div></div>`;
+                }
+                html += `
+                    <div class="pipeline-node waiting" id="pnode-${i}" data-idx="${i}">
+                        <div class="node-ring">
+                            <div class="node-ring-bg"></div>
+                            <svg class="node-progress" viewBox="0 0 68 68">
+                                <circle class="track" cx="34" cy="34" r="31"/>
+                                <circle class="fill" cx="34" cy="34" r="31"/>
+                            </svg>
+                            <div class="node-icon">${node.icon}</div>
+                            <div class="node-badge ${node.trust === 'blind' ? 'blind' : node.trust === 'aware' ? 'aware' : 'verified'}">
+                                ${node.trust === 'blind' ? '?' : node.trust === 'aware' ? '✓' : '◈'}
+                            </div>
+                        </div>
+                        <div class="node-label">${node.label}</div>
+                        <div class="node-sublabel">${node.sub}</div>
+                        <div class="node-detail">
+                            <div class="node-detail-title ${node.detail.title}">${node.detail.title === 'blind' ? 'UNADAPTED' : node.detail.title === 'aware' ? 'AI-AWARE' : 'PROVENANCE VERIFIED'}</div>
+                            ${node.detail.rows.map(r => `<div class="nd-row"><span class="nd-key">${r[0]}</span><span class="nd-val ${r[2]}">${r[1]}</span></div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            track.innerHTML = html;
+
+            // Render trust gauges
+            const gauges = pipeline.gauges(change);
+            document.getElementById('trust-gauges').innerHTML = `
+                <div class="trust-gauge">
+                    <div class="trust-gauge-ring">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="gauge-track" cx="50" cy="50" r="40"/>
+                            <circle class="gauge-fill" id="gauge-prov" cx="50" cy="50" r="40" style="stroke: ${gauges.provenance > 50 ? 'var(--green)' : 'var(--yellow)'}"/>
+                        </svg>
+                        <div class="trust-gauge-value" id="gauge-prov-val" style="color: ${gauges.provenance > 50 ? 'var(--green)' : 'var(--yellow)'}">—</div>
+                    </div>
+                    <div class="trust-gauge-label">Provenance</div>
+                    <div class="trust-gauge-sublabel">How much origin is recorded</div>
+                </div>
+                <div class="trust-gauge">
+                    <div class="trust-gauge-ring">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="gauge-track" cx="50" cy="50" r="40"/>
+                            <circle class="gauge-fill" id="gauge-aware" cx="50" cy="50" r="40" style="stroke: ${gauges.toolAwareness > 50 ? 'var(--cyan)' : 'var(--yellow)'}"/>
+                        </svg>
+                        <div class="trust-gauge-value" id="gauge-aware-val" style="color: ${gauges.toolAwareness > 50 ? 'var(--cyan)' : 'var(--yellow)'}">—</div>
+                    </div>
+                    <div class="trust-gauge-label">Tool Awareness</div>
+                    <div class="trust-gauge-sublabel">How many tools adapt to AI origin</div>
+                </div>
+                <div class="trust-gauge">
+                    <div class="trust-gauge-ring">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="gauge-track" cx="50" cy="50" r="40"/>
+                            <circle class="gauge-fill" id="gauge-trust" cx="50" cy="50" r="40" style="stroke: ${gauges.trustScore > 70 ? 'var(--green)' : gauges.trustScore > 40 ? 'var(--cyan)' : 'var(--red)'}"/>
+                        </svg>
+                        <div class="trust-gauge-value" id="gauge-trust-val" style="color: ${gauges.trustScore > 70 ? 'var(--green)' : gauges.trustScore > 40 ? 'var(--cyan)' : 'var(--red)'}">—</div>
+                    </div>
+                    <div class="trust-gauge-label">Trust Score</div>
+                    <div class="trust-gauge-sublabel">Evidence sufficiency for risk</div>
+                </div>
+            `;
+
+            // Reset verdict
+            document.getElementById('sim-verdict').className = 'sim-verdict';
+            document.getElementById('sim-verdict').innerHTML = '';
+        }
+
+        // ===== ANIMATE GAUGES =====
+        function animateGauge(id, valId, target) {
+            const el = document.getElementById(id);
+            const valEl = document.getElementById(valId);
+            const circumference = 2 * Math.PI * 40;
+            const offset = circumference - (target / 100) * circumference;
+            el.style.strokeDasharray = circumference;
+            el.style.strokeDashoffset = circumference;
+            setTimeout(() => { el.style.strokeDashoffset = offset; }, 50);
+            let start = 0;
+            const step = () => {
+                start += 2;
+                if (start > target) start = target;
+                valEl.textContent = start + '%';
+                if (start < target) requestAnimationFrame(step);
+            };
+            setTimeout(step, 200);
+        }
+
+        // ===== ERA TRANSITION OVERLAY =====
+        async function showEraTransition(era) {
+            const overlay = document.getElementById('era-transition');
+            document.getElementById('era-transition-year').textContent = era;
+            document.getElementById('era-transition-label').textContent = ERA_LABELS[era];
+            overlay.classList.add('visible');
+            await sleep(1200);
+            overlay.classList.remove('visible');
+            await sleep(400);
+        }
+
+        // ===== ANIMATE ONE ERA =====
+        async function animateEra(era, progressBase, progressSpan) {
+            if (cancelRequested) return;
+            const pipeline = PIPELINES[era];
+            const nodes = pipeline.nodes(change);
+            const totalNodeTime = nodes.reduce((a, n) => a + n.duration, 0) + nodes.length * 300;
+            let elapsed = 0;
+
+            // Narrate intro for this era
+            speak(`${era}_intro`);
+            await sleep(narrationEnabled ? 3500 : 500);
+
+            // Animate each node
+            for (let i = 0; i < nodes.length; i++) {
+                if (cancelRequested) return;
+                const nodeEl = document.getElementById(`pnode-${i}`);
+
+                // Fill connector
+                if (i > 0) {
+                    const conn = document.getElementById(`conn-${i}`);
+                    conn.classList.add('filling');
+                    await sleep(250);
+                    conn.classList.remove('filling');
+                    conn.classList.add('filled');
+                    elapsed += 250;
+                }
+
+                // Activate node
+                nodeEl.classList.remove('waiting');
+                nodeEl.classList.add('active');
+
+                // Auto-show detail card as it processes
+                nodeEl.classList.add('show-detail');
+
+                // Narrate this node
+                speak(`${era}_node_${i}`);
+
+                // Wait for the node animation (longer if narrating to give time to listen)
+                const nodeWait = narrationEnabled ? Math.max(nodes[i].duration, 2800) : nodes[i].duration;
+                await sleep(nodeWait);
+                elapsed += nodeWait;
+
+                // Complete node
+                nodeEl.classList.remove('active');
+                nodeEl.classList.add('completed');
+                nodeEl.classList.add(`trust-${nodes[i].trust}`);
+
+                // Update progress
+                setProgress(progressBase + (elapsed / (totalNodeTime + (narrationEnabled ? 12000 : 0))) * progressSpan * 0.7);
+
+                // Keep detail visible briefly after completion, then hide
+                await sleep(narrationEnabled ? 1200 : 600);
+                elapsed += 600;
+                nodeEl.classList.remove('show-detail');
+            }
+
+            // Animate gauges
+            const gauges = pipeline.gauges(change);
+            animateGauge('gauge-prov', 'gauge-prov-val', gauges.provenance);
+            animateGauge('gauge-aware', 'gauge-aware-val', gauges.toolAwareness);
+            animateGauge('gauge-trust', 'gauge-trust-val', gauges.trustScore);
+            setProgress(progressBase + progressSpan * 0.85);
+
+            // Show verdict with narration
+            await sleep(800);
+            if (cancelRequested) return;
+            const v = pipeline.verdict;
+            const verdictEl = document.getElementById('sim-verdict');
+            verdictEl.className = `sim-verdict visible ${v.cls}`;
+            verdictEl.innerHTML = `<div class="verdict-title">${v.title}</div><div class="verdict-text">${v.getText(change)}</div>`;
+            setProgress(progressBase + progressSpan);
+
+            // Narrate verdict
+            speak(`${era}_verdict`);
+
+            // Hold verdict visible (longer if narrating)
+            await sleep(narrationEnabled ? 4000 : 2000);
+            hideCaption();
+        }
+
+        // ===== FULL CINEMATIC PLAY =====
+        async function playCinema() {
+            if (running) return;
+            running = true;
+            cancelRequested = false;
+            hasPlayed = true;
+
+            document.getElementById('cinema-play').style.display = 'none';
+            document.getElementById('cinema-replay').style.display = 'none';
+            setProgress(0);
+
+            const eraProgress = 100 / ERAS.length; // ~33% each
+
+            for (let e = 0; e < ERAS.length; e++) {
+                if (cancelRequested) break;
+                const era = ERAS[e];
+
+                // Show era transition (except first)
+                if (e > 0) {
+                    stopSpeech();
+                    await showEraTransition(era);
+                    if (cancelRequested) break;
+                }
+
+                // Set era tab
+                setEraTab(era);
+
+                // Render fresh pipeline
+                renderPipeline(era);
+
+                // Small pause for the viewer to read the era description
+                await sleep(600);
+
+                // Animate the pipeline for this era
+                await animateEra(era, e * eraProgress, eraProgress);
+            }
+
+            setProgress(100);
+            stopSpeech();
+            running = false;
+
+            // Show replay button
+            document.getElementById('cinema-replay').style.display = 'flex';
+        }
+
+        // ===== SPOT THE BUG =====
+        document.getElementById('reveal-bugs').addEventListener('click', function() {
+            document.querySelectorAll('.challenge-card').forEach(card => card.classList.add('revealed'));
+            this.style.display = 'none';
+        });
+        document.querySelectorAll('.challenge-card').forEach(card => {
+            card.addEventListener('click', () => card.classList.toggle('revealed'));
+        });
+
+        // ===== EVENT LISTENERS =====
+        document.getElementById('cinema-narrate').addEventListener('click', function() {
+            narrationEnabled = !narrationEnabled;
+            this.classList.toggle('active', narrationEnabled);
+            if (!narrationEnabled) stopSpeech();
+        });
+
+        document.getElementById('cinema-play').addEventListener('click', playCinema);
+        document.getElementById('cinema-replay').addEventListener('click', () => {
+            document.getElementById('cinema-replay').style.display = 'none';
+            setEraTab('2026');
+            playCinema();
+        });
+
+        // Auto-play when scrolled into view
+        const simSection = document.querySelector('.sim-section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !hasPlayed && !running) {
+                    observer.disconnect();
+                    setTimeout(playCinema, 600);
+                }
+            });
+        }, { threshold: 0.3 });
+        observer.observe(simSection);
+
+        // ===== INIT =====
+        renderPipeline('2026');
+
+        // ===== FULL ARTICLE AUDIO PLAYER =====
+        // Dual-mode: serves ElevenLabs MP3s when available (production),
+        // falls back to Web Speech API for local development.
+        // Audio text is extracted from the DOM at runtime — single source of truth.
+
+        const ARTICLE_SECTION_DEFS = [
+            { name: 'The Authorship Problem', track: 'hero', selector: '[data-track="hero"]' },
+            { name: 'The Half-Blind Spot', track: 'problem', selector: '[data-track="problem"]' },
+            { name: 'The Trust Gap', track: 'thesis', selector: '[data-track="thesis"]' },
+            { name: 'Spot the Bug', track: 'failure-patterns', selector: '[data-track="failure-patterns"]' },
+            { name: 'Bridge', track: 'bridge', selector: '[data-track="bridge"]' },
+            { name: 'What\'s Actually Changing', track: 'analysis', selector: '[data-track="analysis"]' },
+            { name: 'The Trust Model Must Evolve', track: 'closing', selector: '[data-track="closing"]' }
+        ];
+
+        // ── Text extraction (for Web Speech fallback) ──
+        function extractSpeakableText(el) {
+            const clone = el.cloneNode(true);
+            clone.querySelectorAll('script, style, .listen-btn, .scroll-hint, .audio-player, button, .cc-code, .git-blame, .gate-status, .tool-gates, .coverage-matrix, .transformation-grid, nav, .byline-dot').forEach(e => e.remove());
+            let text = clone.innerText || clone.textContent || '';
+            text = text.replace(/\s+/g, ' ').trim();
+            text = text.replace(/[✓✗●→⚠◈▶×]/g, '');
+            text = text.replace(/\s{2,}/g, ' ');
+            return text;
+        }
+
+        function buildArticleSections() {
+            return ARTICLE_SECTION_DEFS.map(def => {
+                const el = document.querySelector(def.selector);
+                return {
+                    name: def.name,
+                    track: def.track,
+                    selector: def.selector,
+                    text: el ? extractSpeakableText(el) : ''
+                };
+            }).filter(s => s.text.length > 10);
+        }
+
+        let ARTICLE_SECTIONS = buildArticleSections();
+
+        // ── Audio manifest & mode detection ──
+        // CDN_AUDIO_BASE: set to your Cloudflare R2 public URL in production.
+        // Falls back to relative path for local development.
+        const ESSAY_SLUG = 'the-authorship-problem';
+        const CDN_AUDIO_BASE = (function() {
+            // Check for a global config (set via site-level JS)
+            if (window.THUNDEERAN_AUDIO_CDN) {
+                return window.THUNDEERAN_AUDIO_CDN + '/audio/' + ESSAY_SLUG;
+            }
+            // Auto-detect: if on thundeeran.dev, use CDN; otherwise local
+            if (location.hostname === 'thundeeran.dev' || location.hostname.endsWith('.github.io')) {
+                // Production — served from Cloudflare R2 custom domain
+                return 'https://audio.thundeeran.dev/audio/' + ESSAY_SLUG;
+            }
+            // Local dev — try relative path (works if MP3s generated locally)
+            return '/audio/' + ESSAY_SLUG;
+        })();
+
+        let audioManifest = null;
+        let useElevenLabs = false;
+
+        // Try to load the ElevenLabs manifest (from git repo, not CDN)
+        async function loadAudioManifest() {
+            try {
+                // Manifest is committed to git — always served from the site
+                const manifestUrl = `/audio/${ESSAY_SLUG}/manifest.json`;
+                const resp = await fetch(manifestUrl);
+                if (!resp.ok) throw new Error('No manifest');
+                audioManifest = await resp.json();
+
+                // Verify at least one MP3 exists on the CDN
+                const testFile = audioManifest.sections[0]?.file;
+                if (testFile) {
+                    const testResp = await fetch(`${CDN_AUDIO_BASE}/${testFile}`, { method: 'HEAD' });
+                    if (testResp.ok) {
+                        useElevenLabs = true;
+                        console.log('[Audio] ElevenLabs MP3s detected — using publication-quality audio');
+                        console.log('[Audio] CDN:', CDN_AUDIO_BASE);
+                    }
+                }
+            } catch (e) {
+                useElevenLabs = false;
+                console.log('[Audio] No ElevenLabs MP3s — falling back to Web Speech API');
+            }
+
+            // Update source badge
+            const badge = document.getElementById('audio-source-badge');
+            if (badge) {
+                badge.textContent = useElevenLabs ? 'ElevenLabs' : 'Browser TTS';
+            }
+        }
+
+        loadAudioManifest();
+
+        // ── State ──
+        let audioPlaying = false;
+        let audioPaused = false;
+        let audioSectionIdx = 0;
+        let audioSpeed = 1.0;
+        let audioStopped = false;
+        let audioUpdateInterval = null;
+
+        // ── DOM refs ──
+        const audioEl = document.getElementById('audio-element');
+
+        // ── Helpers ──
+        function formatTime(secs) {
+            if (!secs || !isFinite(secs)) return '0:00';
+            const m = Math.floor(secs / 60);
+            const s = Math.floor(secs % 60);
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function showAudioPlayer() {
+            document.getElementById('audio-player').classList.add('visible');
+        }
+
+        function hideAudioPlayer() {
+            document.getElementById('audio-player').classList.remove('visible');
+        }
+
+        function updateAudioUI() {
+            const section = ARTICLE_SECTIONS[audioSectionIdx];
+            if (!section) return;
+            document.getElementById('audio-section-name').textContent = section.name;
+            document.getElementById('audio-current-section').textContent = `Section ${audioSectionIdx + 1} of ${ARTICLE_SECTIONS.length}`;
+            document.getElementById('audio-progress-fill').style.width = ((audioSectionIdx) / ARTICLE_SECTIONS.length * 100) + '%';
+
+            const playing = audioPlaying && !audioPaused;
+            document.getElementById('audio-icon-play').style.display = playing ? 'none' : 'block';
+            document.getElementById('audio-icon-pause').style.display = playing ? 'block' : 'none';
+        }
+
+        function highlightSection(idx) {
+            document.querySelectorAll('section.audio-active').forEach(s => s.classList.remove('audio-active'));
+            const section = ARTICLE_SECTIONS[idx];
+            if (section) {
+                const el = document.querySelector(section.selector);
+                if (el) {
+                    el.classList.add('audio-active');
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        }
+
+        // ── ElevenLabs MP3 playback ──
+        function getMP3Path(idx) {
+            if (!audioManifest || !audioManifest.sections[idx]) return null;
+            return `${CDN_AUDIO_BASE}/${audioManifest.sections[idx].file}`;
+        }
+
+        function playMP3Section(idx) {
+            if (idx >= ARTICLE_SECTIONS.length || audioStopped) {
+                audioPlaying = false;
+                audioPaused = false;
+                document.getElementById('audio-progress-fill').style.width = '100%';
+                updateAudioUI();
+                clearTimeUpdate();
+                document.querySelectorAll('section.audio-active').forEach(s => s.classList.remove('audio-active'));
+                return;
+            }
+
+            audioSectionIdx = idx;
+            updateAudioUI();
+            highlightSection(idx);
+
+            const mp3Path = getMP3Path(idx);
+            if (!mp3Path) {
+                // Skip sections without audio files
+                playMP3Section(idx + 1);
+                return;
+            }
+
+            audioEl.src = mp3Path;
+            audioEl.playbackRate = audioSpeed;
+            audioEl.play().catch(err => {
+                console.warn('[Audio] Playback error:', err);
+                playMP3Section(idx + 1);
+            });
+
+            startTimeUpdate();
+        }
+
+        function startTimeUpdate() {
+            clearTimeUpdate();
+            audioUpdateInterval = setInterval(() => {
+                if (audioEl && !audioEl.paused) {
+                    const timeEl = document.getElementById('audio-time-current');
+                    if (timeEl) {
+                        timeEl.textContent = `${formatTime(audioEl.currentTime)} / ${formatTime(audioEl.duration)}`;
+                    }
+                    // Update within-section progress
+                    if (audioEl.duration > 0) {
+                        const sectionPct = audioEl.currentTime / audioEl.duration;
+                        const overallPct = (audioSectionIdx + sectionPct) / ARTICLE_SECTIONS.length * 100;
+                        document.getElementById('audio-progress-fill').style.width = overallPct + '%';
+                    }
+                }
+            }, 250);
+        }
+
+        function clearTimeUpdate() {
+            if (audioUpdateInterval) {
+                clearInterval(audioUpdateInterval);
+                audioUpdateInterval = null;
+            }
+        }
+
+        // Audio element event: auto-advance to next section
+        audioEl.addEventListener('ended', () => {
+            if (!audioStopped) {
+                playMP3Section(audioSectionIdx + 1);
+            }
+        });
+
+        audioEl.addEventListener('error', () => {
+            if (!audioStopped) {
+                playMP3Section(audioSectionIdx + 1);
+            }
+        });
+
+        // ── Web Speech API fallback ──
+        let audioUtterance = null;
+
+        function speakSectionFallback(idx) {
+            if (idx >= ARTICLE_SECTIONS.length || audioStopped) {
+                audioPlaying = false;
+                audioPaused = false;
+                document.getElementById('audio-progress-fill').style.width = '100%';
+                updateAudioUI();
+                document.querySelectorAll('section.audio-active').forEach(s => s.classList.remove('audio-active'));
+                return;
+            }
+
+            audioSectionIdx = idx;
+            updateAudioUI();
+            highlightSection(idx);
+
+            if (!window.speechSynthesis) return;
+            window.speechSynthesis.cancel();
+
+            const text = ARTICLE_SECTIONS[idx].text;
+            const utterance = new SpeechSynthesisUtterance(text);
+            audioUtterance = utterance;
+            utterance.rate = audioSpeed;
+            utterance.pitch = 1.0;
+            utterance.volume = 0.9;
+
+            const voices = window.speechSynthesis.getVoices();
+            const preferred = voices.find(v =>
+                v.name.includes('Samantha') ||
+                v.name.includes('Daniel') ||
+                v.name.includes('Google UK English Male') ||
+                v.name.includes('Google US English') ||
+                (v.lang.startsWith('en') && v.name.includes('Natural'))
+            ) || voices.find(v => v.lang.startsWith('en') && !v.name.includes('Zira'));
+            if (preferred) utterance.voice = preferred;
+
+            utterance.onend = () => {
+                if (!audioStopped) {
+                    document.getElementById('audio-progress-fill').style.width = ((idx + 1) / ARTICLE_SECTIONS.length * 100) + '%';
+                    speakSectionFallback(idx + 1);
+                }
+            };
+
+            utterance.onerror = () => {
+                if (!audioStopped) speakSectionFallback(idx + 1);
+            };
+
+            window.speechSynthesis.speak(utterance);
+            document.getElementById('audio-time-current').textContent = 'Live';
+        }
+
+        // ── Unified controls ──
+        function playSection(idx) {
+            if (useElevenLabs) {
+                playMP3Section(idx);
+            } else {
+                speakSectionFallback(idx);
+            }
+        }
+
+        function startArticleAudio() {
+            if (audioPlaying && !audioPaused) return;
+            audioPlaying = true;
+            audioPaused = false;
+            audioStopped = false;
+            showAudioPlayer();
+            updateAudioUI();
+            playSection(0);
+        }
+
+        function toggleAudioPlayPause() {
+            if (!audioPlaying) {
+                audioPlaying = true;
+                audioPaused = false;
+                audioStopped = false;
+                playSection(audioSectionIdx);
+            } else if (audioPaused) {
+                audioPaused = false;
+                if (useElevenLabs) {
+                    audioEl.play();
+                    startTimeUpdate();
+                } else if (window.speechSynthesis) {
+                    window.speechSynthesis.resume();
+                }
+            } else {
+                audioPaused = true;
+                if (useElevenLabs) {
+                    audioEl.pause();
+                    clearTimeUpdate();
+                } else if (window.speechSynthesis) {
+                    window.speechSynthesis.pause();
+                }
+            }
+            updateAudioUI();
+        }
+
+        function stopArticleAudio() {
+            audioStopped = true;
+            audioPlaying = false;
+            audioPaused = false;
+            clearTimeUpdate();
+            if (useElevenLabs) {
+                audioEl.pause();
+                audioEl.currentTime = 0;
+                audioEl.src = '';
+            }
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            document.querySelectorAll('section.audio-active').forEach(s => s.classList.remove('audio-active'));
+            hideAudioPlayer();
+        }
+
+        function skipAudioSection(delta) {
+            const next = audioSectionIdx + delta;
+            if (next < 0 || next >= ARTICLE_SECTIONS.length) return;
+            if (useElevenLabs) {
+                audioEl.pause();
+                audioEl.currentTime = 0;
+            }
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            playSection(next);
+        }
+
+        // ── Player controls ──
+        document.getElementById('audio-play-btn').addEventListener('click', toggleAudioPlayPause);
+        document.getElementById('audio-skip-fwd').addEventListener('click', () => skipAudioSection(1));
+        document.getElementById('audio-skip-back').addEventListener('click', () => skipAudioSection(-1));
+        document.getElementById('audio-close').addEventListener('click', stopArticleAudio);
+
+        // Progress bar seek (ElevenLabs only — Web Speech doesn't support seeking)
+        document.getElementById('audio-progress-bar').addEventListener('click', function(e) {
+            if (!useElevenLabs || !audioPlaying) return;
+            const rect = this.getBoundingClientRect();
+            const pct = (e.clientX - rect.left) / rect.width;
+            // Determine which section we're seeking to
+            const targetSection = Math.floor(pct * ARTICLE_SECTIONS.length);
+            if (targetSection !== audioSectionIdx) {
+                playMP3Section(targetSection);
+            } else if (audioEl.duration > 0) {
+                // Seek within current section
+                const sectionPct = (pct * ARTICLE_SECTIONS.length) - targetSection;
+                audioEl.currentTime = sectionPct * audioEl.duration;
+            }
+        });
+
+        // Speed toggle
+        document.getElementById('audio-speed').addEventListener('click', function() {
+            const speeds = [1.0, 1.25, 1.5, 1.75, 2.0];
+            const current = speeds.indexOf(audioSpeed);
+            audioSpeed = speeds[(current + 1) % speeds.length];
+            this.textContent = audioSpeed + 'x';
+            if (useElevenLabs) {
+                audioEl.playbackRate = audioSpeed;
+            } else if (audioPlaying && !audioPaused) {
+                if (window.speechSynthesis) window.speechSynthesis.cancel();
+                speakSectionFallback(audioSectionIdx);
+            }
+        });
+    </script>
+</body>
+</html>

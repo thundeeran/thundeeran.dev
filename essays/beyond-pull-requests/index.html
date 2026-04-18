@@ -24,20 +24,26 @@
         }
 
         :root {
+            --bg: #050508;
+            --bg2: #08080e;
+            --surface: #0c0c14;
+            --surface2: #111119;
+            --surface3: #16161f;
+            --border: #1c1c2a;
+            --border-bright: #2a2a3c;
+            --text: #eaeaf2;
+            --text-dim: #a0a0b8;
+            --text-mute: #6e6e88;
             --green: #34d399;
             --yellow: #fbbf24;
             --red: #f87171;
             --purple: #a78bfa;
             --blue: #60a5fa;
             --pink: #f472b6;
-            --text: #e8e8f0;
-            --text-dim: #a0a0b8;
-            --text-mute: #6b6b85;
-            --surface: #0b0b12;
-            --surface2: #10101a;
-            --border: #1a1a26;
-            --border-bright: #28283a;
-            --bg: #030306;
+            --cyan: #22d3ee;
+            --green-glow: rgba(52,211,153,0.12);
+            --purple-glow: rgba(167,139,250,0.12);
+            --blue-glow: rgba(96,165,250,0.12);
         }
 
         html {
@@ -46,24 +52,23 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--bg) 0%, #0a0a0f 100%);
+            background: var(--bg);
             color: var(--text);
+            -webkit-font-smoothing: antialiased;
             line-height: 1.6;
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
         /* Grid overlay background */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background-image:
-                linear-gradient(0deg, rgba(255,255,255,0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-            background-size: 48px 48px;
+                linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 56px 56px;
             pointer-events: none;
             z-index: 1;
         }
@@ -72,16 +77,108 @@
         body::after {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background:
-                radial-gradient(circle at 20% 30%, rgba(52, 211, 153, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(96, 165, 250, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, rgba(167, 139, 250, 0.06) 0%, transparent 50%);
+                radial-gradient(ellipse at 25% 0%, rgba(167,139,250,0.06), transparent 50%),
+                radial-gradient(ellipse at 75% 100%, rgba(52,211,153,0.04), transparent 50%);
             pointer-events: none;
             z-index: 0;
+        }
+
+        /* ═══ NAVIGATION ═══ */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+            background: rgba(5,5,8,0.75);
+            backdrop-filter: blur(24px) saturate(1.2);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-left a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: conic-gradient(from 135deg, var(--purple), var(--blue), var(--green), var(--purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 20px var(--purple-glow);
+        }
+
+        .nav-logo::after {
+            content: '';
+            position: absolute;
+            inset: 2.5px;
+            border-radius: 6px;
+            background: var(--bg);
+        }
+
+        .nav-logo span {
+            position: relative;
+            z-index: 1;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .nav-name {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-link {
+            font-size: 13px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            letter-spacing: 0.2px;
+        }
+
+        .nav-link:hover { color: var(--text); }
+
+        .nav-series {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--green);
+            padding: 6px 14px;
+            background: var(--green-glow);
+            border: 1px solid rgba(52,211,153,0.2);
+            border-radius: 100px;
         }
 
         main {
@@ -101,6 +198,7 @@
         .hero {
             text-align: center;
             animation: fadeIn 0.8s ease-out;
+            padding-top: 160px !important;
         }
 
         .hero-title {
@@ -949,7 +1047,7 @@
         }
 
         footer a:hover {
-            color: var(--blue);
+            color: var(--purple);
         }
 
         /* Mobile responsiveness */
@@ -980,6 +1078,10 @@
         }
 
         @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .nav-series { display: none; }
+            .hero { padding-top: 120px !important; }
+
             .hero-title {
                 font-size: 2.5rem;
             }
@@ -1023,6 +1125,21 @@
     </style>
 </head>
 <body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-left">
+            <a href="/">
+                <div class="nav-logo"><span>T</span></div>
+                <div class="nav-name">Thundeeran</div>
+            </a>
+        </div>
+        <div class="nav-right">
+            <span class="nav-series">Essay 01</span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/#essays" class="nav-link">All Essays</a>
+        </div>
+    </nav>
+
     <main>
         <!-- SCENE 1: HERO -->
         <section class="hero" data-track="hero">

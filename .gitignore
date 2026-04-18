@@ -1,5 +1,0 @@
-# This repo is a deploy target — managed by thundeeran-ops CI/CD.
-# Do not edit directly. Changes should be made in the ops repo.
-
-.DS_Store
-Thumbs.db

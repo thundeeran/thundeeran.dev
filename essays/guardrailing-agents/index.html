@@ -433,6 +433,84 @@ nav.toc a.active .tk{color:var(--accent-2)}
 git clone https://github.com/thundeeran/labs
 cd labs/guardrailing-agents && npm test</pre>
   </div>
+
+  <figure class="bleed" id="arch">
+    <svg viewBox="0 0 1300 560" role="img" style="width:100%;height:auto;display:block" aria-label="The persona is the user. A person with a role drives the agent; the agent runs as that user and holds no token; the proxy enforces the user's role as a hard ceiling — filter, check, mint a scoped token, rotate, audit — before forwarding to GitHub via github-mcp-server. Everything downstream is scoped to the person.">
+      <defs>
+        <radialGradient id="ax-glowP" cx="0.14" cy="0.0" r="0.6"><stop offset="0" stop-color="#8b7bff" stop-opacity="0.16"/><stop offset="1" stop-color="#8b7bff" stop-opacity="0"/></radialGradient>
+        <radialGradient id="ax-glowG" cx="0.9" cy="1.0" r="0.6"><stop offset="0" stop-color="#34d399" stop-opacity="0.10"/><stop offset="1" stop-color="#34d399" stop-opacity="0"/></radialGradient>
+        <marker id="ax-aGray" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7c7b89"/></marker>
+        <marker id="ax-aGreen" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#57e0a8"/></marker>
+        <marker id="ax-aViolet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b7bff"/></marker>
+      </defs>
+      <rect x="2" y="2" width="1296" height="556" rx="22" fill="#0c0c14" stroke="#1c1c2a" stroke-width="1.5"/>
+      <rect x="2" y="2" width="1296" height="556" rx="22" fill="url(#ax-glowP)"/>
+      <rect x="2" y="2" width="1296" height="556" rx="22" fill="url(#ax-glowG)"/>
+      <text x="650" y="52" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="19" font-weight="700" fill="#f3f2ef">The persona is the <tspan fill="#b9aeff">user</tspan></text>
+      <text x="650" y="80" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="13.5" fill="#adacb8">The agent inherits their role as a hard ceiling — and can never exceed what that person is allowed to do.</text>
+      <rect x="58" y="128" width="212" height="124" rx="16" fill="#14141c" stroke="#4a4570" stroke-width="1.7"/>
+      <circle cx="104" cy="172" r="13" fill="#b9aeff"/>
+      <path d="M80 212 C80 190 128 190 128 212 Z" fill="#b9aeff"/>
+      <text x="146" y="168" font-family="'Inter',system-ui,sans-serif" font-size="15" font-weight="700" fill="#f3f2ef">The user</text>
+      <rect x="146" y="180" width="106" height="23" rx="8" fill="#241f3a"/>
+      <text x="199" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#b9aeff">IC engineer</text>
+      <text x="146" y="234" font-family="'Inter',system-ui,sans-serif" font-size="10.5" fill="#7c7b89">a role from your org's RBAC</text>
+      <line x1="272" y1="190" x2="368" y2="190" stroke="#8b7bff" stroke-width="2" marker-end="url(#ax-aViolet)"/>
+      <text x="320" y="180" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" fill="#b9aeff">runs as</text>
+      <rect x="370" y="140" width="196" height="100" rx="16" fill="#14141c" stroke="#2a2a3c" stroke-width="1.4"/>
+      <text x="468" y="182" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="16" font-weight="600" fill="#f3f2ef">Agent</text>
+      <text x="468" y="202" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="11.5" fill="#adacb8">Copilot CLI</text>
+      <text x="468" y="220" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="10.5" fill="#7c7b89">holds no token of its own</text>
+      <line x1="568" y1="190" x2="676" y2="190" stroke="#7c7b89" stroke-width="2" marker-end="url(#ax-aGray)"/>
+      <text x="622" y="180" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" fill="#7c7b89">stdio</text>
+      <rect x="678" y="140" width="200" height="100" rx="16" fill="#0e0e15" stroke="#4a4570" stroke-width="1.7"/>
+      <text x="778" y="180" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="16" font-weight="700" fill="#f3f2ef">Proxy <tspan font-size="11" font-weight="500" fill="#7c7b89">· broker</tspan></text>
+      <text x="778" y="202" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="11.5" fill="#b9aeff">enforces the user's</text>
+      <text x="778" y="219" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="11.5" fill="#b9aeff">role as a ceiling</text>
+      <line x1="880" y1="190" x2="1016" y2="190" stroke="#57e0a8" stroke-width="2.2" marker-end="url(#ax-aGreen)"/>
+      <text x="948" y="180" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" fill="#57e0a8">scoped token</text>
+      <text x="948" y="207" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="9.5" fill="#7c7b89">narrowed to this user</text>
+      <rect x="1018" y="140" width="220" height="100" rx="16" fill="#101017" stroke="#23232e" stroke-width="1.4"/>
+      <text x="1128" y="180" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="15" font-weight="600" fill="#adacb8">GitHub</text>
+      <text x="1128" y="200" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10.5" fill="#7c7b89">via github-mcp-server</text>
+      <text x="1128" y="218" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="10.5" fill="#7c7b89">the real API</text>
+      <line x1="778" y1="240" x2="778" y2="286" stroke="#3a3550" stroke-width="1.6" stroke-dasharray="4 4" marker-end="url(#ax-aGray)"/>
+      <text x="650" y="304" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="12.5" fill="#7c7b89">As that user, the proxy clears every call through five checks:</text>
+      <rect x="75" y="322" width="210" height="150" rx="14" fill="#191922" stroke="#23232e"/>
+      <circle cx="105" cy="352" r="14" fill="#191922" stroke="#8b7bff" stroke-width="1.5"/>
+      <text x="105" y="357" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="700" fill="#8b7bff">1</text>
+      <text x="91" y="398" font-family="'Inter',system-ui,sans-serif" font-size="14.5" font-weight="600" fill="#f3f2ef">Filter tools/list</text>
+      <text x="91" y="420" font-family="'Inter',system-ui,sans-serif" font-size="11" fill="#adacb8">expose only the tools</text>
+      <text x="91" y="436" font-family="'Inter',system-ui,sans-serif" font-size="11" fill="#adacb8">the user's role allows</text>
+      <rect x="309" y="322" width="210" height="150" rx="14" fill="#191922" stroke="#23232e"/>
+      <circle cx="339" cy="352" r="14" fill="#191922" stroke="#b9aeff" stroke-width="1.5"/>
+      <text x="339" y="357" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="700" fill="#b9aeff">2</text>
+      <text x="325" y="398" font-family="'Inter',system-ui,sans-serif" font-size="14.5" font-weight="600" fill="#f3f2ef">Check every call</text>
+      <text x="325" y="420" font-family="'JetBrains Mono',monospace" font-size="10.5" fill="#adacb8">role · repo · branch</text>
+      <text x="325" y="436" font-family="'JetBrains Mono',monospace" font-size="10.5" fill="#adacb8">· human gate</text>
+      <rect x="543" y="322" width="210" height="150" rx="14" fill="#191922" stroke="#23232e"/>
+      <circle cx="573" cy="352" r="14" fill="#191922" stroke="#57e0a8" stroke-width="1.5"/>
+      <text x="573" y="357" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="700" fill="#57e0a8">3</text>
+      <text x="559" y="398" font-family="'Inter',system-ui,sans-serif" font-size="14.5" font-weight="600" fill="#f3f2ef">Mint a scoped token</text>
+      <text x="559" y="420" font-family="'Inter',system-ui,sans-serif" font-size="11" fill="#adacb8">short-lived (JIT), narrowed</text>
+      <text x="559" y="436" font-family="'Inter',system-ui,sans-serif" font-size="11" fill="#adacb8">to what the user may do</text>
+      <rect x="777" y="322" width="210" height="150" rx="14" fill="#191922" stroke="#23232e"/>
+      <circle cx="807" cy="352" r="14" fill="#191922" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="807" y="357" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="700" fill="#60a5fa">4</text>
+      <text x="793" y="398" font-family="'Inter',system-ui,sans-serif" font-size="14.5" font-weight="600" fill="#f3f2ef">Rotate before expiry</text>
+      <text x="793" y="420" font-family="'Inter',system-ui,sans-serif" font-size="11" fill="#adacb8">re-mint · respawn ·</text>
+      <text x="793" y="436" font-family="'Inter',system-ui,sans-serif" font-size="11" fill="#adacb8">re-handshake the upstream</text>
+      <rect x="1011" y="322" width="210" height="150" rx="14" fill="#191922" stroke="#23232e"/>
+      <circle cx="1041" cy="352" r="14" fill="#191922" stroke="#7c7b89" stroke-width="1.5"/>
+      <text x="1041" y="357" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="700" fill="#adacb8">5</text>
+      <text x="1027" y="398" font-family="'Inter',system-ui,sans-serif" font-size="14.5" font-weight="600" fill="#f3f2ef">Audit every call</text>
+      <text x="1027" y="420" font-family="'Inter',system-ui,sans-serif" font-size="11" fill="#adacb8">one structured line</text>
+      <text x="1027" y="436" font-family="'Inter',system-ui,sans-serif" font-size="11" fill="#adacb8">per decision</text>
+      <text x="650" y="518" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="12.5" fill="#7c7b89">Everything downstream is scoped to the person — so even a policy bug can't let the agent exceed their role.</text>
+    </svg>
+    <figcaption>The reference implementation, end to end · the same diagram ships in the repo README</figcaption>
+  </figure>
+
   <pre><span class="c">// ~/.copilot/mcp-config.json — Copilot connects only to the proxy</span>
 {
   <span class="k">"mcpServers"</span>: {

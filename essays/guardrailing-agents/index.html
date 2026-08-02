@@ -155,6 +155,17 @@ nav.toc a.active .tk{color:var(--accent-2)}
 .refs li{padding-left:24px;position:relative;font-size:15px;color:var(--ink-2);margin-bottom:9px}
 .refs li::before{content:"\2197";position:absolute;left:0;top:0;color:var(--accent);font-weight:700}
 .pass{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ok);border:1px solid rgba(87,224,168,.3);background:rgba(87,224,168,.07);border-radius:100px;padding:5px 13px;margin:4px 0 18px}
+/* ---- repo CTA card ---- */
+.repocard{display:block;margin:10px 0 26px;padding:20px 22px;border:1px solid var(--line-2);border-radius:16px;background:linear-gradient(180deg,rgba(139,123,255,.09),rgba(139,123,255,.015))}
+.repocard .rc-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.repocard .rc-mark{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;color:var(--ink);display:inline-flex;align-items:center;gap:9px}
+.repocard .rc-mark svg{width:18px;height:18px;fill:var(--accent-2);flex:0 0 auto}
+.repocard .rc-meta{font-size:12.5px;color:var(--ink-3);font-family:'JetBrains Mono',monospace}
+.repocard .rc-cta{margin-left:auto;font-size:13.5px;font-weight:600;color:var(--accent-2);text-decoration:none;border:1px solid var(--line-2);border-radius:10px;padding:8px 15px;transition:.16s;white-space:nowrap}
+.repocard .rc-cta:hover{border-color:var(--accent);background:rgba(139,123,255,.1)}
+.repocard pre.rc-clone{margin:16px 0 0;background:#101017;border:1px solid var(--line);border-radius:10px;padding:13px 15px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.7;color:#cfced9;overflow-x:auto}
+.repocard pre.rc-clone .c{color:var(--ink-3)}
+@media(max-width:620px){.repocard .rc-cta{margin-left:0}}
 </style>
 </head>
 <body>
@@ -410,7 +421,18 @@ nav.toc a.active .tk{color:var(--accent-2)}
   <p>The agent can reason its way toward anything. The job is to make sure that when it does, the only things it can actually reach are the ones the person behind it was always allowed to touch.</p>
 
   <h2 id="s8"><span class="hk">08 — in practice</span>A reference implementation</h2>
-  <p>None of this is abstract. The same design drops into <strong>GitHub Copilot CLI</strong> as a guardrail proxy: Copilot launches it as its GitHub MCP server, and every call is filtered, checked, credentialed, and logged before it reaches the real <code>github-mcp-server</code>. Copilot never holds the token.</p>
+  <p>None of this is abstract. The same design drops into <strong>GitHub Copilot CLI</strong> as a guardrail proxy: Copilot launches it as its GitHub MCP server, and every call is filtered, checked, credentialed, and logged before it reaches the real <code>github-mcp-server</code>. Copilot never holds the token. The whole thing is open source &mdash; Node built-ins only, and it runs offline against a mock upstream, so you can clone it and watch the policy tests pass without a Docker daemon or a GitHub token.</p>
+
+  <div class="repocard">
+    <div class="rc-top">
+      <span class="rc-mark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>thundeeran/copilot-guardrail-proxy</span>
+      <span class="rc-meta">13 files &middot; Node, no deps &middot; runs offline</span>
+      <a class="rc-cta" href="https://github.com/thundeeran/copilot-guardrail-proxy">View source on GitHub &rarr;</a>
+    </div>
+    <pre class="rc-clone"><span class="c"># clone and run the tests &mdash; no Docker or token needed</span>
+git clone https://github.com/thundeeran/copilot-guardrail-proxy
+cd copilot-guardrail-proxy && node test.mjs && node test-rotation.mjs</pre>
+  </div>
   <pre><span class="c">// ~/.copilot/mcp-config.json — Copilot connects only to the proxy</span>
 {
   <span class="k">"mcpServers"</span>: {
@@ -457,6 +479,7 @@ bash copilot-as.sh pm                 <span class="c"># a separate, read-only se
 
   <h3>References</h3>
   <ul class="refs">
+    <li><a href="https://github.com/thundeeran/copilot-guardrail-proxy">thundeeran/copilot-guardrail-proxy — the reference implementation from this essay</a></li>
     <li><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers">Adding MCP servers for GitHub Copilot CLI — GitHub Docs</a></li>
     <li><a href="https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-copilot-cli.md">Install the GitHub MCP Server in Copilot CLI — github/github-mcp-server</a></li>
     <li><a href="https://modelcontextprotocol.io">Model Context Protocol — specification</a></li>

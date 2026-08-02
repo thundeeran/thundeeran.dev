@@ -166,6 +166,22 @@ nav.toc a.active .tk{color:var(--accent-2)}
 .repocard pre.rc-clone{margin:16px 0 0;background:#101017;border:1px solid var(--line);border-radius:10px;padding:13px 15px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.7;color:#cfced9;overflow-x:auto}
 .repocard pre.rc-clone .c{color:var(--ink-3)}
 @media(max-width:620px){.repocard .rc-cta{margin-left:0}}
+/* ---- hero CTA (surface the code above the fold) ---- */
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.hcta{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:600;text-decoration:none;border-radius:12px;padding:12px 20px;transition:.18s;letter-spacing:-.01em}
+.hcta.primary{color:#fff;background:linear-gradient(135deg,rgba(139,123,255,.24),rgba(139,123,255,.10));border:1px solid rgba(139,123,255,.55);box-shadow:0 10px 30px -12px rgba(139,123,255,.6)}
+.hcta.primary:hover{background:linear-gradient(135deg,rgba(139,123,255,.34),rgba(139,123,255,.16));border-color:var(--accent);transform:translateY(-1px)}
+.hcta.primary svg{width:18px;height:18px;fill:currentColor;flex:0 0 auto}
+.hcta .up{color:var(--accent-2);font-weight:700}
+.hcta.ghost{color:var(--ink-2);border:1px solid var(--line-2);background:transparent}
+.hcta.ghost:hover{color:var(--ink);border-color:var(--accent);background:rgba(139,123,255,.06)}
+/* ---- floating "run the code" pill ---- */
+.run-fab{position:fixed;right:24px;bottom:24px;z-index:60;display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:#fff;text-decoration:none;padding:12px 18px;border-radius:100px;background:linear-gradient(135deg,#8b7bff,#5a4fd6);border:1px solid rgba(185,174,255,.5);box-shadow:0 12px 30px -8px rgba(139,123,255,.6),0 2px 8px rgba(0,0,0,.4);opacity:0;transform:translateY(16px) scale(.96);pointer-events:none;transition:opacity .28s ease,transform .28s ease}
+.run-fab.show{opacity:1;transform:none;pointer-events:auto}
+.run-fab:hover{transform:translateY(-2px);box-shadow:0 18px 42px -8px rgba(139,123,255,.72)}
+.run-fab svg{width:17px;height:17px;fill:currentColor;flex:0 0 auto}
+@media(max-width:560px){.run-fab .label{display:none}.run-fab{padding:14px;gap:0}}
+@media(prefers-reduced-motion:reduce){.run-fab{transition:opacity .2s}.hcta.primary:hover,.run-fab:hover{transform:none}}
 </style>
 </head>
 <body>
@@ -179,6 +195,13 @@ nav.toc a.active .tk{color:var(--accent-2)}
   <div class="byline">
     <div class="avatar">T</div>
     <div>By <b>Thundeeran</b> <span class="sep">·</span> August 2026 <span class="sep">·</span> ~9 min read</div>
+  </div>
+  <div class="hero-actions">
+    <a class="hcta primary" href="https://github.com/thundeeran/labs/tree/main/guardrailing-agents">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      Run the reference implementation <span class="up">&#8599;</span>
+    </a>
+    <a class="hcta ghost" href="#s8">See it in the essay &#8595;</a>
   </div>
 </header>
 
@@ -572,6 +595,11 @@ bash copilot-as.sh pm                 <span class="c"># a separate, read-only se
 </div>
 <footer class="pg"><span>thundeeran.dev</span><span>© 2026 · agents · security</span></footer>
 
+<a class="run-fab" id="runFab" href="https://github.com/thundeeran/labs/tree/main/guardrailing-agents" aria-label="Clone and run the reference implementation">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4Zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4Z"/></svg>
+  <span class="label">Clone &amp; run the code</span>
+</a>
+
 <script>
 // reading progress
 const prog=document.getElementById('prog');
@@ -626,6 +654,16 @@ run();
 // scroll-spy for the fixed table of contents
 const _toc=[...document.querySelectorAll('nav.toc a')];
 const _io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){_toc.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));}});},{rootMargin:'-45% 0px -50% 0px'});
+
+// floating "run the code" pill — reveal once the hero scrolls out of view
+const _fab=document.getElementById('runFab');
+const _hero=document.querySelector('.hero');
+if(_fab&&_hero){
+  const _fabUpd=()=>{const past=(window.scrollY||document.documentElement.scrollTop) > (_hero.offsetTop+_hero.offsetHeight-120);_fab.classList.toggle('show',past);};
+  addEventListener('scroll',_fabUpd,{passive:true});
+  addEventListener('resize',_fabUpd,{passive:true});
+  _fabUpd();
+}
 _toc.forEach(a=>{const s=document.getElementById(a.getAttribute('href').slice(1));if(s)_io.observe(s);});
 </script>
 </body>
